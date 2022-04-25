@@ -1,0 +1,29 @@
+{
+    "name": "lumium",
+    "version": "1.0.0",
+    "description": "next level docs",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/D3PSI/lumium.git"
+    },
+    "author": "Cedric Schwyter <cedricschwyter@bluewin.ch>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/D3PSI/lumium/issues"
+    },
+    "homepage": "https://github.com/D3PSI/lumium#readme",
+    "workspaces": [
+        "lumium-space",
+        "lumium-api"
+    ],
+    "devDependencies": {
+        "@types/node": "^17.0.27",
+        "ts-node": "^10.7.0"
+    },
+    "dependencies": {
+        "typescript": "^4.6.3"
+    }
+}

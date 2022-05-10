@@ -3,7 +3,12 @@
     "version": "1.0.0",
     "description": "next level docs",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "npm test --workspace lumium-space && npm test --workspace lumium-api",
+        "build": "./scripts/build.sh",
+        "start": "concurrently -n lumium-space,lumium-api \"npm start --workspace lumium-space\" \"npm start --workspace lumium-api\"",
+        "dev": "concurrently -n lumium-space,lumium-api \"npm run dev --workspace lumium-space\" \"npm run dev --workspace lumium-api\"",
+        "db:migrate": "npm run db:migrate --workspace lumium-api",
+        "preinstall": "npm run lumium-renderer:package --workspace lumium-space"
     },
     "repository": {
         "type": "git",

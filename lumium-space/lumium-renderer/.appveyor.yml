@@ -8,4 +8,5 @@ install:
 build: false
 
 test_script:
-  - cargo test --locked
+  - cd lumium-space/lumium-renderer
+  - cargo test

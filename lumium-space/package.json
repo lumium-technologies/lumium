@@ -14,14 +14,14 @@
         "lumium-renderer:install": "npm run lumium-renderer:package && npm update lumium-renderer",
         "preinstall": "npm run lumium-renderer:package"
     },
-    "dependencies":{
-        "lumium-renderer": "file:lumium-renderer.tgz",
+    "dependencies": {
         "@chakra-ui/react": "^1.1.4",
         "@emotion/react": "^11.1.4",
         "@emotion/styled": "^11.0.0",
         "@reduxjs/toolkit": "^1.6.0",
         "axios": "^0.21.1",
         "framer-motion": "^3.2.1",
+        "lumium-renderer": "file:lumium-renderer.tgz",
         "next": "^12.1.5",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",
@@ -41,6 +41,8 @@
         "@types/react-redux": "^7.1.16",
         "cypress": "^6.2.1",
         "dotenv": "^8.2.0",
+        "eslint": "8.15.0",
+        "eslint-config-next": "12.1.6",
         "identity-obj-proxy": "^3.0.0",
         "isomorphic-unfetch": "^3.1.0",
         "jest": "^26.6.3",

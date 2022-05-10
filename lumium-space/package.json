@@ -8,8 +8,8 @@
         "start": "next start",
         "test": "jest -c test/jest.config.js",
         "cypress:open": "cypress open",
-        "cypress:run": "cypress run --config video=false",
-        "cypress:test": "start-server-and-test start http://localhost:3000 cypress:run",
+        "cypress:run": "cypress run",
+        "cypress:test": "npm run lumium-renderer:install && concurrently -k -s first 'npm start' 'npm run cypress:run'",
         "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && export LUMIUM_RENDERER_TGZ=$(npm pack | tail -n 1) && cp $LUMIUM_RENDERER_TGZ ../../lumium-renderer.tgz",
         "lumium-renderer:install": "npm run lumium-renderer:package && npm update lumium-renderer",
         "preinstall": "npm run lumium-renderer:package"

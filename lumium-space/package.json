@@ -20,6 +20,7 @@
         "@emotion/styled": "^11.0.0",
         "@reduxjs/toolkit": "^1.6.0",
         "axios": "^0.21.1",
+        "concurrently": "^7.1.0",
         "framer-motion": "^3.2.1",
         "lumium-renderer": "file:lumium-renderer.tgz",
         "next": "^12.1.5",

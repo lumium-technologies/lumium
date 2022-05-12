@@ -10,18 +10,18 @@ import store from "@redux/store";
 import { appWithTranslation } from "@i18n";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const queryClient = new QueryClient();
-  return (
-    <ChakraProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Provider store={store}>
-            <Component {...pageProps} />
-          </Provider>
-        </Hydrate>
-      </QueryClientProvider>
-    </ChakraProvider>
-  );
+    const queryClient = new QueryClient();
+    return (
+        <ChakraProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+                <Hydrate state={pageProps.dehydratedState}>
+                    <Provider store={store}>
+                        <Component {...pageProps} />
+                    </Provider>
+                </Hydrate>
+            </QueryClientProvider>
+        </ChakraProvider>
+    );
 }
 
 export default MyApp;

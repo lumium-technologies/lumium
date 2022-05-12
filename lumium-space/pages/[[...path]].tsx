@@ -4,7 +4,9 @@ import { LumiumRenderer } from "@components";
 
 const Space: React.FC = () => {
     return (
-        <LumiumRenderer />
+        <React.Fragment>
+            <LumiumRenderer />
+        </React.Fragment>
     );
 };
 

@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "npm run lumium-renderer:install && next build",
         "start": "next start",
         "test": "jest -c test/jest.config.js",
         "cypress:open": "cypress open",

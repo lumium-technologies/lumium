@@ -4,26 +4,12 @@ import { useEffect, useState, CSSProperties } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
 export const LumiumRenderer = () => {
-    const [page, setPage] = useState<string[]>();
-    const Row = ({ index, style }: {index: number, style: CSSProperties}) => (
-        <div style={style}>page[index]</div>
-    );
+    const [page, setPage] = useState<string>("");
 
     useEffect(() => {
         axios.get("https://raw.githubusercontent.com/D3PSI/cs-wiki/master/markdown/Formulary%20%26%20Course%20Materials%20677618886e9347f58deaf01d94bc40d7/Probability%20Theory%20db98499109bd4c6f934431bfc46e9c17.md").then((res) => {
             setPage(render_markdown(res.data));
         });
     }, []);
-    if (page) {
-        return (<List
-            height={150}
-            itemCount={page.length}
-            itemSize={35}
-            width={300}
-        >
-            {Row}
-        </List>
-        );
-    }
-    return null;
+    return <div dangerouslySetInnerHTML={{__html: page}} />;
 };

@@ -43,12 +43,8 @@ fn render_block_tex(tex: &str) -> String {
 
 #[allow(non_snake_case)]
 #[wasm_bindgen]
-pub fn render_markdown(markdown: &str) {
+pub fn render_markdown(markdown: &str) -> String {
     log!("Initializing Markdown Render Engine...");
-    let window = web_sys::window().expect("global window does not exists");
-    let document = window.document().expect("expecting a document on window");
-    let val = document.get_element_by_id("page-canvas").unwrap();
-    val.set_inner_html(markdown);
     let mut md_katex = String::new();
     let mut start = 0;
     let mut end = false;
@@ -63,7 +59,6 @@ pub fn render_markdown(markdown: &str) {
             end = false;
         }
     }
-    val.set_inner_html(md_katex.as_str());
     let mut start = 0;
     let mut end = false;
     let mut preprocessed_markdown = String::new();

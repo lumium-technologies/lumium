@@ -8,7 +8,7 @@
         "start": "npm run typeorm migration:run && ts-node src/index.ts",
         "start:dev": "concurrently -n express,jest \"nodemon src/index.ts\" \"jest --watchAll --verbose --passWithNoTests --coverage\"",
         "dev": "source ./scripts/localEnv.sh && npm run typeorm migration:run && npm run start:dev",
-        "typeorm": "typeorm -d ./src/data-source.ts"
+        "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts"
     },
     "author": "",
     "license": "ISC",

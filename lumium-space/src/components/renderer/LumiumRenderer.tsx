@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { render_markdown } from 'lumium-renderer';
-import { useEffect, useState, CSSProperties } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import { useEffect, useState } from 'react';
 
 export const LumiumRenderer = () => {
     const [page, setPage] = useState<string>("");

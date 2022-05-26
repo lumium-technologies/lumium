@@ -10,5 +10,9 @@
         {
             "url": "https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku-community/multi-procfile.tgz"
         }
-    ]
+    ],
+    "scripts": {
+        "postdeploy": "./scripts/add-cloudflare-dns.sh",
+        "pr-predestroy":"./scripts/remove-cloudflare-dns.sh"
+    }
 }

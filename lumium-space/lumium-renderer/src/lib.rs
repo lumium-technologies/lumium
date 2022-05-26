@@ -907,7 +907,7 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 fn view(model: &Model) -> Node<Msg> {
     div![Node::from_html(
         Some(&Namespace::Html),
-        &render_markdown(model.page.as_str())
+        &render_markdown(model.page.as_str()),
     )]
 }
 

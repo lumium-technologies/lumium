@@ -1,52 +1,189 @@
-import * as express from "express"
-import * as bodyParser from "body-parser"
-import { Request, Response } from "express"
-import { AppDataSource } from "./data-source"
-import { Routes } from "./routes"
-import { User } from "./entity/User"
+import 'reflect-metadata';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import { dataSource} from './data-source';
+import { v1pub } from './routes';
+import { v1sec } from './routes';
 
-AppDataSource.initialize().then(async () => {
+import dotenv from 'dotenv';
 
-    // create express app
-    const app = express()
-    app.use(bodyParser.json())
+import supertokens from 'supertokens-node';
+import {middleware} from 'supertokens-node/framework/express';
+import Session from 'supertokens-node/recipe/session';
+import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
-    // register express routes from defined application routes
-    Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
-            const result = (new (route.controller as any))[route.action](req, res, next)
-            if (result instanceof Promise) {
-                result.then(result => result !== null && result !== undefined ? res.send(result) : undefined)
+import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
+import { errorHandler } from 'supertokens-node/framework/express';
+import { User } from './entity/User';
 
-            } else if (result !== null && result !== undefined) {
-                res.json(result)
-            }
-        })
+import expressJSDocSwagger from 'express-jsdoc-swagger';
+
+if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
+    dotenv.config({path: process.cwd() + '/.env'});
+} else if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({path: process.cwd() + '/.env.development'});
+}
+
+const initDataSource = async () => {
+    try {
+        await dataSource.initialize();
+    } catch(e) {
+        console.error(e);
+    }
+};
+initDataSource();
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.header('x-forwarded-proto') !== 'https') {
+            res.redirect(`https://${req.header('host')}${req.url}`);
+        } else {
+            next();
+        }
+    });
+}
+
+const options = {
+    info: {
+        version: '1.0.0',
+        title: 'Lumium API',
+        license: {
+            name: 'GPLV3',
+            url: 'https://github.com/d3psi/lumium',
+        },
+        description: 'API description',
+        contact: {
+            name: 'Cedric Schwyter',
+            email: 'cedricschwyter@bluewin.ch',
+        },
+    },
+    servers: [
+        {
+            url: 'https://api.lumium.space/{Base Path}',
+            description: 'Production API server',
+            variables: {
+                'Base Path': {
+                    default: 'v1',
+                },
+            },
+        },
+        {
+            url: 'https://api.staging.lumium.space/{Base Path}',
+            description: 'Staging API server',
+            variables: {
+                'Base Path': {
+                    default: 'v1',
+                },
+            },
+        },
+        {
+            url: 'https://lumium-api-pr-{Pull Request}.herokuapp.com/{Base Path}',
+            description: 'Pull request API server',
+            variables: {
+                'Pull Request': {
+                    default: '0',
+                    description: 'this value is assigned by the service provider, in this example `gigantic-server.com`',
+                },
+                'Base Path': {
+                    default: 'v1',
+                },
+            },
+        },
+        {
+            url: 'http://localhost:5000/{Base Path}',
+            description: 'Local API server',
+            variables: {
+                'Base Path': {
+                    default: 'v1',
+                },
+            },
+        },
+    ],
+    security: {
+        JWTAuth: {
+            type: 'apiKey',
+            scheme: 'cookie',
+            name: 'test',
+            in: 'sAccessToken'
+        },
+    },
+    filesPattern: './routes/**/*.ts',
+    baseDir: __dirname,
+    swaggerUIPath: '/docs',
+    exposeSwaggerUI: true,
+    exposeApiDocs: false,
+    notRequiredAsNullable: false,
+};
+
+expressJSDocSwagger(app)(options);
+
+app.use(bodyParser.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
     })
+);
 
-    // setup express app here
-    // ...
+const connectionUri: string = process.env.SUPERTOKENS_CONNECTION_URI || '';
+const apiKey: string  = process.env.SUPERTOKENS_API_KEY || '';
 
-    // start express server
-    app.listen(3000)
+const herokuPrNumber: string = process.env.HEROKU_PR_NUMBER || '';
+const primarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST?.replace('{PR_NUMBER}', herokuPrNumber) || process.env.SPACE_HOST;
 
-    // insert new users for test
-    await AppDataSource.manager.save(
-        AppDataSource.manager.create(User, {
-            firstName: "Timber",
-            lastName: "Saw",
-            age: 27
-        })
-    )
+const spaceHosts: (string | any)[] = [primarySpaceHost, process.env.SPACE_HOST_HEROKU];
+const apiHosts: (string | any)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];
+supertokens.init({
+    framework: 'express',
+    supertokens: {
+        connectionURI: connectionUri,
+        apiKey: apiKey
+    },
+    appInfo: {
+        appName: 'lumium-api',
+        apiDomain: apiHosts[0],
+        websiteDomain: spaceHosts[0],
+        apiBasePath: '/v1/auth',
+        websiteBasePath: '/auth'
+    },
+    recipeList: [
+        ThirdPartyEmailPassword.init({}),
+        Session.init({})
+    ]
+});
 
-    await AppDataSource.manager.save(
-        dataSource.manager.create(User, {
-            firstName: "Phantom",
-            lastName: "Assassin",
-            age: 24
-        })
-    )
+const windowMs: number = Number(process.env.EXPRESS_RATE_LIMIT_WINDOW_MILLISECONDS) || 1000;
+const limit: number = Number(process.env.EXPRESS_RATE_LIMIT) || 5;
 
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results")
+const limiter = rateLimit({
+    windowMs: windowMs,
+    max: limit,
+    message: 'API rate limit hit, please try again in a short moment',
+});
 
-}).catch(error => console.log(error))
+app.use(limiter);
+
+app.use(cors({
+    origin: [...spaceHosts, ...apiHosts],
+    allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
+    credentials: true,
+}));
+
+app.use('/v1/', v1pub);
+
+app.use(middleware());
+
+app.use('/v1/secure/', verifySession(), v1sec);
+
+app.get('/', (req, res)  => {
+    res.redirect('/docs/');
+});
+
+app.use(errorHandler());
+
+app.listen(PORT, () => {
+    console.log(`Now serving API on http://localhost:${PORT}`);
+});

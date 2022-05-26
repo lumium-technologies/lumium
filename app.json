@@ -1,0 +1,18 @@
+{
+    "addons": ["heroku-postgresql:hobby-dev"],
+    "buildpacks": [
+        {
+            "url": "https://github.com/solana-labs/heroku-buildpack-rust-wasm-pack.git"
+        },
+        {
+            "url": "heroku/nodejs"
+        },
+        {
+            "url": "https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku-community/multi-procfile.tgz"
+        }
+    ],
+    "scripts": {
+        "postdeploy": "./scripts/add-cloudflare-dns.sh",
+        "pr-predestroy": "./scripts/remove-cloudflare-dns.sh"
+    }
+}

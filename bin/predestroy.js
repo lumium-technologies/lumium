@@ -2,8 +2,6 @@ const execSync = require('child_process');
 
 console.log("Running predestroy...");
 
-const heroku = new Heroku({token: process.env.HEROKU_API_TOKEN});
-
 if (process.env.REVIEW_APP) {
     console.log("Running predestroy in review app...");
     run().catch(console.error);

@@ -12,7 +12,7 @@
         }
     ],
     "scripts": {
-        "postdeploy": "./scripts/add-cloudflare-dns.sh",
-        "pr-predestroy":"./scripts/remove-cloudflare-dns.sh"
+        "postdeploy": "node bin/postdeploy.js",
+        "pr-predestroy":"node bin/predestroy.js"
     }
 }

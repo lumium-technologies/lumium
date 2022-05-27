@@ -16,6 +16,7 @@ import { verifySession } from 'supertokens-node/recipe/session/framework/express
 
 import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
 import { errorHandler } from 'supertokens-node/framework/express';
+import { User } from './entity/User';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 
@@ -35,6 +36,17 @@ const initDataSource = async () => {
 initDataSource();
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV === 'production' &&
+    process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (unsecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
+    app.use((req, res, next) => {
+        if (req.header('x-forwarded-proto') !== 'https') {
+            res.redirect(`https://${req.header('host')}${req.url}`);
+        } else {
+            next();
+        }
+    });
+}
 
 const options = {
     info: {

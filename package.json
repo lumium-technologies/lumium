@@ -26,14 +26,16 @@
         "lumium-api"
     ],
     "devDependencies": {
-        "@types/node": "^17.0.27",
-        "ts-node": "^10.7.0",
-        "@nrwl/workspace": "latest",
-        "nx": "latest",
         "@nrwl/cli": "latest",
-        "@nrwl/nx-cloud": "latest"
+        "@nrwl/nx-cloud": "latest",
+        "@nrwl/workspace": "latest",
+        "@types/node": "^17.0.27",
+        "nx": "latest",
+        "ts-node": "^10.7.0"
     },
     "dependencies": {
+        "child_process": "^1.0.2",
+        "heroku-client": "^3.1.0",
         "typescript": "^4.6.3"
     }
 }

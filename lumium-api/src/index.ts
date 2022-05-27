@@ -16,7 +16,6 @@ import { verifySession } from 'supertokens-node/recipe/session/framework/express
 
 import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
 import { errorHandler } from 'supertokens-node/framework/express';
-import { User } from './entity/User';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 
@@ -83,7 +82,7 @@ const options = {
         },
         {
             url: 'https://pr-{Pull Request}.review.lumium.space/{Base Path}',
-            description: 'Pull request API server (Cloudflare DNS)',
+            description: 'Pull request API server (Cloudflare DNS and Proxy)',
             variables: {
                 'Pull Request': {
                     default: '0',

@@ -27,7 +27,7 @@ async function run() {
         }
     }).then(app => {
         const dnsTarget = app.cname;
-        const output = execSync(`../scripts/add-cloudflare-dns.sh + ${dnsTarget}`);
+        const output = execSync(`./scripts/add-cloudflare-dns.sh + ${dnsTarget}`);
         console.log("Adding Cloudflare DNS..., Response:", output);
     });
 }

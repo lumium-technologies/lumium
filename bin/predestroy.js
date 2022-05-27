@@ -11,6 +11,6 @@ if (process.env.REVIEW_APP) {
 }
 
 async function run() {
-    const output = execSync('../scripts/remove-cloudflare-dns.sh');
+    const output = execSync('./scripts/remove-cloudflare-dns.sh');
     console.log("Removing Cloudflare DNS..., Response:", output);
 }

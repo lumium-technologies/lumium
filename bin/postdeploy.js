@@ -1,5 +1,5 @@
-import Heroku from 'heroku-client';
-import { execSync } from 'child_process';  // replace ^ if using ES modules
+const Heroku = require('heroku-client');
+const execSync = require('child_process').execSync;
 
 console.log("Running postdeploy...");
 

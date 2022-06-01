@@ -1,4 +1,5 @@
 #!/bin/bash
+./scripts/remove-cloudflare-dns.sh
 set -e
 if [[ ${LUMIUM_COMPONENT} == "lumium-api" ]]; then
     curl -X POST "https://api.cloudflare.com/client/v4/zones/32237bfe24f8077cafdfe053c67c103f/dns_records" \

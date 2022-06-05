@@ -11,6 +11,6 @@ async function run() {
             execSync(`heroku pg:copy lumium-staging-api::DATABASE DATABASE -a ${appName}`);
         }
         const output = execSync("npm run db:migrate");
-        console.log("Running database migrations..., Output: ", output);
+        console.log("Running database migrations..., Output: ", output.toString());
     }
 }

@@ -3,7 +3,7 @@ const execSync = require('child_process').execSync;
 
 console.log("Running postdeploy...");
 
-const heroku = new Heroku({token: process.env.HEROKU_API_TOKEN});
+const heroku = new Heroku({token: process.env.HEROKU_API_KEY});
 
 if (process.env.REVIEW_APP) {
     console.log("Running postdeploy in review app...");

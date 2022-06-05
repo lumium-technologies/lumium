@@ -1,12 +1,11 @@
-import React from "react";
-
+import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
 
 const Space: React.FC = () => {
     return (
-        <React.Fragment>
+        <Authenticator>
             <LumiumRenderer />
-        </React.Fragment>
+        </Authenticator>
     );
 };
 

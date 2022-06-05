@@ -1,1 +1,2 @@
 web: npm start --workspace lumium-api
+release: node bin/postdeploy.js

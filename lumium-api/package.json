@@ -5,10 +5,11 @@
     "scripts": {
         "test": "jest --passWithNoTests --coverage",
         "build": "tsc",
-        "start": "npm run typeorm migration:run && ts-node src/index.ts",
+        "start": "ts-node src/index.ts",
         "start:dev": "concurrently -n express,jest \"nodemon src/index.ts\" \"jest --watchAll --verbose --passWithNoTests --coverage\"",
         "dev": ". ./scripts/localEnv.sh && npm run typeorm migration:run && npm run start:dev",
-        "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts"
+        "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
+        "db:migrate": "npm run typeorm migration:run"
     },
     "author": "",
     "license": "ISC",

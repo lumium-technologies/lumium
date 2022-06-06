@@ -63,15 +63,6 @@ const options = {
     },
     servers: [
         {
-            url: 'https://api.lumium.space/{Base Path}',
-            description: 'Production API server',
-            variables: {
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
             url: 'https://api.staging.lumium.space/{Base Path}',
             description: 'Staging API server',
             variables: {

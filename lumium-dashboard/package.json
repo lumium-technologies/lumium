@@ -6,11 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "build:analyze": "ANALYZE=true npm run build",
     "test": "jest -c test/jest.config.js",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --config video=false",
-    "cypress:test": "start-server-and-test start http://localhost:3000 cypress:run"
+    "cypress:run": "cypress run",
+    "cypress:test": "concurrently -k -s first 'npm start' 'npm run cypress:run'"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.1.4",

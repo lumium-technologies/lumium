@@ -29,6 +29,7 @@
         "next": "^12.1.5",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",
+        "nextjs-cors": "^2.1.1",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "react-query": "^3.5.16",
@@ -39,6 +40,8 @@
         "rehype-katex": "^6.0.2",
         "remarkable": "^2.0.1",
         "remarkable-katex": "^1.2.1",
+        "supertokens-auth-react": "^0.22.0",
+        "supertokens-node": "^9.2.3",
         "swr": "^0.4.0"
     },
     "devDependencies": {

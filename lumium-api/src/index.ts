@@ -81,8 +81,8 @@ const options = {
             },
         },
         {
-            url: 'https://pr-{Pull Request}.review.lumium.space/{Base Path}',
-            description: 'Pull request API server (Cloudflare DNS and Proxy)',
+            url: 'https://pr-{Pull Request}.api.review.lumium.space/{Base Path}',
+            description: 'Pull request API server (Cloudflare DNS)',
             variables: {
                 'Pull Request': {
                     default: '0',

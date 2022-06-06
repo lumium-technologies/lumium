@@ -1,0 +1,14 @@
+# npm
+node_modules
+# next.js build files
+.next
+# environment variables
+.env
+.env.*
+!.env.example
+
+cypress/videos
+cypress/screenshots
+
+*.wasm
+coverage/

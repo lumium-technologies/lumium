@@ -142,11 +142,18 @@ app.use(
 const connectionUri: string = process.env.SUPERTOKENS_CONNECTION_URI || '';
 const apiKey: string  = process.env.SUPERTOKENS_API_KEY || '';
 
-const herokuPrNumber: string = process.env.HEROKU_PR_NUMBER || '';
-const primarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST?.replace('{PR_NUMBER}', herokuPrNumber) || process.env.SPACE_HOST;
+const PR_NUMBER = '{PR_NUMBER}';
+const APP_NAME = '{APP_NAME}';
 
-const spaceHosts: (string | any)[] = [primarySpaceHost, process.env.SPACE_HOST_HEROKU];
-const apiHosts: (string | any)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];
+const herokuPrNumber: string = process.env.HEROKU_PR_NUMBER || '';
+const herokuAppName: string = process.env.HEROKU_APP_NAME || '';
+const primarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST?.replace(PR_NUMBER, herokuPrNumber) || process.env.SPACE_HOST;
+const secondarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST_HEROKU?.replace(APP_NAME, herokuAppName) || process.env.SPACE_HOST_HEROKU;
+const primaryApiHost = process.env.REVIEW_APP && process.env.API_HOST?.replace(PR_NUMBER, herokuPrNumber) || process.env.API_HOST;
+const secondaryApiHost = process.env.REVIEW_APP && process.env.API_HOST_HEROKU?.replace(PR_NUMBER, herokuPrNumber) || process.env.API_HOST_HEROKU;
+
+const spaceHosts: (string)[] = [primarySpaceHost, secondarySpaceHost];
+const apiHosts: (string)[] = [primaryApiHost, secondaryApiHost];
 supertokens.init({
     framework: 'express',
     supertokens: {

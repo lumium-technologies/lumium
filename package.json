@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "description": "next level docs",
     "scripts": {
-        "test": "npm test --workspace lumium-space && npm test --workspace lumium-api",
+        "test": "npm test --workspace lumium-space && npm test --workspace lumium-api && npm test --workspace lumium-dashboard",
         "build": "./scripts/build.sh",
-        "start": "concurrently -n lumium-space,lumium-api \"npm start --workspace lumium-space\" \"npm start --workspace lumium-api\"",
-        "dev": "concurrently -n lumium-space,lumium-api \"npm run dev --workspace lumium-space\" \"npm run dev --workspace lumium-api\"",
+        "start": "concurrently -n lumium-space,lumium-api,lumium-dashboard \"npm start --workspace lumium-space\" \"npm start --workspace lumium-api\" \"npm start --workspace lumium-dashboard\"",
+        "dev": "concurrently -n lumium-space,lumium-api,lumium-dashboard \"npm run dev --workspace lumium-space\" \"npm run dev --workspace lumium-api\" \"npm run dev --workspace lumium-dashboard\"",
         "db:migrate": "npm run db:migrate --workspace lumium-api",
         "preinstall": "npm run lumium-renderer:package --workspace lumium-space",
         "heroku-prebuild": "npm run lumium-renderer:install --workspace lumium-space"

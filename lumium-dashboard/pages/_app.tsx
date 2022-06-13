@@ -6,12 +6,15 @@ import "@styles/global.css";
 import { Provider } from "react-redux";
 import store from "@redux/store";
 import { appWithTranslation } from "@i18n";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+function MyApp({ Component, pageProps: { session, ...pageProps }, }: AppProps): JSX.Element {
   return (
     <ChakraProvider theme={theme}>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </Provider>
     </ChakraProvider>
   );

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github"
 
 export default NextAuth({
@@ -7,34 +7,31 @@ export default NextAuth({
             id: "heroku",
             name: "Heroku",
             type: "oauth",
-            authorization: "https://id.heroku.com/oauth/authorize",
+            authorization: {
+                url: "https://id.heroku.com/oauth/authorize",
+                params: { scope: "write,identity" }
+            },
             token: "https://id.heroku.com/oauth/token",
             clientId: process.env.HEROKU_OAUTH_ID,
-        }
+            clientSecret: process.env.HEROKU_OAUTH_SECRET,
+            userinfo: "https://api.heroku.com/account",
+            profile(profile) {
+                return {
+                    id: profile.id,
+                    email: profile.email,
+                }
+            },
+        },
+        GithubProvider({
+            clientId: process.env.GITHUB_ID,
+            clientSecret: process.env.GITHUB_SECRET
+        })
     ],
-    secret: process.env.HEROKU_OAUTH_SECRET,
-
     session: {
         strategy: 'jwt'
     },
     jwt: {
-        secret: process.env.HEROKU_OAUTH_SECRET,
+        secret: "wioadjowjd"
     },
-    pages: {
-        // signIn: '/auth/signin',  // Displays signin buttons
-        // signOut: '/auth/signout', // Displays form with sign out button
-        // error: '/auth/error', // Error code passed in query string as ?error=
-        // verifyRequest: '/auth/verify-request', // Used for check email page
-        // newUser: null // If set, new users will be directed here on first sign in
-    },
-    callbacks: {
-        // async signIn({ user, account, profile, email, credentials }) { return true },
-        // async redirect({ url, baseUrl }) { return baseUrl },
-        // async session({ session, token, user }) { return session },
-        // async jwt({ token, user, account, profile, isNewUser }) { return token }
-    },
-
-    events: {},
-
-    debug: false,
+    secret: "wioadjowjd"
 })

@@ -37,6 +37,7 @@
     "dependencies": {
         "child_process": "^1.0.2",
         "heroku-client": "^3.1.0",
+        "next-auth": "^4.5.0",
         "typescript": "^4.6.3"
     }
 }

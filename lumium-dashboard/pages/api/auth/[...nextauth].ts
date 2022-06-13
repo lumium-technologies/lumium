@@ -12,13 +12,13 @@ export default NextAuth({
             clientId: process.env.HEROKU_OAUTH_ID,
         }
     ],
-    secret: process.env.SECRET,
+    secret: process.env.HEROKU_OAUTH_SECRET,
 
     session: {
         strategy: 'jwt'
     },
     jwt: {
-        secret: process.env.SECRET,
+        secret: process.env.HEROKU_OAUTH_SECRET,
     },
     pages: {
         // signIn: '/auth/signin',  // Displays signin buttons

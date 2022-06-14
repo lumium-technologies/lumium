@@ -2,6 +2,7 @@
     "name": "lumium",
     "version": "1.0.0",
     "description": "next level docs",
+    "private": true,
     "scripts": {
         "test": "npm test --workspace lumium-space && npm test --workspace lumium-api && npm test --workspace lumium-dashboard",
         "build": "./scripts/build.sh",

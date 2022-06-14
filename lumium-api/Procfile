@@ -1,2 +1,2 @@
-web: npm start --workspace lumium-api
+web: cd lumium-api && yarn start
 release: node bin/release.js

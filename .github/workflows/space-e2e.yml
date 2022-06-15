@@ -28,10 +28,10 @@ jobs:
               uses: jetli/wasm-pack-action@v0.3.0
 
             - name: Install dependencies
-              run: cd lumium-space && yarn run lumium-renderer:install && yarn install
+              run: yarn
 
             - name: Run production build
-              run: cd lumium-space && cp .env.test .env && yarn run build
+              run: cd lumium-space && cp .env.test .env && yarn build
 
             - name: Run end-to-end tests
               run: cd lumium-space && yarn run cypress:test

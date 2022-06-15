@@ -10,7 +10,7 @@
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
         "cypress:test": "yarn run lumium-renderer:package && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
-        "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn pack",
+        "lumium-renderer:package": "cd lumium-renderer && wasm-pack build",
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {
@@ -22,7 +22,6 @@
         "axios": "^0.21.4",
         "concurrently": "^7.2.1",
         "framer-motion": "^3.10.6",
-        "lumium-renderer": "./lumium-renderer/pkg/lumium-renderer-v0.1.0.tgz",
         "next": "^12.1.6",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",

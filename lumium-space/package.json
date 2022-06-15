@@ -10,7 +10,7 @@
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
         "cypress:test": "yarn run lumium-renderer:package && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
-        "lumium-renderer:package": "cd lumium-renderer && wasm-pack build",
+        "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn link && cd ../../ && yarn link lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {

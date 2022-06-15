@@ -28,7 +28,7 @@ jobs:
               uses: jetli/wasm-pack-action@v0.3.0
 
             - name: Install dependencies
-              run: cd lumium-space && yarn run lumium-renderer:install && yarn install
+              run: yarn
 
             - name: Run production build
               run: cd lumiumm-dashboard && yarn build

@@ -9,7 +9,7 @@
         "dev": "concurrently -n lumium-space,lumium-api,lumium-dashboard \"cd lumium-space && yarn run dev\" \"cd lumium-api && yarn run dev\" \"cd lumium-dashboard && yarn run dev\"",
         "db:migrate": "cd lumium-api && yarn run db:migrate",
         "preinstall": "cd lumium-space && yarn run lumium-renderer:package",
-        "heroku-prebuild": "cd lumium-space && yarn run lumium-renderer:install"
+        "heroku-prebuild": "cd lumium-space && yarn run lumium-renderer:package"
     },
     "repository": {
         "type": "git",

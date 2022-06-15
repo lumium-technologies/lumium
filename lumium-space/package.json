@@ -4,14 +4,13 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "yarn run lumium-renderer:install && next build",
+        "build": "yarn run lumium-renderer:package && next build",
         "start": "next start",
         "test": "jest -c test/jest.config.js",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
-        "cypress:test": "yarn run lumium-renderer:install && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
+        "cypress:test": "yarn run lumium-renderer:package && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
         "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn pack",
-        "lumium-renderer:install": "yarn run lumium-renderer:package && yarn upgrade lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {

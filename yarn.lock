@@ -913,6 +913,11 @@
   dependencies:
     "@chakra-ui/utils" "1.10.4"
 
+"@choc-ui/logo@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@choc-ui/logo/-/logo-1.0.0.tgz#23f5e6fc27fd546f6fc90891f332752ffe66066f"
+  integrity sha512-ObD6fhEeBv+UFm4Pnvl8Aj/QA0D5cYi8V/TCDTfnZFddlz+ZxLbydLt8LyFHKcoxonK29MB3D1YQAw+3qU8spw==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -2060,6 +2065,11 @@
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
+
+"@tweenjs/tween.js@16.7.0":
+  version "16.7.0"
+  resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-16.7.0.tgz#3ada9785f5bb2d92bb6313515f88102c2e47ddab"
+  integrity sha512-oSlkVXhroDpq9sfg8ymMpLZEPsu+tza9q7DlbCwZbthuM0xvMslwwtwDad5P4dXShImQnEE21OEILX4S3In0SA==
 
 "@types/aria-query@^4.2.0":
   version "4.2.2"
@@ -8623,6 +8633,11 @@ react-i18next@^11.7.3:
     html-escaper "^2.0.2"
     html-parse-stringify "^3.0.1"
 
+react-icons@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.4.0.tgz#a13a8a20c254854e1ec9aecef28a95cdf24ef703"
+  integrity sha512-fSbvHeVYo/B5/L4VhB7sBA1i2tS8MkT0Hb9t2H1AVPkwGfVHLJCqyr2Py9dKMxsyM63Eng1GkdZfbWj+Fmv8Rg==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -8632,6 +8647,13 @@ react-is@^17.0.1, react-is@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-mt-svg-lines@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/react-mt-svg-lines/-/react-mt-svg-lines-0.9.1.tgz#74ed042b3482ef21061a9edb2f1f7e17f0b65e57"
+  integrity sha512-ts+wY5RZVDOpD+MGzPnWcnQ+Luktn12GenS2EU8PIm7uCb+tWTVdpxsQaZVYI/kLdxyY97cK9QwJH9RsdHdaww==
+  dependencies:
+    "@tweenjs/tween.js" "16.7.0"
 
 react-phone-number-input@3.1.41:
   version "3.1.41"

@@ -1,1 +1,0 @@
-export { useWasmModule } from "./useWasmModule";

@@ -40,6 +40,6 @@
         "heroku-client": "3.1.0"
     },
     "resolutions": {
-        "@types/react": "17.0.0"
+        "@types/react": "17.0.15"
     }
 }

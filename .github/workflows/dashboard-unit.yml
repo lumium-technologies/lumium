@@ -31,7 +31,7 @@ jobs:
               run: yarn
 
             - name: Run production build
-              run: cd lumiumm-dashboard && yarn build
+              run: cd lumium-dashboard && yarn build
 
             - name: Run unit tests
               run: cd lumium-dashboard && yarn test

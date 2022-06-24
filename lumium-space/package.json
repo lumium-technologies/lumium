@@ -9,7 +9,7 @@
         "test": "jest -c test/jest.config.js",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
-        "cypress:test": "yarn run lumium-renderer:package && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
+        "cypress:test": "yarn build && concurrently -k -s first 'yarn start' 'yarn run cypress:run'",
         "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn link && cd ../../ && yarn link lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },

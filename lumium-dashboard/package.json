@@ -21,6 +21,7 @@
         "concurrently": "^7.2.1",
         "framer-motion": "^3.10.6",
         "next": "^12.1.6",
+        "next-auth": "^4.6.1",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",
         "nextjs-cors": "^2.1.1",

@@ -1,1 +1,1 @@
-web: npm start --workspace lumium-dashboard
+web: cd lumium-dashboard && yarn start

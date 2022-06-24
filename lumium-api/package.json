@@ -7,35 +7,35 @@
         "build": "tsc",
         "start": "ts-node src/index.ts",
         "start:dev": "concurrently -n express,jest \"nodemon src/index.ts\" \"jest --watchAll --verbose --passWithNoTests --coverage\"",
-        "dev": ". ./scripts/localEnv.sh && npm run typeorm migration:run && npm run start:dev",
+        "dev": ". ./scripts/localEnv.sh && yarn run typeorm migration:run && yarn run start:dev",
         "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
-        "db:migrate": "npm run typeorm migration:run"
+        "db:migrate": "yarn run typeorm migration:run"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@types/cors": "^2.8.12",
-        "concurrently": "^7.0.0",
-        "cors": "^2.8.5",
-        "dotenv": "^16.0.0",
-        "express": "^4.17.3",
-        "express-jsdoc-swagger": "^1.6.7",
-        "express-rate-limit": "^6.3.0",
-        "jest": "^27.5.1",
-        "node-pg-migrate": "^6.2.1",
-        "pg": "^8.4.0",
-        "reflect-metadata": "^0.1.13",
-        "supertokens-node": "^9.0.1",
-        "ts-node": "^10.8.0",
-        "typeorm": "^0.3.6"
+        "@types/cors": "2.8.12",
+        "concurrently": "7.2.1",
+        "cors": "2.8.5",
+        "dotenv": "16.0.1",
+        "express": "4.18.1",
+        "express-jsdoc-swagger": "1.6.8",
+        "express-rate-limit": "6.4.0",
+        "jest": "27.5.1",
+        "node-pg-migrate": "6.2.1",
+        "pg": "8.7.3",
+        "reflect-metadata": "0.1.13",
+        "supertokens-node": "9.2.3",
+        "ts-node": "10.8.1",
+        "typeorm": "0.3.6"
     },
     "devDependencies": {
-        "@types/express": "^4.17.13",
-        "@types/node": "^16.11.36",
-        "@typescript-eslint/eslint-plugin": "^5.17.0",
-        "@typescript-eslint/parser": "^5.17.0",
-        "eslint": "^8.12.0",
-        "nodemon": "^2.0.15",
-        "typescript": "4.5.2"
+        "@types/express": "4.17.13",
+        "@types/node": "16.11.38",
+        "@typescript-eslint/eslint-plugin": "5.27.1",
+        "@typescript-eslint/parser": "5.27.1",
+        "eslint": "8.17.0",
+        "nodemon": "2.0.16",
+        "typescript": "4.7.3"
     }
 }

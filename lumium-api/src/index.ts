@@ -3,14 +3,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import { dataSource} from './data-source';
+import { dataSource } from './data-source';
 import { v1pub } from './routes';
 import { v1sec } from './routes';
 
 import dotenv from 'dotenv';
 
 import supertokens from 'supertokens-node';
-import {middleware} from 'supertokens-node/framework/express';
+import { middleware } from 'supertokens-node/framework/express';
 import Session from 'supertokens-node/recipe/session';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 

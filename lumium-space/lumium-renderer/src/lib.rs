@@ -53,8 +53,6 @@ fn render_block_tex(tex: &str) -> String {
 #[allow(non_snake_case)]
 #[wasm_bindgen]
 pub fn render_markdown(markdown: &str) -> String {
-    log!("Raw Markdown:\\n{}", &markdown);
-    log!("Initializing Markdown/KaTeX Render Engine...");
     let mut md_katex = String::new();
     let mut start = 0;
     let mut end = false;
@@ -71,7 +69,6 @@ pub fn render_markdown(markdown: &str) -> String {
         }
     }
     md_katex.push_str(&markdown[start..]);
-    log!("Block KaTeX:\\n{}", &md_katex);
     let mut start = 0;
     let mut end = false;
     let mut preprocessed_markdown = String::new();
@@ -88,12 +85,9 @@ pub fn render_markdown(markdown: &str) -> String {
         }
     }
     preprocessed_markdown.push_str(&md_katex[start..]);
-    log!("Inline KaTeX:\\n{}", &preprocessed_markdown);
     let parser = Parser::new_ext(&preprocessed_markdown, Options::all());
     let mut html_out = String::new();
     html::push_html(&mut html_out, parser);
-    log!("Finished rendering markdown/KaTeX to HTML");
-    log!("Output HTML:\\n{}", &html_out);
     html_out
 }
 

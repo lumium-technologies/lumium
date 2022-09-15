@@ -24,7 +24,7 @@ const Main: React.FC = () => {
 
     return (
         <React.Fragment>
-            {done || <LogoBlank setDone={setDone} />}
+            {done || <LogoBlank animationTime={750} setDone={setDone} />}
             <ScaleFade initialScale={1.0} in={done} >
                 <React.Fragment>
                     <Header showGithubButton={true} />

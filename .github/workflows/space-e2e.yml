@@ -30,8 +30,5 @@ jobs:
             - name: Install dependencies
               run: yarn
 
-            - name: Run production build
-              run: cd lumium-space && cp .env.test .env && yarn build
-
             - name: Run end-to-end tests
               run: cd lumium-space && yarn run cypress:test

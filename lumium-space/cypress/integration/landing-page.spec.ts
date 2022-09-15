@@ -29,7 +29,8 @@ describe("landing page", () => {
         cy.get("#supertokens-root").should("be.visible");
     });
     it("login button", {
-        defaultCommandTimeout: 30000
+        defaultCommandTimeout: 30000,
+        requestTimeout: 30000
     }, () => {
         cy.get("[data-cy=continue-button]").click();
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(Cypress.env('TEST_USER_EMAIL'));

@@ -3802,6 +3802,11 @@ csstype@^3.0.2, csstype@^3.0.6:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
 
+cypress-xpath@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/cypress-xpath/-/cypress-xpath-2.0.1.tgz#052db5d18b4f5c03434cba7dcf1fe0b69d292308"
+  integrity sha512-qMagjvinBppNJdMAkucWESP9aP4rDTs7c96m0vwMuZTVx3NqP2E3z/hkoRf8Ea9soL8yTvUuuyF1cg/Sb1Yhbg==
+
 cypress@6.9.1:
   version "6.9.1"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.9.1.tgz#ce1106bfdc47f8d76381dba63f943447883f864c"

@@ -105,7 +105,7 @@ export const LogoTransition = ({scale, strokeWidth, animationTime, numRepeats, s
 
     return (
         <React.Fragment>
-            <Center width="100vw" height="100vh" position="absolute" transform={"translate(-100px, " + scrollPosition + "px)"}>
+            <Center width="100vw" height="100vh" data-cy="logo-transition" position="absolute" transform={"translate(-100px, " + scrollPosition + "px)"}>
                 <Box>
                     {animation}
                 </Box>

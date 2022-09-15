@@ -50,6 +50,7 @@ export function Header({showGithubButton}: {showGithubButton?: boolean}) {
             as="a"
             aria-label="Continue to GitHub repository"
             href="https://github.com/d3psi/lumium"
+            data-cy="github-link"
             target="_blank"
             bg={openSourceBgColor}
             borderWidth="1px"
@@ -121,6 +122,7 @@ export function Header({showGithubButton}: {showGithubButton?: boolean}) {
                                 size="md"
                                 fontSize="lg"
                                 aria-label={`Switch to ${text} mode`}
+                                data-cy="color-theme-switcher"
                                 variant="ghost"
                                 color="current"
                                 ml={{ base: "0", md: "3" }}

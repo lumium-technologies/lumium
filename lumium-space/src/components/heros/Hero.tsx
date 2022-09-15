@@ -26,6 +26,7 @@ export function Hero(){
                     lineHeight="none"
                     letterSpacing={{ base: "normal", md: "tight" }}
                     color={useColorModeValue("gray.900", "gray.100")}
+                    data-cy="lumium-tagline"
                 >
                     <Text
                         display="inline"
@@ -33,6 +34,7 @@ export function Hero(){
                         bgClip="text"
                         bgGradient="linear(to-r, green.400,purple.500)"
                         fontWeight="extrabold"
+                        data-cy="lumium-color-fade"
                     >
                         lumium</Text><br />
                     the all-in-one workspace
@@ -40,6 +42,7 @@ export function Hero(){
                 <chakra.p
                     px={{ base: 0, lg: 24 }}
                     mb={6}
+                    data-cy="lumium-description"
                     fontSize={{ base: "lg", md: "xl" }}
                     color={useColorModeValue("gray.600", "gray.300")}
                 >
@@ -56,6 +59,7 @@ export function Hero(){
                         variant="solid"
                         display="inline-flex"
                         alignItems="center"
+                        data-cy="continue-button"
                         justifyContent="center"
                         w={{ base: "full", sm: "auto" }}
                         mb={{ base: 2, sm: 0 }}
@@ -77,6 +81,7 @@ export function Hero(){
                         colorScheme="gray"
                         display="inline-flex"
                         alignItems="center"
+                        data-cy="signup-button"
                         justifyContent="center"
                         w={{ base: "full", sm: "auto" }}
                         mb={{ base: 2, sm: 0 }}
@@ -107,6 +112,7 @@ export function Hero(){
                     shadow="2xl"
                     src="https://kutty.netlify.app/hero.jpg"
                     alt="Hellonext feedback boards software screenshot"
+                    data-cy="lumium-hero-image"
                 />
             </Box>
         </Box>

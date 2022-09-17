@@ -16,11 +16,11 @@ describe("landing page", () => {
         cy.get("[data-cy=lumium-hero-image]").should("be.visible");
     });
     it("dark mode/light mode switch", () => {
-        cy.get("body").should("have.class", "chakra-ui-light");
-        cy.get("[data-cy=color-theme-switcher]").click();
         cy.get("body").should("have.class", "chakra-ui-dark");
         cy.get("[data-cy=color-theme-switcher]").click();
         cy.get("body").should("have.class", "chakra-ui-light");
+        cy.get("[data-cy=color-theme-switcher]").click();
+        cy.get("body").should("have.class", "chakra-ui-dark");
     });
     it("sign up button", {
         defaultCommandTimeout: 30000
@@ -38,5 +38,8 @@ describe("landing page", () => {
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
         cy.intercept("/page").as("lumium-workspace");
         cy.wait("@lumium-workspace").its("response.statusCode").should("eq", 200);
+        cy.get("[data-cy=page-menu-button]").should("be.visible").click();
+        cy.get("[data-cy=page-menu-header]").should("be.visible");
+        cy.get("[data-cy=page-menu-body]").should("be.visible");
     });
 });

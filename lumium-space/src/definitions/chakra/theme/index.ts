@@ -14,9 +14,13 @@ import fontSizes from "./foundations/fontSizes";
  */
 
 const overrides = {
-  ...styles,
-  colors,
-  fontSizes,
+    ...styles,
+    colors,
+    fontSizes,
+    config: {
+        initialColorMode: "dark",
+        useSystemColorMode: false
+    }
 };
 
 const theme = extendTheme(overrides);

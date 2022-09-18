@@ -6,10 +6,10 @@
         "dev": "next dev",
         "build": "yarn run lumium-renderer:package && next build",
         "start": "next start",
-        "test": "jest -c test/jest.config.js",
+        "test": "NODE_TEST=true jest -c test/jest.config.js",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
-        "cypress:test": "yarn run lumium-renderer:package && concurrently -k -s first 'cd .. && yarn run dev' 'yarn run cypress:run'",
+        "cypress:test": "yarn run build && concurrently -k -s first 'cd .. && NODE_TEST=true yarn run dev' 'yarn run cypress:run'",
         "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn link && cd ../../ && yarn link lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },

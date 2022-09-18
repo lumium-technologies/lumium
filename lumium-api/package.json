@@ -3,11 +3,11 @@
     "version": "0.0.1",
     "description": "",
     "scripts": {
-        "test": "jest --passWithNoTests --coverage",
+        "test": "NODE_TEST=true jest --passWithNoTests --coverage",
         "build": "tsc",
         "start": "ts-node src/index.ts",
-        "start:dev": "concurrently -n express,jest \"nodemon src/index.ts\" \"jest --watchAll --verbose --passWithNoTests --coverage\"",
-        "dev": ". ./scripts/localEnv.sh && yarn run typeorm migration:run && yarn run start:dev",
+        "start:dev": "concurrently -n express,jest \"nodemon src/index.ts\" \"NODE_TEST=true jest --watchAll --verbose --passWithNoTests --coverage\"",
+        "dev": "yarn run typeorm migration:run && yarn run start:dev",
         "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
         "db:migrate": "yarn run typeorm migration:run"
     },

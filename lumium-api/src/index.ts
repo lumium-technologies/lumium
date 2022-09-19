@@ -3,14 +3,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import { dataSource} from './data-source';
+import { dataSource } from './data-source';
 import { v1pub } from './routes';
 import { v1sec } from './routes';
 
-import dotenv from 'dotenv';
-
 import supertokens from 'supertokens-node';
-import {middleware} from 'supertokens-node/framework/express';
+import { middleware } from 'supertokens-node/framework/express';
 import Session from 'supertokens-node/recipe/session';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
@@ -18,12 +16,6 @@ import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpass
 import { errorHandler } from 'supertokens-node/framework/express';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
-
-if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
-    dotenv.config({path: process.cwd() + '/.env'});
-} else if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({path: process.cwd() + '/.env.development'});
-}
 
 const initDataSource = async () => {
     try {
@@ -37,7 +29,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production' &&
-    process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (unsecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
+    process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (insecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
     app.use((req, res, next) => {
         if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`);
@@ -63,15 +55,6 @@ const options = {
     },
     servers: [
         {
-            url: 'https://api.lumium.space/{Base Path}',
-            description: 'Production API server',
-            variables: {
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
             url: 'https://api.staging.lumium.space/{Base Path}',
             description: 'Staging API server',
             variables: {
@@ -81,8 +64,8 @@ const options = {
             },
         },
         {
-            url: 'https://pr-{Pull Request}.review.lumium.space/{Base Path}',
-            description: 'Pull request API server (Cloudflare DNS and Proxy)',
+            url: 'https://pr-{Pull Request}.api.review.lumium.space/{Base Path}',
+            description: 'Pull request API server (Cloudflare DNS)',
             variables: {
                 'Pull Request': {
                     default: '0',
@@ -142,11 +125,18 @@ app.use(
 const connectionUri: string = process.env.SUPERTOKENS_CONNECTION_URI || '';
 const apiKey: string  = process.env.SUPERTOKENS_API_KEY || '';
 
-const herokuPrNumber: string = process.env.HEROKU_PR_NUMBER || '';
-const primarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST?.replace('{PR_NUMBER}', herokuPrNumber) || process.env.SPACE_HOST;
+const PR_NUMBER = '{PR_NUMBER}';
+const APP_NAME = '{APP_NAME}';
 
-const spaceHosts: (string | any)[] = [primarySpaceHost, process.env.SPACE_HOST_HEROKU];
-const apiHosts: (string | any)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];
+const herokuPrNumber: string = process.env.HEROKU_PR_NUMBER || '';
+const herokuAppName: string = process.env.HEROKU_APP_NAME || '';
+const primarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST?.replace(PR_NUMBER, herokuPrNumber) || process.env.SPACE_HOST;
+const secondarySpaceHost = process.env.REVIEW_APP && process.env.SPACE_HOST_HEROKU?.replace(APP_NAME, herokuAppName) || process.env.SPACE_HOST_HEROKU;
+const primaryApiHost = process.env.REVIEW_APP && process.env.API_HOST?.replace(PR_NUMBER, herokuPrNumber) || process.env.API_HOST;
+const secondaryApiHost = process.env.REVIEW_APP && process.env.API_HOST_HEROKU?.replace(PR_NUMBER, herokuPrNumber) || process.env.API_HOST_HEROKU;
+
+const spaceHosts: (string)[] = [primarySpaceHost, secondarySpaceHost];
+const apiHosts: (string)[] = [primaryApiHost, secondaryApiHost];
 supertokens.init({
     framework: 'express',
     supertokens: {

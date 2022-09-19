@@ -3,7 +3,7 @@ const execSync = require('child_process').execSync;
 
 console.log("Running postdeploy...");
 
-const heroku = new Heroku({token: process.env.HEROKU_API_TOKEN});
+const heroku = new Heroku({token: process.env.HEROKU_API_KEY});
 
 if (process.env.REVIEW_APP) {
     console.log("Running postdeploy in review app...");
@@ -28,6 +28,6 @@ async function run() {
     }).then(app => {
         const dnsTarget = app.cname;
         const output = execSync(`./scripts/add-cloudflare-dns.sh ${dnsTarget}`);
-        console.log("Adding Cloudflare DNS..., Response:", output);
+        console.log("Adding Cloudflare DNS..., Response:", output.toString());
     });
 }

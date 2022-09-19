@@ -8,6 +8,15 @@ import { Hydrate } from "react-query/hydration";
 import { Provider } from "react-redux";
 import store from "@redux/store";
 
+import SuperTokensReact from 'supertokens-auth-react'
+
+import { frontendConfig } from '../config/frontendConfig'
+import { Favicons } from "@components/icons";
+
+if (typeof window !== 'undefined') {
+    SuperTokensReact.init(frontendConfig())
+}
+
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     const queryClient = new QueryClient();
     return (
@@ -15,6 +24,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             <QueryClientProvider client={queryClient}>
                 <Hydrate state={pageProps.dehydratedState}>
                     <Provider store={store}>
+                        <Favicons initialTitle="Lumium" />
                         <Component {...pageProps} />
                     </Provider>
                 </Hydrate>

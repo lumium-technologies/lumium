@@ -1,4 +1,4 @@
-const execSync = require('child_process');
+const execSync = require('child_process').execSync;
 
 console.log("Running predestroy...");
 
@@ -10,5 +10,5 @@ if (process.env.REVIEW_APP) {
 
 async function run() {
     const output = execSync('./scripts/remove-cloudflare-dns.sh');
-    console.log("Removing Cloudflare DNS..., Response:", output);
+    console.log("Removing Cloudflare DNS..., Response:", output.toString());
 }

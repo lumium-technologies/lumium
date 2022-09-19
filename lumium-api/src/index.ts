@@ -7,8 +7,6 @@ import { dataSource } from './data-source';
 import { v1pub } from './routes';
 import { v1sec } from './routes';
 
-import dotenv from 'dotenv';
-
 import supertokens from 'supertokens-node';
 import { middleware } from 'supertokens-node/framework/express';
 import Session from 'supertokens-node/recipe/session';
@@ -18,12 +16,6 @@ import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpass
 import { errorHandler } from 'supertokens-node/framework/express';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
-
-if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
-    dotenv.config({path: process.cwd() + '/.env'});
-} else if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({path: process.cwd() + '/.env.development'});
-}
 
 const initDataSource = async () => {
     try {
@@ -37,7 +29,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production' &&
-    process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (unsecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
+    process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (insecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
     app.use((req, res, next) => {
         if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`);

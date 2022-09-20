@@ -26,14 +26,20 @@ import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import React from 'react';
 import { CgProfile } from "react-icons/cg";
 import { SwitchColorTheme } from "@components/headers"
+import Router from "next/router";
 
 async function onLogout() {
     await signOut();
     window.location.href = "/";
 }
 
+async function onAccount() {
+    Router.push("/account");
+}
+
 function TopDrawerMenu() {
     const { isOpen, onOpen, onClose } = useDisclosure()
+
     return (
         <>
             <Flex m={["1%"]}>
@@ -48,7 +54,9 @@ function TopDrawerMenu() {
                     <DrawerOverlay />
                     <DrawerContent maxW={"12%"}>
                         <DrawerCloseButton />
-                        <DrawerHeader>Pages</DrawerHeader>
+                        <DrawerHeader>
+                            Pages
+                        </DrawerHeader>
 
                         <DrawerBody>
                             Some pages
@@ -80,7 +88,7 @@ function TopDrawerMenu() {
                     </MenuButton>
                     <MenuList>
                         <MenuGroup title='Profile'>
-                            <MenuItem>My Account</MenuItem>
+                            <MenuItem onClick={onAccount}>My Account</MenuItem>
                             <MenuItem onClick={onLogout}>Logout</MenuItem>
                         </MenuGroup>
                         <MenuDivider />

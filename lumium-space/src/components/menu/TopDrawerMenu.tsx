@@ -7,7 +7,6 @@ import {
     DrawerContent,
     DrawerCloseButton,
     useDisclosure,
-    Input,
     IconButton,
     Flex,
     Spacer,
@@ -15,20 +14,18 @@ import {
     MenuButton,
     MenuList,
     MenuItem,
-    MenuItemOption,
     MenuGroup,
-    MenuOptionGroup,
     MenuDivider,
     Button,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
+    Image,
+    Icon,
+    Box
 } from '@chakra-ui/react'
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import React from 'react';
+import { CgProfile } from "react-icons/cg";
+import { SwitchColorTheme } from "@components/headers"
 
 async function onLogout() {
     await signOut();
@@ -37,10 +34,9 @@ async function onLogout() {
 
 function TopDrawerMenu() {
     const { isOpen, onOpen, onClose } = useDisclosure()
-
     return (
         <>
-            <Flex>
+            <Flex m={["1%"]}>
                 <IconButton onClick={onOpen} aria-label={''} icon={<ArrowRightIcon />} >
                     Open
                 </IconButton>
@@ -50,35 +46,37 @@ function TopDrawerMenu() {
                     onClose={onClose}
                 >
                     <DrawerOverlay />
-                    <DrawerContent>
+                    <DrawerContent maxW={"12%"}>
                         <DrawerCloseButton />
                         <DrawerHeader>Pages</DrawerHeader>
 
                         <DrawerBody>
                             Some pages
-                            <Button display="flex" position="absolute" bottom="2%">
-                                + Add new page
-                            </Button>
                         </DrawerBody>
 
-                        <DrawerFooter>
-
+                        <DrawerFooter height="10%" >
+                            <Flex width={"100%"}>
+                                <Box>
+                                    <Button>
+                                        + Add new page
+                                    </Button>
+                                </Box>
+                                <Spacer />
+                                <Box>
+                                    <Image src="logo/parts/fg/icon.svg" alt="Logo" boxSize="40px" />
+                                </Box>
+                            </Flex>
                         </DrawerFooter>
                     </DrawerContent>
                 </Drawer>
 
-                <NumberInput defaultValue={11} min={1} max={99} width="4%">
-                    <NumberInputField />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                    </NumberInputStepper>
-                </NumberInput>
-
                 <Spacer />
 
+                <SwitchColorTheme />
+
                 <Menu>
-                    <MenuButton as={Button} backgroundColor={'darkgrey'}>
+                    <MenuButton as={Button} >
+                        <Icon as={CgProfile} />
                     </MenuButton>
                     <MenuList>
                         <MenuGroup title='Profile'>

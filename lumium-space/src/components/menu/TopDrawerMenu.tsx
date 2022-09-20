@@ -28,12 +28,11 @@ import { CgProfile } from "react-icons/cg";
 import { SwitchColorTheme } from "@components/headers"
 import Router from "next/router";
 
-async function onLogout() {
-    await signOut();
-    window.location.href = "/";
+function onLogout() {
+    signOut().then(() => Router.push("/"));
 }
 
-async function onAccount() {
+function onAccount() {
     Router.push("/account");
 }
 
@@ -43,7 +42,7 @@ function TopDrawerMenu() {
     return (
         <>
             <Flex m={["1%"]}>
-                <IconButton onClick={onOpen} aria-label={''} icon={<ArrowRightIcon />} >
+                <IconButton onClick={onOpen} aria-label={''} icon={<ArrowRightIcon />} data-cy="page-menu-button">
                     Open
                 </IconButton>
                 <Drawer
@@ -52,13 +51,13 @@ function TopDrawerMenu() {
                     onClose={onClose}
                 >
                     <DrawerOverlay />
-                    <DrawerContent maxW={"12%"}>
-                        <DrawerCloseButton />
-                        <DrawerHeader>
+                    <DrawerContent maxW={"15%"}>
+                        <DrawerCloseButton data-cy="page-menu-close" />
+                        <DrawerHeader data-cy="page-menu-header">
                             Pages
                         </DrawerHeader>
 
-                        <DrawerBody>
+                        <DrawerBody data-cy="page-menu-body">
                             Some pages
                         </DrawerBody>
 
@@ -71,7 +70,7 @@ function TopDrawerMenu() {
                                 </Box>
                                 <Spacer />
                                 <Box>
-                                    <Image src="logo/parts/fg/icon.svg" alt="Logo" boxSize="40px" />
+                                    <Image src="logo/parts/fg/icon.svg" alt="Logo" boxSize="40px" data-cy="page-menu-logo" />
                                 </Box>
                             </Flex>
                         </DrawerFooter>
@@ -83,13 +82,13 @@ function TopDrawerMenu() {
                 <SwitchColorTheme />
 
                 <Menu>
-                    <MenuButton as={Button} >
+                    <MenuButton as={Button} data-cy="profile-button" >
                         <Icon as={CgProfile} />
                     </MenuButton>
                     <MenuList>
                         <MenuGroup title='Profile'>
-                            <MenuItem onClick={onAccount}>My Account</MenuItem>
-                            <MenuItem onClick={onLogout}>Logout</MenuItem>
+                            <MenuItem onClick={onAccount} data-cy="profile-account-button">My Account</MenuItem>
+                            <MenuItem onClick={onLogout} data-cy="profile-logout-button">Logout</MenuItem>
                         </MenuGroup>
                         <MenuDivider />
                         <MenuGroup title='Help'>

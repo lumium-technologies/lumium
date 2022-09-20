@@ -82,7 +82,7 @@ function TopDrawerMenu() {
                 <SwitchColorTheme />
 
                 <Menu>
-                    <MenuButton as={Button} data-cy="profile-button" >
+                    <MenuButton as={Button} data-cy="profile-button" ml="1%" >
                         <Icon as={CgProfile} />
                     </MenuButton>
                     <MenuList>

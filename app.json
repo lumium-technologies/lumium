@@ -5,9 +5,6 @@
             "url": "heroku-community/cli"
         },
         {
-            "url": "https://github.com/solana-labs/heroku-buildpack-rust-wasm-pack.git"
-        },
-        {
             "url": "heroku/nodejs"
         },
         {

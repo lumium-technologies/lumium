@@ -38,8 +38,33 @@ describe("landing page", () => {
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
         cy.intercept("/page").as("lumium-workspace");
         cy.wait("@lumium-workspace").its("response.statusCode").should("eq", 200);
-        cy.get("[data-cy=page-menu-button]").should("be.visible").click();
-        cy.get("[data-cy=page-menu-header]").should("be.visible");
-        cy.get("[data-cy=page-menu-body]").should("be.visible");
+    });
+    it("redirect to login from page", {
+        defaultCommandTimeout: 30000,
+        requestTimeout: 30000
+    }, () => {
+        cy.visit("/page");
+        cy.intercept("/auth").as("lumium-auth");
+        cy.wait("@lumium-auth");
+        cy.get("#supertokens-root").should("be.visible");
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(Cypress.env('TEST_USER_EMAIL'));
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(Cypress.env('TEST_USER_PASS'));
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
+        cy.intercept("/page").as("lumium-workspace");
+        cy.wait("@lumium-workspace").its("response.statusCode").should("eq", 200);
+    });
+    it("redirect to login from account", {
+        defaultCommandTimeout: 30000,
+        requestTimeout: 30000
+    }, () => {
+        cy.visit("/account");
+        cy.intercept("/auth").as("lumium-auth");
+        cy.wait("@lumium-auth");
+        cy.get("#supertokens-root").should("be.visible");
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(Cypress.env('TEST_USER_EMAIL'));
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(Cypress.env('TEST_USER_PASS'));
+        cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
+        cy.intercept("/account").as("lumium-account");
+        cy.wait("@lumium-account").its("response.statusCode").should("eq", 200);
     });
 });

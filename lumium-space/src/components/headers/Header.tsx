@@ -4,15 +4,12 @@ import {
     Flex,
     HStack,
     Icon,
-    IconButton,
     Link,
-    useColorMode,
     useColorModeValue,
     useDisclosure,
     Box,
 } from "@chakra-ui/react";
 import { useViewportScroll } from "framer-motion";
-import { FaMoon, FaSun } from "react-icons/fa";
 import {
     AiFillGithub,
 } from "react-icons/ai";
@@ -20,13 +17,10 @@ import { Logo } from "@choc-ui/logo";
 import { useLoginStatus } from "@hooks/security";
 
 import { ProfileMenu } from "./ProfileMenu";
+import { SwitchColorTheme } from "./SwitchColorTheme";
 
-export function Header({showGithubButton}: {showGithubButton?: boolean}) {
+export function Header({ showGithubButton }: { showGithubButton?: boolean }) {
     const mobileNav = useDisclosure();
-
-    const { toggleColorMode: toggleMode } = useColorMode();
-    const text = useColorModeValue("dark", "light");
-    const SwitchIcon = useColorModeValue(FaMoon, FaSun);
 
     const bg = useColorModeValue("white", "gray.800");
     const ref = React.useRef<any>();
@@ -64,8 +58,8 @@ export function Header({showGithubButton}: {showGithubButton?: boolean}) {
             transition="all 0.3s"
             _hover={{
                 color: "gray.800",
-                    bg: "gray.100",
-                    borderColor: "gray.300",
+                bg: "gray.100",
+                borderColor: "gray.300",
             }}
             _active={{
                 borderColor: "gray.200",
@@ -118,17 +112,7 @@ export function Header({showGithubButton}: {showGithubButton?: boolean}) {
                             align="center"
                             color="gray.400"
                         >
-                            <IconButton
-                                size="md"
-                                fontSize="lg"
-                                aria-label={`Switch to ${text} mode`}
-                                data-cy="color-theme-switcher"
-                                variant="ghost"
-                                color="current"
-                                ml={{ base: "0", md: "3" }}
-                                onClick={toggleMode}
-                                icon={<SwitchIcon />}
-                            />
+                            <SwitchColorTheme />
                             {showGithubButton && OpenSourceButton}
                             {loggedIn && <ProfileMenu />}
                         </Flex>

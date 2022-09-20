@@ -2,13 +2,14 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
 import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
-    dotenv.config({path: process.cwd() + '/.env.review'});
+    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
 } else if (process.env.NODE_TEST) {
-    dotenv.config({path: process.cwd() + '/.env.test'})
+    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.test'}));
 } else if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({path: process.cwd() + '/.env.development'});
+    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
 }
 
 export const dataSource = new DataSource({

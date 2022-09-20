@@ -1,6 +1,7 @@
 const withPlugins = require("next-compose-plugins");
 const withBundleAnalyzer = require("@next/bundle-analyzer");
 const webpack = require('webpack');
+var dotenvExpand = require('dotenv-expand')
 
 const bundleAnalyzer = withBundleAnalyzer({enabled: process.env.NEXT_ANALYZE === 'true'});
 
@@ -14,9 +15,9 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenv_path = process.cwd() + '/.env.development';
 }
 
-const { parsed: myEnv } = require('dotenv').config({
+const { parsed: myEnv } = dotenvExpand.expand(require('dotenv').config({
     path: dotenv_path
-});
+}));
 
 // This entire configuration file using WasmChunksFixPlugin is because of https://github.com/vercel/next.js/issues/29362
 module.exports = withPlugins([bundleAnalyzer], {

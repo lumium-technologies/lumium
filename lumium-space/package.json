@@ -10,7 +10,7 @@
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
         "cypress:test": "cd .. && NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && yarn run cypress:run'",
-        "lumium-renderer:package": "cd lumium-renderer && wasm-pack build && cd pkg && yarn link && cd ../../ && yarn link lumium-renderer",
+        "lumium-renderer:package": ". ./scripts/rust-toolchain.sh && wasm-pack build lumium-renderer && cd lumium-renderer/pkg && yarn link && cd ../../ && yarn link lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {
@@ -50,7 +50,6 @@
         "cypress": "6.9.1",
         "cypress-dotenv": "^2.0.0",
         "cypress-xpath": "^2.0.1",
-        "dotenv": "8.6.0",
         "eslint": "8.17.0",
         "eslint-config-next": "12.1.6",
         "identity-obj-proxy": "3.0.0",

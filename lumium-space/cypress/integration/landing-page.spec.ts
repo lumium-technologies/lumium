@@ -45,7 +45,7 @@ describe("landing page", () => {
     }, () => {
         cy.visit("/page");
         cy.intercept("/auth").as("lumium-auth");
-        cy.wait("@lumium-auth").its("response.statusCode").should("eq", 401);
+        cy.wait("@lumium-auth");
         cy.get("#supertokens-root").should("be.visible");
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(Cypress.env('TEST_USER_EMAIL'));
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(Cypress.env('TEST_USER_PASS'));
@@ -59,7 +59,7 @@ describe("landing page", () => {
     }, () => {
         cy.visit("/account");
         cy.intercept("/auth").as("lumium-auth");
-        cy.wait("@lumium-auth").its("response.statusCode").should("eq", 401);
+        cy.wait("@lumium-auth");
         cy.get("#supertokens-root").should("be.visible");
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(Cypress.env('TEST_USER_EMAIL'));
         cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(Cypress.env('TEST_USER_PASS'));

@@ -16,7 +16,6 @@ import {
 import { Logo } from "@choc-ui/logo";
 import { useLoginStatus } from "@hooks/security";
 
-import { ProfileMenu } from "./ProfileMenu";
 import { SwitchColorTheme } from "./SwitchColorTheme";
 
 export function Header({ showGithubButton }: { showGithubButton?: boolean }) {
@@ -114,7 +113,6 @@ export function Header({ showGithubButton }: { showGithubButton?: boolean }) {
                         >
                             <SwitchColorTheme />
                             {showGithubButton && OpenSourceButton}
-                            {loggedIn && <ProfileMenu />}
                         </Flex>
                     </Flex>
                 </chakra.div>

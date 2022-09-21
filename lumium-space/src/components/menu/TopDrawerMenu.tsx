@@ -37,12 +37,16 @@ function onAccount() {
     Router.push("/account");
 }
 
+function onSpaces() {
+    Router.push("/space-manager");
+}
+
 function TopDrawerMenu() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
         <>
-            <Flex m={["1%"]}>
+            <Flex p={["1%"]} borderBottom="1px">
                 <IconButton onClick={onOpen} aria-label={''} icon={<ArrowRightIcon />} data-cy="page-menu-button">
                     Open
                 </IconButton>
@@ -90,7 +94,7 @@ function TopDrawerMenu() {
                         <MenuItem>Some</MenuItem>
                         <MenuItem>Spaces</MenuItem>
                         <MenuDivider />
-                        <MenuItem icon={<FiSettings />}>Manage Spaces</MenuItem>
+                        <MenuItem icon={<FiSettings />} onClick={onSpaces}>Manage Spaces</MenuItem>
                     </MenuList>
                 </Menu>
                 <Spacer />

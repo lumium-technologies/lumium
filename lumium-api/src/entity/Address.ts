@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
 export enum AddressKind {
@@ -10,11 +11,8 @@ export enum AddressKind {
 // https://www.uxmatters.com/mt/archives/2008/06/international-address-fields-in-web-forms.php
 @Entity()
 @Unique(["user", "kind"])
-export class Address {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
-
-    @ManyToOne(() => User, (user) => user.addresses)
+export class Address extends AbstractEntity {
+    @ManyToOne(() => User, (user) => user.addresses, {cascade: true})
     user: User
 
     @Column({

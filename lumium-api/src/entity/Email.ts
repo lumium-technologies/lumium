@@ -1,18 +1,19 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
 @Entity()
 @Unique(['user', 'primary'])
-export class Email {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
-
-    @ManyToOne(() => User, (user) => user.emails)
+export class Email extends AbstractEntity {
+    @ManyToOne(() => User, (user) => user.emails, {cascade: true})
     user: User
 
+    @Column({unique: true})
+    email: string
+
     @Column({nullable: true})
-    primary: boolean
+    primary?: boolean
 
     @Column({default: false})
-    verified: boolean
+    verified?: boolean
 }

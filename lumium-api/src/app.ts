@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import { connection, dataSource } from './data-source';
+import { connection, dataSource, error, info } from './data-source';
 import { v1pub } from './routes';
 import { v1sec } from './routes';
 
@@ -16,6 +16,9 @@ import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpass
 import { errorHandler } from 'supertokens-node/framework/express';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
+import { User } from './entity/User';
+import { AuditEntryEvent } from './entity/Audit';
+import { Email } from './entity/Email';
 
 const initDataSource = async () => {
     try {
@@ -143,8 +146,80 @@ supertokens.init({
         websiteBasePath: '/auth'
     },
     recipeList: [
-        ThirdPartyEmailPassword.init({}),
-        Session.init({})
+        ThirdPartyEmailPassword.init({
+            override: {
+                emailVerificationFeature: {
+                    apis: (originalImplementation) => {
+                        return {
+                            ...originalImplementation,
+                            verifyEmailPOST: async function(input) {
+                                const response = await originalImplementation.verifyEmailPOST(input);
+                                if (response.status === 'OK') {
+                                    const { id, email } = response.user;
+                                    const mails: Email[] = await dataSource.getRepository(Email).findBy({email});
+                                    if (mails?.length == 1) {
+                                        mails[0].verified = true;
+                                    } else {
+                                        const detail = "Email to verify not found on account";
+                                        error({user: {id}, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
+                                        throw new Error(detail);
+                                    }
+                                    await dataSource.getRepository(Email).save(mails[0]);
+                                    info({user: {id}, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
+                                }
+                                return response;
+                            }
+                        };
+                    }
+                },
+                functions: (originalImplementation) => {
+                    return {
+                        ...originalImplementation,
+                        emailPasswordSignUp: async function(input) {
+                            const response = await originalImplementation.emailPasswordSignUp(input);
+                            if (response.status === 'OK') {
+                                const user = await dataSource
+                                    .getRepository(User)
+                                    .save({ id: response.user.id });
+                                await dataSource.getRepository(Email).save({user, primary: true, email: response.user.email});
+                                await info({user: user, type: AuditEntryEvent.USER_SIGNUP_INIT});
+                            } else {
+                                await error({detail: JSON.stringify(response) + `email: ${input.email}`, type: AuditEntryEvent.USER_SIGNUP_FAILED});
+                            }
+                            return response;
+                        },
+                    };
+                }
+            }
+        }),
+        Session.init({
+            override: {
+                functions: (originalImplementation) => {
+                    return {
+                        ...originalImplementation,
+                        createNewSession: async function(input) {
+                            const userId = input.userId;
+                            const user = await dataSource.getRepository(User).findOneById(userId);
+                            input.accessTokenPayload = {
+                                ...input.accessTokenPayload,
+                                roles: {
+                                    workspaceOwner: user.ownedWorkspaces?.map(t => t.id),
+                                    workspaceAdmin: user.administratedWorkspaces?.map(t => t.id),
+                                    workspaceMember: user.memberWorkspaces?.map(t => t.id),
+                                    workspaceVisitor: user.visitorWorkspaces?.map(t => t.id),
+                                    pageOwner: user.ownedPages?.map(t => t.id),
+                                    pageAdmin: user.administratedPages?.map(t => t.id),
+                                    pageMember: user.memberPages?.map(t => t.id),
+                                    pageVisitor: user.visitorPages?.map(t => t.id)
+                                },
+                            };
+                            await info({user, type: AuditEntryEvent.USER_SIGNIN});
+                            return originalImplementation.createNewSession(input);
+                        },
+                    };
+                },
+            },
+        })
     ]
 });
 

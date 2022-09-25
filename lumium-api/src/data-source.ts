@@ -3,6 +3,7 @@ import { DataSource, createConnection, getConnection } from 'typeorm';
 
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
+import { AuditEntry, AuditEntryLevel } from './entity/Audit';
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
@@ -43,4 +44,33 @@ export const connection = {
             await repository.query(`DELETE FROM ${entity.tableName}`);
         });
     },
+};
+
+export const audit = async (entry: AuditEntry) => {
+    console.log(`AUDIT [${entry.level}] [${JSON.stringify(entry.user)}] [${entry.type}]: ${entry.detail}`);
+    await dataSource.getRepository(AuditEntry).save(entry);
+};
+
+export const verbose = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.VERBOSE});
+};
+
+export const debug = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.DEBUG});
+};
+
+export const info = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.INFO});
+};
+
+export const warn = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.WARNING});
+};
+
+export const error = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.ERROR});
+};
+
+export const fatal = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.FATAL});
 };

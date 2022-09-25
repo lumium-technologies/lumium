@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 import { PageContent } from "./PageContent";
 
 export enum ContentType {
@@ -6,10 +7,7 @@ export enum ContentType {
 }
 
 @Entity()
-export class ContentElement {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
-
+export class ContentElement extends AbstractEntity {
     @Column()
     content: string
 

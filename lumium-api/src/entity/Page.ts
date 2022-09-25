@@ -1,13 +1,11 @@
 import { Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 import { PageContent } from "./PageContent";
 import { User } from "./User";
 import { Workspace } from "./Workspace";
 
 @Entity()
-export class Page {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
-
+export class Page extends AbstractEntity {
     @ManyToOne(() => Workspace, (workspace) => workspace.pages)
     workspace: Workspace
 

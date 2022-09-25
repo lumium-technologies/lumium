@@ -1,10 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm"
+import { Address } from "./Address"
+import { Email } from "./Email"
 
 @Entity()
 export class User {
-
-    @PrimaryGeneratedColumn()
-    id: number
+    // SuperTokens generates this uuid, for consistency and simplicity we make sure to utilize the same value, and not generate a new one
+    @PrimaryColumn("uuid")
+    id: string
 
     @Column()
     firstName: string
@@ -13,6 +15,14 @@ export class User {
     lastName: string
 
     @Column()
-    age: number
+    nickname: string
 
+    @Column()
+    birthday: Date
+
+    @OneToMany(() => Email, (email) => email.user)
+    emails: Email[]
+
+    @OneToMany(() => Address, (address) => address.user)
+    addresses: Address[]
 }

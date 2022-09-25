@@ -15,7 +15,7 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
 export const dataSource = new DataSource({
     'type': 'postgres',
     'url': process.env.DATABASE_URL,
-    'synchronize': true,
+    'synchronize': process.env.DB_SYNC && true || false,
     'logging': true,
     'entities': [
         'src/entity/**/*.ts'

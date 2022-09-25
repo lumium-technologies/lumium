@@ -1,6 +1,9 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm"
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm"
 import { Address } from "./Address"
 import { Email } from "./Email"
+import { Page } from "./Page"
+import { UserPreferences } from "./UserPreferences"
+import { Workspace } from "./Workspace"
 
 @Entity()
 export class User {
@@ -25,4 +28,31 @@ export class User {
 
     @OneToMany(() => Address, (address) => address.user)
     addresses: Address[]
+
+    @OneToMany(() => Workspace, (workspace) => workspace.owner)
+    ownedWorkspaces: Workspace[]
+
+    @ManyToMany(() => Workspace, (workspace) => workspace.admins)
+    administratedWorkspaces: Workspace[]
+
+    @ManyToMany(() => Workspace, (workspace) => workspace.members)
+    memberWorkspaces: Workspace[]
+
+    @ManyToMany(() => Workspace, (workspace) => workspace.visitors)
+    visitorWorkspaces: Workspace[]
+
+    @OneToMany(() => Page, (page) => page.owner)
+    ownedPages: Page[]
+
+    @ManyToMany(() => Page, (page) => page.admins)
+    administratedPages: Page[]
+
+    @ManyToMany(() => Page, (page) => page.members)
+    memberPages: Page[]
+
+    @ManyToMany(() => Page, (page) => page.visitors)
+    visitorPages: Page[]
+
+    @OneToMany(() => UserPreferences, (userPreferences) => userPreferences.user)
+    preferences: UserPreferences[]
 }

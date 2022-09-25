@@ -1,0 +1,31 @@
+import { Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PageContent } from "./PageContent";
+import { User } from "./User";
+import { Workspace } from "./Workspace";
+
+@Entity()
+export class Page {
+    @PrimaryGeneratedColumn("uuid")
+    id: string
+
+    @ManyToOne(() => Workspace, (workspace) => workspace.pages)
+    workspace: Workspace
+
+    @ManyToOne(() => User, (user) => user.ownedPages)
+    owner: User
+
+    @ManyToMany(() => User, (user) => user.administratedPages)
+    @JoinTable()
+    admins: User[]
+
+    @ManyToMany(() => User, (user) => user.memberPages)
+    @JoinTable()
+    members: User[]
+
+    @ManyToMany(() => User, (user) => user.visitorPages)
+    @JoinTable()
+    visitors: User[]
+
+    @OneToMany(() => PageContent, (pageContent) => pageContent.page)
+    contents: PageContent[]
+}

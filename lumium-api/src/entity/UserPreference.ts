@@ -6,7 +6,7 @@ export enum UserPreferenceOption {
 }
 
 @Entity()
-export class UserPreferences {
+export class UserPreference {
     @PrimaryGeneratedColumn("uuid")
     id: string
 

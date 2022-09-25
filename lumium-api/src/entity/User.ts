@@ -2,7 +2,7 @@ import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm"
 import { Address } from "./Address"
 import { Email } from "./Email"
 import { Page } from "./Page"
-import { UserPreferences } from "./UserPreferences"
+import { UserPreference } from "./UserPreference"
 import { Workspace } from "./Workspace"
 
 @Entity()
@@ -53,6 +53,6 @@ export class User {
     @ManyToMany(() => Page, (page) => page.visitors)
     visitorPages: Page[]
 
-    @OneToMany(() => UserPreferences, (userPreferences) => userPreferences.user)
-    preferences: UserPreferences[]
+    @OneToMany(() => UserPreference, (userPreferences) => userPreferences.user)
+    preferences: UserPreference[]
 }

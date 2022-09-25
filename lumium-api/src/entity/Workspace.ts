@@ -1,7 +1,7 @@
 import { Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Page } from "./Page";
 import { User } from "./User";
-import { WorkspacePreferences } from "./WorkspacePreferences";
+import { WorkspacePreference } from "./WorkspacePreference";
 
 @Entity()
 export class Workspace {
@@ -26,6 +26,6 @@ export class Workspace {
     @OneToMany(() => Page, (page) => page.workspace)
     pages: Page[]
 
-    @OneToMany(() => WorkspacePreferences, (workspacePreferences) => workspacePreferences.workspace)
-    preferences: WorkspacePreferences[]
+    @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
+    preferences: WorkspacePreference[]
 }

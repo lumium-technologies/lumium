@@ -5,7 +5,7 @@ export enum WorkspacePreferenceOption {
 }
 
 @Entity()
-export class WorkspacePreferences {
+export class WorkspacePreference {
     @PrimaryGeneratedColumn("uuid")
     id: string
 

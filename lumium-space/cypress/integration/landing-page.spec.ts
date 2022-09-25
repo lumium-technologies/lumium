@@ -3,9 +3,7 @@ describe("landing page", () => {
         cy.clearCookies();
         cy.visit("/");
     });
-    it("hero screen", {
-        defaultCommandTimeout: 30000
-    }, () => {
+    it("hero screen", () => {
         cy.dataCy("logo-transition").should("be.visible");
         cy.dataCy("github-link").should("be.visible");
         cy.dataCy("color-theme-switcher").should("be.visible");
@@ -23,38 +21,27 @@ describe("landing page", () => {
         cy.dataCy("color-theme-switcher").click();
         cy.get("body").should("have.class", "chakra-ui-dark");
     });
-    it("sign up button", {
-        defaultCommandTimeout: 30000
-    }, () => {
-        cy.dataCy("signup-button").click();
+    it("sign up button", () => {
+        cy.dataCy("signup-button").should("be.visible").click();
         cy.get("#supertokens-root").should("be.visible");
     });
-    it("login button", {
-        defaultCommandTimeout: 30000,
-        requestTimeout: 30000
-    }, () => {
-        cy.dataCy("continue-button").click();
-        cy.login()
-        cy.intnwait("/page", 200);
+    it("login button", () => {
+        cy.dataCy("continue-button").should("be.visible").click();
+        cy.login();
+        cy.interceptAndWait("/page", 200);
     });
-    it("redirect to login from page", {
-        defaultCommandTimeout: 30000,
-        requestTimeout: 30000
-    }, () => {
+    it("redirect to login from page", () => {
         cy.visit("/page");
-        cy.intnwait("/auth", 401);
+        cy.interceptAndWait("/auth", 401);
         cy.get("#supertokens-root").should("be.visible");
         cy.login()
-        cy.intnwait("/page", 200);
+        cy.interceptAndWait("/page", 200);
     });
-    it("redirect to login from account", {
-        defaultCommandTimeout: 30000,
-        requestTimeout: 30000
-    }, () => {
+    it("redirect to login from account", () => {
         cy.visit("/account");
-        cy.intnwait("/auth", 401);
+        cy.interceptAndWait("/auth", 401);
         cy.get("#supertokens-root").should("be.visible");
         cy.login()
-        cy.intnwait("/page", 200);
+        cy.interceptAndWait("/page", 200);
     });
 });

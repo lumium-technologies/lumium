@@ -8,6 +8,7 @@ module.exports = {
     transform: {
         '^.+\\.spec.ts?$': 'ts-jest',
     },
-    transformIgnorePatterns: ['<rootDir>/node_modules/'],
+    transformIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/build/'],
     globalTeardown: '<rootDir>/test/jest-teardown-globals.ts',
+    modulePathIgnorePatterns: ["<rootDir>/build/"]
 };

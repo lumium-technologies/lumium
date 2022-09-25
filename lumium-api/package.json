@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "description": "",
     "scripts": {
-        "test": "NODE_TEST=true jest --passWithNoTests --coverage -c test/jest.config.js",
+        "test": "NODE_TEST=true NODE_JEST=true jest --passWithNoTests --coverage -c test/jest.config.js",
         "build": "tsc",
         "start": "ts-node src/index.ts",
         "start:dev": "nodemon src/index.ts",
@@ -15,6 +15,7 @@
     "license": "ISC",
     "dependencies": {
         "@types/cors": "2.8.12",
+        "@types/jest": "^29.0.3",
         "concurrently": "7.2.1",
         "cors": "2.8.5",
         "dotenv": "16.0.1",

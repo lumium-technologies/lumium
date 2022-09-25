@@ -28,7 +28,7 @@ const initDataSource = async () => {
     }
 };
 
-if (!process.env.NODE_TEST) {
+if (!process.env.NODE_JEST) {
     initDataSource();
 }
 export const app = express();

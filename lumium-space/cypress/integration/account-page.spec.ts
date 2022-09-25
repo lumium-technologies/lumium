@@ -3,14 +3,14 @@ describe("account page", () => {
         cy.clearCookies();
         cy.visit("/account");
         cy.login();
-        cy.intnwait("/account", 200);
+        cy.interceptAndWait("/account", 200);
     });
     it("back to page", {
         defaultCommandTimeout: 30000,
         requestTimeout: 30000
     }, () => {
         cy.dataCy("back-button").should("be.visible").click();
-        cy.intnwait("/page", 200);
+        cy.interceptAndWait("/page", 200);
         cy.visit("/account");
     });
     it("widget", {
@@ -27,6 +27,6 @@ describe("account page", () => {
     });
     afterEach(() => {
         cy.dataCy("logout-button").should("be.visible").click();
-        cy.intnwait("/", 200);
+        cy.interceptAndWait("/", 200);
     });
 });

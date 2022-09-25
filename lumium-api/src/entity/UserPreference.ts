@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
 export enum UserPreferenceOption {
@@ -6,11 +7,8 @@ export enum UserPreferenceOption {
 }
 
 @Entity()
-export class UserPreference {
-    @PrimaryGeneratedColumn("uuid")
-    id: string
-
-    @ManyToOne(() => User, (user) => user.preferences)
+export class UserPreference extends AbstractEntity {
+    @ManyToOne(() => User, (user) => user.preferences, {cascade: true})
     user: User
 
     @Column({

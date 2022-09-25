@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import { pong } from '../../../controllers';
+import { user } from './user';
 
 /**
  * GET /secure/pong
@@ -11,5 +12,7 @@ import { pong } from '../../../controllers';
  * @return 401 - Unauthorized - text/plain
  */
 router.get('/pong', pong);
+
+router.use('/user', user);
 
 export { router as sec };

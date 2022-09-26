@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
+import { DataSource, createConnection, getConnection } from 'typeorm';
 
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
+import { AuditEntry, AuditEntryLevel } from './entity/Audit';
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
@@ -15,11 +16,61 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
 export const dataSource = new DataSource({
     'type': 'postgres',
     'url': process.env.DATABASE_URL,
-    'synchronize': true,
+    'synchronize': process.env.DB_SYNC && true || false,
+    'dropSchema': process.env.DB_DROP && true || false,
     'logging': true,
     'entities': [
+        'src/entity/**/*.ts'
     ],
     'migrations': [
-        'migration/**/*.ts'
+        'src/migration/**/*.ts'
     ]
 });
+
+export const connection = {
+    async create() {
+        await dataSource.initialize();
+    },
+
+    async close() {
+        await dataSource.destroy();
+    },
+
+    async clear() {
+        const entities = dataSource.entityMetadatas;
+
+        entities.forEach(async (entity) => {
+            const repository = dataSource.getRepository(entity.name);
+            await repository.query(`DELETE FROM ${entity.tableName}`);
+        });
+    },
+};
+
+export const audit = async (entry: AuditEntry) => {
+    console.log(`AUDIT [${entry.level}] [${JSON.stringify(entry.user)}] [${entry.type}]: ${entry.detail}`);
+    await dataSource.getRepository(AuditEntry).save(entry);
+};
+
+export const verbose = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.VERBOSE});
+};
+
+export const debug = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.DEBUG});
+};
+
+export const info = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.INFO});
+};
+
+export const warn = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.WARNING});
+};
+
+export const error = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.ERROR});
+};
+
+export const fatal = async (entry: AuditEntry) => {
+    await audit({...entry, level: AuditEntryLevel.FATAL});
+};

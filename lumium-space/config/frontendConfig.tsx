@@ -8,7 +8,7 @@ export const frontendConfig = () => {
         recipeList: [
             ThirdPartyEmailPasswordReact.init({
                 useShadowDom: false,
-                emailVerificationFeature: { mode: "REQUIRED" }
+                emailVerificationFeature: { mode: process.env.NEXT_PUBLIC_NODE_TEST && "OFF" || "REQUIRED" }
             }),
             SessionReact.init(),
         ],

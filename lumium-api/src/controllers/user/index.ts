@@ -28,7 +28,7 @@ export const info = async (req: SessionRequest, res: express.Response) => {
 }
 
 export const deleteAccount = async (req: SessionRequest, res: express.Response) => {
-    const user = await dataSource.getRepository(User).softRemove({id: req.session!.getUserId()});
+    const user = await dataSource.getRepository(User).remove({id: req.session!.getUserId()});
     await i({user, detail: req.session!.getUserId() + " has deleted his account", type: AuditEntryEvent.USER_EMAIL_VERIFIED});
     await axios.post(process.env.SUPERTOKENS_CONNECTION_URI! + "/user/remove",
         {

@@ -25,8 +25,4 @@ describe("account page", () => {
         cy.dataCy("cancel-button").should("be.visible")
         cy.dataCy("submit-button").should("be.visible")
     });
-    afterEach(() => {
-        cy.dataCy("logout-button").should("be.visible").click();
-        cy.interceptAndWait("/", 200);
-    });
 });

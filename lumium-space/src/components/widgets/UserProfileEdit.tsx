@@ -21,16 +21,21 @@ import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 
 import { SmallCloseIcon } from '@chakra-ui/icons';
+import { useApi } from '@hooks/api';
 
-function onLogout() {
-    signOut().then(() => Router.push("/"));
-}
-
-function onBack() {
-    Router.push("/page");
-}
 
 export default function UserProfileEdit(): JSX.Element {
+    const [api] = useApi();
+
+    const handleDelete = async () => {
+        await api.delete("/secure/user");
+        await signOut();
+    }
+
+    const onBack = () => {
+        Router.push("/page");
+    }
+
     return (
         <>
             <Flex m={["1%"]}>
@@ -39,8 +44,8 @@ export default function UserProfileEdit(): JSX.Element {
                 </IconButton>
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >My Account</Text>
                 <Spacer />
-                <Button backgroundColor={"darkred"} onClick={onLogout} data-cy="logout-button">
-                    Logout
+                <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy="delete-button">
+                    Delete Account
                 </Button>
             </Flex>
             <Flex

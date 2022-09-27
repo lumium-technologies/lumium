@@ -1,9 +1,9 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 declare namespace Cypress {
     interface Chainable {
         login(): void;
-        signup(): {email: string, password: string};
+        signup(): { email: string, password: string };
         deleteAccount(): void;
         dataCy(value: string): Chainable<Element>;
         interceptAndWait(page: string, code: number): void;
@@ -36,18 +36,16 @@ Cypress.Commands.add("signup", () => {
 });
 Cypress.Commands.add("deleteAccount", () => {
     cy.clearCookies();
-    cy.visit("/");
-    cy.dataCy("continue-button").should("be.visible").click();
-    cy.login();
     cy.visit("/account");
+    cy.login();
     cy.interceptAndWait("/account", 200);
     cy.dataCy("delete-button").should("be.visible").click();
-    cy.intercept("/").as("logout");
-    cy.wait("@logout").its("response.statusCode").should("eq", 200);
+    cy.dataCy("continue-button").should("be.visible");
 });
 before(() => {
     cy.signup();
 });
 after(() => {
     cy.deleteAccount();
-})
+});
+

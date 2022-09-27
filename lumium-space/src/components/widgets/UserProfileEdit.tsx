@@ -27,11 +27,10 @@ import { useApi } from '@hooks/api';
 export default function UserProfileEdit(): JSX.Element {
     const [api] = useApi();
 
-    const handleDelete = async () => {
-        await api.delete("/secure/user");
-        await signOut();
+    function handleDelete() {
+        signOut();
+        api.delete("/secure/user").then(() => Router.push("/"));
     }
-
     const onBack = () => {
         Router.push("/page");
     }

@@ -18,7 +18,17 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
+import type { User } from "@types";
 
+export async function getServerSideProps() {
+    const [api] = useApi();
+    const userinfo = await api.get<User>("/secure/user");
+    return {
+        props: {
+            userinfo
+        },
+    }
+}
 const Space: React.FC = () => {
     const [api] = useApi();
 

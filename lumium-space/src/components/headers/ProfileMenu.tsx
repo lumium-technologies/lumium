@@ -3,15 +3,14 @@ import Router from "next/router";
 import { CgProfile } from "react-icons/cg";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
-function onLogout() {
-    signOut().then(() => Router.push("/"));
-}
-
-function onAccount() {
-    Router.push("/account");
-}
-
 export function ProfileMenu() {
+    const onLogout = () => {
+        signOut().then(() => Router.push("/"));
+    }
+
+    const onAccount = () => {
+        Router.push("/account");
+    }
     const LogoutButton = (
         <Menu>
             <MenuButton as={Button} data-cy="profile-button" ml="1%" >

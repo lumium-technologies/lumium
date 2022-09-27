@@ -7,12 +7,10 @@ import {
     Input,
     Stack,
     useColorModeValue,
-    HStack,
     Avatar,
     AvatarBadge,
     IconButton,
     Center,
-    Box,
     Spacer,
     Text
 } from '@chakra-ui/react';
@@ -37,10 +35,7 @@ export default function UserProfileEdit(): JSX.Element {
 
     return (
         <>
-            <Flex m={["1%"]}>
-                <IconButton onClick={onBack} aria-label={''} icon={<ArrowBackIcon />} data-cy="back-button" >
-                    Back
-                </IconButton>
+            <Flex p={["1%"]} borderBottom="1px">
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >My Account</Text>
                 <Spacer />
                 <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy="delete-button">

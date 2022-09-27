@@ -161,11 +161,11 @@ supertokens.init({
                                         mails[0].verified = true;
                                     } else {
                                         const detail = "Email to verify not found on account";
-                                        error({user: {id}, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
+                                        await error({user: {id}, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
                                         throw new Error(detail);
                                     }
                                     await dataSource.getRepository(Email).save(mails[0]);
-                                    info({user: {id}, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
+                                    await info({user: {id}, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
                                 }
                                 return response;
                             }

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AbstractEntity } from "./AbstractEntity";
 import { PageContent } from "./PageContent";
 
@@ -11,7 +11,7 @@ export class ContentElement extends AbstractEntity {
     @Column()
     content: string
 
-    @ManyToMany(() => PageContent, (pageContent) => pageContent.contentElements)
+    @OneToMany(() => PageContent, (pageContent) => pageContent.contentElement)
     pageContents: PageContent[]
 
     @Column({

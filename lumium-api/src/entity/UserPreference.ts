@@ -8,7 +8,7 @@ export enum UserPreferenceOption {
 
 @Entity()
 export class UserPreference extends AbstractEntity {
-    @ManyToOne(() => User, (user) => user.preferences, {cascade: true})
+    @ManyToOne(() => User, (user) => user.preferences, {cascade: true, onDelete: 'CASCADE'})
     user: User
 
     @Column({

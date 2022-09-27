@@ -6,7 +6,7 @@ import { Workspace } from "./Workspace";
 
 @Entity()
 export class Page extends AbstractEntity {
-    @ManyToOne(() => Workspace, (workspace) => workspace.pages)
+    @ManyToOne(() => Workspace, (workspace) => workspace.pages, {cascade: true, onDelete: 'CASCADE'})
     workspace: Workspace
 
     @ManyToOne(() => User, (user) => user.ownedPages)

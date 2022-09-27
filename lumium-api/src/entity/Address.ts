@@ -12,7 +12,7 @@ export enum AddressKind {
 @Entity()
 @Unique(["user", "kind"])
 export class Address extends AbstractEntity {
-    @ManyToOne(() => User, (user) => user.addresses, {cascade: true})
+    @ManyToOne(() => User, (user) => user.addresses, {cascade: true, onDelete: 'CASCADE'})
     user: User
 
     @Column({

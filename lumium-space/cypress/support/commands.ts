@@ -20,9 +20,9 @@ function makeid(length) {
 var email: string;
 var password: string;
 Cypress.Commands.add("login", () => {
-    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(email);
-    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(password);
-    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
+    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").should("be.visible").type(email);
+    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").should("be.visible").type(password);
+    cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").should("be.visible").click();
 });
 Cypress.Commands.add('dataCy', (value) => {
     return cy.get(`[data-cy=${value}]`);
@@ -42,11 +42,17 @@ Cypress.Commands.add("signup", () => {
     cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();
 });
 Cypress.Commands.add("deleteAccount", () => {
-    // TODO: delete user account
+    cy.clearCookies();
+    cy.visit("/account");
+    cy.login();
+    cy.interceptAndWait("/account", 200);
+    cy.dataCy("delete-button").should("be.visible").click();
+    cy.dataCy("continue-button").should("be.visible");
 });
 before(() => {
     cy.signup();
 });
 after(() => {
     cy.deleteAccount();
-})
+});
+

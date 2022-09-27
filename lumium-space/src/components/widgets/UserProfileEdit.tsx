@@ -16,20 +16,30 @@ import {
 } from '@chakra-ui/react';
 import Router from "next/router";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { SmallCloseIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
-function onLogout() {
-    signOut().then(() => Router.push("/"));
-}
+import { SmallCloseIcon } from '@chakra-ui/icons';
+import { useApi } from '@hooks/api';
+
 
 export default function UserProfileEdit(): JSX.Element {
+    const [api] = useApi();
+
+    function handleDelete() {
+        signOut();
+        api.delete("/secure/user").then(() => Router.push("/"));
+    }
+    const onBack = () => {
+        Router.push("/page");
+    }
+
     return (
         <>
             <Flex p={["1%"]} borderBottom="1px">
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >My Account</Text>
                 <Spacer />
-                <Button backgroundColor={"darkred"} onClick={() => onLogout()} data-cy="logout-button">
-                    Logout
+                <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy="delete-button">
+                    Delete Account
                 </Button>
             </Flex>
             <Flex

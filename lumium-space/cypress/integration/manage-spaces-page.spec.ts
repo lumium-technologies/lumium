@@ -5,6 +5,13 @@ describe("account page", () => {
         cy.login();
         cy.interceptAndWait("/space-manager", 200);
     });
+    it("drawer", {
+        defaultCommandTimeout: 30000,
+        requestTimeout: 30000
+    }, () => {
+        cy.dataCy("spaces-item").should("be.visible");
+        cy.dataCy("settings-item").should("be.visible");
+    });
     it("my account button", {
         defaultCommandTimeout: 30000,
         requestTimeout: 30000

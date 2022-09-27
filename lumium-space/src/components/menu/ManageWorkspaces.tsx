@@ -8,10 +8,11 @@ import { FiCompass, FiHome, FiSettings, FiStar, FiTrendingUp } from "react-icons
 interface LinkItemProps {
     name: string;
     icon: IconType;
+    datacy: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-    { name: 'Spaces', icon: FiHome },
-    { name: 'Settings', icon: FiSettings },
+    { name: 'Spaces', icon: FiHome, datacy: 'spaces-item' },
+    { name: 'Settings', icon: FiSettings, datacy: 'settings-item' },
 ];
 function ManageWorkspaces() {
     const { isOpen, onClose } = useDisclosure();
@@ -59,7 +60,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             h="full"
             {...rest}>
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
+                <NavItem key={link.name} icon={link.icon} data-cy={link.datacy}>
                     {link.name}
                 </NavItem>
             ))}

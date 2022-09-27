@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 declare namespace Cypress {
     interface Chainable {
         login(): void;
@@ -9,7 +7,16 @@ declare namespace Cypress {
         interceptAndWait(page: string, code: number): void;
     }
 }
-
+function makeid(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
 var email: string;
 var password: string;
 Cypress.Commands.add("login", () => {
@@ -28,8 +35,8 @@ Cypress.Commands.add("signup", () => {
     cy.visit("/");
     cy.dataCy("signup-button").should("be.visible").click();
     cy.get("#supertokens-root").should("be.visible");
-    email = uuidv4() + "@example.com";
-    password = uuidv4();
+    email = makeid(50) + "@example.com";
+    password = makeid(50);
     cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[1]/div[2]/div/input").type(email);
     cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[2]/div[2]/div/input").type(password);
     cy.xpath("//*[@id=\"supertokens-root\"]/div/div/form/div[3]/button").click();

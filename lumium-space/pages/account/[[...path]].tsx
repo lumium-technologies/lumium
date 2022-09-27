@@ -18,19 +18,17 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
-import type { User } from "@types";
+import type { Email, User } from "@types";
+import { useEffect, useState } from "react";
 
-export async function getServerSideProps() {
-    const [api] = useApi();
-    const userinfo = await api.get<User>("/secure/user");
-    return {
-        props: {
-            userinfo
-        },
-    }
-}
 const Space: React.FC = () => {
+    const [email, setEmail] = useState<string>();
     const [api] = useApi();
+    useEffect(() => {
+        api.get<User>("/secure/user").then((userinfo) => {
+            setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
+        });
+    }, [email]);
 
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
@@ -95,7 +93,7 @@ const Space: React.FC = () => {
                     <FormControl id="email" isRequired>
                         <FormLabel>Email address</FormLabel>
                         <Input
-                            placeholder="your-email@example.com"
+                            placeholder={email}
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             data-cy="email-input"

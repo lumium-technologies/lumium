@@ -44,10 +44,7 @@ describe("landing page", () => {
         cy.login();
         cy.interceptAndWait("/page", 200);
     });
-    it("redirect to login from manage workspaces", {
-        defaultCommandTimeout: 30000,
-        requestTimeout: 30000
-    }, () => {
+    it("redirect to login from manage workspaces", () => {
         cy.visit("/space-manager");
         cy.interceptAndWait("/auth", 401);
         cy.get("#supertokens-root").should("be.visible");

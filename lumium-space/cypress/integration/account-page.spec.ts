@@ -5,10 +5,7 @@ describe("account page", () => {
         cy.login();
         cy.interceptAndWait("/account", 200);
     });
-    it("widget", {
-        defaultCommandTimeout: 30000,
-        requestTimeout: 30000
-    }, () => {
+    it("widget", () => {
         cy.dataCy("avatar-image").should("be.visible")
         cy.dataCy("change-icon-button").should("be.visible")
         cy.dataCy("username-input").should("be.visible")

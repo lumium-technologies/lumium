@@ -3,7 +3,7 @@ describe("page", () => {
         cy.clearCookies();
         cy.visit("/page");
         cy.login();
-        cy.intnwait("/page", 200);
+        cy.interceptAndWait("/page", 200);
     });
     it("pages drawer", {
         defaultCommandTimeout: 30000,
@@ -21,12 +21,12 @@ describe("page", () => {
     }, () => {
         cy.dataCy("profile-button").should("be.visible").click();
         cy.dataCy("profile-account-button").should("be.visible").click();
-        cy.intnwait("/account", 200);
+        cy.interceptAndWait("/account", 200);
         cy.visit("/page");
     });
     afterEach(() => {
         cy.dataCy("profile-button").should("be.visible").click();
         cy.dataCy("profile-logout-button").should("be.visible").click().click();
-        cy.intnwait("/", 200);
+        cy.interceptAndWait("/", 200);
     });
 });

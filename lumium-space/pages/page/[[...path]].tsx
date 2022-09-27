@@ -6,7 +6,7 @@ const Space: React.FC = () => {
     return (
         <Authenticator>
             <TopDrawerMenu />
-            <Box m={["1%"]}>
+            <Box p={["1%"]}>
                 <LumiumRenderer />
             </Box>
         </Authenticator>

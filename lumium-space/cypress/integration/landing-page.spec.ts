@@ -34,14 +34,24 @@ describe("landing page", () => {
         cy.visit("/page");
         cy.interceptAndWait("/auth", 401);
         cy.get("#supertokens-root").should("be.visible");
-        cy.login()
+        cy.login();
         cy.interceptAndWait("/page", 200);
     });
     it("redirect to login from account", () => {
         cy.visit("/account");
         cy.interceptAndWait("/auth", 401);
         cy.get("#supertokens-root").should("be.visible");
-        cy.login()
+        cy.login();
+        cy.interceptAndWait("/page", 200);
+    });
+    it("redirect to login from manage workspaces", {
+        defaultCommandTimeout: 30000,
+        requestTimeout: 30000
+    }, () => {
+        cy.visit("/space-manager");
+        cy.interceptAndWait("/auth", 401);
+        cy.get("#supertokens-root").should("be.visible");
+        cy.login();
         cy.interceptAndWait("/page", 200);
     });
 });

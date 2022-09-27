@@ -21,10 +21,11 @@ import {
     Icon,
     Box
 } from '@chakra-ui/react'
-import { ArrowRightIcon } from '@chakra-ui/icons';
+import { ArrowRightIcon, UpDownIcon } from '@chakra-ui/icons';
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import React from 'react';
 import { CgProfile } from "react-icons/cg";
+import { FiSettings } from "react-icons/fi";
 import { SwitchColorTheme } from "@components/headers"
 import Router from "next/router";
 
@@ -36,12 +37,16 @@ function onAccount() {
     Router.push("/account");
 }
 
+function onSpaces() {
+    Router.push("/space-manager");
+}
+
 function TopDrawerMenu() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
         <>
-            <Flex m={["1%"]}>
+            <Flex p={["1%"]} borderBottom="1px">
                 <IconButton onClick={onOpen} aria-label={''} icon={<ArrowRightIcon />} data-cy="page-menu-button">
                     Open
                 </IconButton>
@@ -76,7 +81,22 @@ function TopDrawerMenu() {
                         </DrawerFooter>
                     </DrawerContent>
                 </Drawer>
-
+                <Menu>
+                    <MenuButton
+                        ml="1%"
+                        as={Button}
+                        width={"12%"}
+                        rightIcon={<UpDownIcon />}
+                    >
+                        Spaces
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem>Some</MenuItem>
+                        <MenuItem>Spaces</MenuItem>
+                        <MenuDivider />
+                        <MenuItem icon={<FiSettings />} onClick={onSpaces}>Manage Spaces</MenuItem>
+                    </MenuList>
+                </Menu>
                 <Spacer />
 
                 <SwitchColorTheme />

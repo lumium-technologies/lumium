@@ -7,39 +7,28 @@ import {
     Input,
     Stack,
     useColorModeValue,
-    HStack,
     Avatar,
     AvatarBadge,
     IconButton,
     Center,
-    Box,
     Spacer,
     Text
 } from '@chakra-ui/react';
 import Router from "next/router";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { ArrowBackIcon } from "@chakra-ui/icons";
-
-import { SmallCloseIcon } from '@chakra-ui/icons';
+import { SmallCloseIcon } from "@chakra-ui/icons";
 
 function onLogout() {
     signOut().then(() => Router.push("/"));
 }
 
-function onBack() {
-    Router.push("/page");
-}
-
 export default function UserProfileEdit(): JSX.Element {
     return (
         <>
-            <Flex m={["1%"]}>
-                <IconButton onClick={onBack} aria-label={''} icon={<ArrowBackIcon />} data-cy="back-button" >
-                    Back
-                </IconButton>
+            <Flex p={["1%"]} borderBottom="1px">
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >My Account</Text>
                 <Spacer />
-                <Button backgroundColor={"darkred"} onClick={onLogout} data-cy="logout-button">
+                <Button backgroundColor={"darkred"} onClick={() => onLogout()} data-cy="logout-button">
                     Logout
                 </Button>
             </Flex>

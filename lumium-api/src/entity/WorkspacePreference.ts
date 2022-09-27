@@ -7,7 +7,7 @@ export enum WorkspacePreferenceOption {
 
 @Entity()
 export class WorkspacePreference extends AbstractEntity {
-    @ManyToOne(() => Workspace, (workspace) => workspace.preferences)
+    @ManyToOne(() => Workspace, (workspace) => workspace.preferences, {cascade: true, onDelete: 'CASCADE'})
     workspace: Workspace
 
     @Column({

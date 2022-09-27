@@ -5,13 +5,12 @@ import { Page } from "./Page";
 
 @Entity()
 export class PageContent extends AbstractEntity {
-    @ManyToOne(() => Page, (page) => page.contents)
+    @ManyToOne(() => Page, (page) => page.contents, {cascade: true, onDelete: 'CASCADE'})
     page: Page
 
     @Column()
     position: number
 
-    @ManyToMany(() => ContentElement, (contentElement) => contentElement.pageContents)
-    @JoinTable()
-    contentElements: ContentElement[]
+    @ManyToOne(() => ContentElement, (contentElement) => contentElement.pageContents)
+    contentElement: ContentElement
 }

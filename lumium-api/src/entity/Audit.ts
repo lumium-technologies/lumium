@@ -9,7 +9,8 @@ export enum AuditEntryEvent {
         USER_SIGNIN = 'user_signin',
         USER_INCONSISTENT_SIGNUP = 'user_inconsistent_signup',
         USER_EMAIL_VERIFIED = 'user_email_verified',
-        USER_EMAIL_VERIFICATION_FAILED = 'user_email_verification_failed'
+        USER_EMAIL_VERIFICATION_FAILED = 'user_email_verification_failed',
+        USER_DELETED = 'user_deleted'
 }
 
 export enum AuditEntryLevel {
@@ -23,7 +24,7 @@ export enum AuditEntryLevel {
 
 @Entity()
 export class AuditEntry extends AbstractEntity {
-    @ManyToOne(() => User, {nullable: true})
+    @ManyToOne(() => User, {nullable: true, onDelete: 'SET NULL'})
     user?: User;
 
     @Column({

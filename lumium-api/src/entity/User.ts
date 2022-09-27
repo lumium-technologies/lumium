@@ -6,7 +6,7 @@ import { Page } from "./Page"
 import { UserPreference } from "./UserPreference"
 import { Workspace } from "./Workspace"
 
-@Entity()
+@Entity("users")
 export class User extends AbstractEntity {
     // SuperTokens generates this uuid, for consistency and simplicity we make sure to utilize the same value, and not generate a new one
     @PrimaryColumn("uuid")

@@ -5,7 +5,7 @@ import { User } from "./User";
 @Entity()
 @Unique(['user', 'primary'])
 export class Email extends AbstractEntity {
-    @ManyToOne(() => User, (user) => user.emails, {cascade: true})
+    @ManyToOne(() => User, (user) => user.emails, {cascade: true, onDelete: 'CASCADE'})
     user: User
 
     @Column({unique: true})

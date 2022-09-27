@@ -32,20 +32,16 @@ import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
 
 const Space: React.FC = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const onLogout = () => {
         signOut().then(() => Router.push("/"));
-    }
-
+    };
     const onAccount = () => {
         Router.push("/account");
-    }
-
+    };
     const onSpaces = () => {
         Router.push("/space-manager");
-    }
-
+    };
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">

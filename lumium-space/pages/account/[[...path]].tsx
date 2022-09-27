@@ -21,9 +21,11 @@ import Router from "next/router";
 
 const Space: React.FC = () => {
     const [api] = useApi();
+
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
     };
+
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">

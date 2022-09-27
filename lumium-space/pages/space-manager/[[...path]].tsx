@@ -7,22 +7,23 @@ import { FiHome, FiSettings, } from "react-icons/fi";
 
 const Space: React.FC = () => {
     const { isOpen, onClose } = useDisclosure();
-
+    type NewType = ReactText;
     interface LinkItemProps {
         name: string;
         icon: IconType;
         datacy: string;
-    }
-
+    };
     const LinkItems: Array<LinkItemProps> = [
         { name: 'Spaces', icon: FiHome, datacy: 'spaces-item' },
         { name: 'Settings', icon: FiSettings, datacy: 'settings-item' },
     ];
-
+    interface NavItemProps extends FlexProps {
+        icon: IconType;
+        children: NewType;
+    };
     interface SidebarProps extends BoxProps {
         onClose: () => void;
-    }
-
+    };
     const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         return (
             <Box
@@ -39,14 +40,6 @@ const Space: React.FC = () => {
             </Box>
         );
     };
-
-    type NewType = ReactText;
-
-    interface NavItemProps extends FlexProps {
-        icon: IconType;
-        children: NewType;
-    };
-
     const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         return (
             <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
@@ -77,7 +70,6 @@ const Space: React.FC = () => {
             </Link>
         );
     };
-
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">

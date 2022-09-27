@@ -6,12 +6,11 @@ import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 export function ProfileMenu() {
     const onLogout = () => {
         signOut().then(() => Router.push("/"));
-    }
-
+    };
     const onAccount = () => {
         Router.push("/account");
-    }
-    const LogoutButton = (
+    };
+    return (
         <Menu>
             <MenuButton as={Button} data-cy="profile-button" ml="1%" >
                 <Icon as={CgProfile} />
@@ -29,5 +28,4 @@ export function ProfileMenu() {
             </MenuList>
         </Menu>
     );
-    return LogoutButton;
 }

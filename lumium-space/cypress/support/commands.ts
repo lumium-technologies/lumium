@@ -1,9 +1,9 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 declare namespace Cypress {
     interface Chainable {
         login(): void;
-        signup(): {email: string, password: string};
+        signup(): { email: string, password: string };
         deleteAccount(): void;
         dataCy(value: string): Chainable<Element>;
         interceptAndWait(page: string, code: number): void;

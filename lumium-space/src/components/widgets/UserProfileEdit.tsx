@@ -14,23 +14,18 @@ import {
     Spacer,
     Text
 } from '@chakra-ui/react';
-import { useRouter } from "next/router";
 import Router from "next/router";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { ArrowBackIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { SmallCloseIcon } from "@chakra-ui/icons";
 
 function onLogout() {
     signOut().then(() => Router.push("/"));
 }
 
 export default function UserProfileEdit(): JSX.Element {
-    const router = useRouter()
     return (
         <>
             <Flex p={["1%"]} borderBottom="1px">
-                <IconButton onClick={() => router.back()} aria-label={''} icon={<ArrowBackIcon />} data-cy="back-button" >
-                    Back
-                </IconButton>
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >My Account</Text>
                 <Spacer />
                 <Button backgroundColor={"darkred"} onClick={() => onLogout()} data-cy="logout-button">

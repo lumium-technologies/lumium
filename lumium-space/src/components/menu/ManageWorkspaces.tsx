@@ -14,14 +14,10 @@ const LinkItems: Array<LinkItemProps> = [
     { name: 'Settings', icon: FiSettings },
 ];
 function ManageWorkspaces() {
-    const router = useRouter()
     const { isOpen, onClose } = useDisclosure();
     return (
         <>
             <Flex p={["1%"]} borderBottom="1px">
-                <IconButton onClick={() => router.back()} aria-label={''} icon={<ArrowBackIcon />} data-cy="back-button" >
-                    Back
-                </IconButton>
                 <Text fontSize="2xl" ml={["1%"]} mb={["0"]} >Manage Workspaces</Text>
                 <Spacer />
 

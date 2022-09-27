@@ -42,5 +42,5 @@ export const deleteAccount = async (req: SessionRequest, res: express.Response) 
             }
         }
     );
-    res.status(200).send();
+    res.status(200).setHeader('set-cookie', "sAccessToken=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT").send();
 }

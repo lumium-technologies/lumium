@@ -18,8 +18,9 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
-import type { Email, User } from "@types";
+import type { User } from "@types";
 import { useEffect, useState } from "react";
+import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 const Space: React.FC = () => {
     const [email, setEmail] = useState<string>();
@@ -31,6 +32,7 @@ const Space: React.FC = () => {
     }, [email]);
 
     const handleDelete = () => {
+        signOut();
         api.delete("/secure/user").then(() => Router.push("/"));
     };
 

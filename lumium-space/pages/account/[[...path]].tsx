@@ -24,8 +24,8 @@ const Space: React.FC = () => {
     const [api] = useApi();
 
     const handleDelete = () => {
-        signOut();
-        api.delete("/secure/user").then(() => Router.push("/"));
+        api.delete("/secure/user").then(() => Router.push("/")).then(() => signOut());
+
     };
 
     return (

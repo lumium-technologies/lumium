@@ -18,12 +18,14 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
+import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 const Space: React.FC = () => {
     const [api] = useApi();
 
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
+        signOut();
     };
 
     return (

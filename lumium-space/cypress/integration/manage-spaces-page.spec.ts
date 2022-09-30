@@ -1,4 +1,4 @@
-describe("account page", () => {
+describe("manage spaces", () => {
     beforeEach(() => {
         cy.clearCookies();
         cy.visit("/space-manager");
@@ -17,7 +17,7 @@ describe("account page", () => {
     });
     afterEach(() => {
         cy.dataCy("profile-button").should("be.visible").click();
-        cy.dataCy("profile-logout-button").should("be.visible").click().click();
+        cy.dataCy("profile-logout-button").should("be.visible").click();
         cy.interceptAndWait("/", 200);
     });
 });

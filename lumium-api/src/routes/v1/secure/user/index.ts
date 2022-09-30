@@ -3,6 +3,16 @@ const router = express.Router();
 import { info, deleteAccount } from '../../../../controllers/user';
 
 /**
+ * POST /secure/user/signIn
+ * @summary SignIn User
+ * @security JWTAuth
+ * @tags user
+ * @return 200 - Success - text/plain
+ * @return 401 - Unauthorized - text/plain
+ */
+router.post('/signIn', deleteAccount);
+
+/**
  * GET /secure/user
  * @summary Returns all account information about the token subject
  * @security JWTAuth

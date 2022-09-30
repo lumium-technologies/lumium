@@ -30,7 +30,7 @@ export { sec as v1sec } from './v1';
  * A UserPreference
  * @typedef {object} UserPreference
  * @property {string} id - The uuid
- * @property {string} userId - The user associated with this preference
+ * @property {User} user - The user associated with this preference
  * @property {string} option - enum:color_mode - The user preference option
  * @property {string} value - The value of the preference option
  * @property {string} createdAt - The object creation timestamp
@@ -43,7 +43,7 @@ export { sec as v1sec } from './v1';
  * An Email
  * @typedef {object} Email
  * @property {string} id - The uuid
- * @property {string} userId - The user uuid associated with this email
+ * @property {User} user - The user associated with this email
  * @property {string} email - The actual email address
  * @property {boolean} primary - Flags whether the email is the primary email address on the user's account
  * @property {boolean} verified - Flags whether the email has been verified
@@ -57,7 +57,7 @@ export { sec as v1sec } from './v1';
  * An Address
  * @typedef {object} Address
  * @property {string} id - The uuid
- * @property {string} userId - The user uuid associated with this address
+ * @property {User} user - The user associated with this address
  * @property {string} kind - enum:residential,billing  - The kind of address
  * @property {string} fullName - Full name on the address
  * @property {string} lineOne - Address line one
@@ -76,7 +76,7 @@ export { sec as v1sec } from './v1';
  * A WorkspacePreference
  * @typedef {object} WorkspacePreference
  * @property {string} id - The uuid
- * @property {string} workspaceId - The workspace associated with this preference
+ * @property {Workspace} workspace - The workspace associated with this preference
  * @property {string} option - enum: - The workspace preference option
  * @property {string} value - The value of the preference option
  * @property {string} createdAt - The object creation timestamp
@@ -89,7 +89,7 @@ export { sec as v1sec } from './v1';
  * A Workspace
  * @typedef {object} Workspace
  * @property {string} id - The uuid
- * @property {string} ownerId - The user uuid that owns this workspace
+ * @property {User} owner - The user that owns this workspace
  * @property {array<User>} admins - The administrators of this workspace
  * @property {array<User>} members - The members of this workspace
  * @property {array<User>} visitors - The visitors of this workspace
@@ -118,8 +118,8 @@ export { sec as v1sec } from './v1';
  * A PageContent
  * @typedef {object} PageContent
  * @property {string} id - The uuid
- * @property {string} pageId - The page uuid this content belongs to
- * @property {number} position - The position on th page this content should be in
+ * @property {Page} page - The page this content belongs to
+ * @property {number} position - The position on the page this content should be in
  * @property {ContentElement} contentElement - The actual content element at this position
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp
@@ -131,8 +131,8 @@ export { sec as v1sec } from './v1';
  * A Page
  * @typedef {object} Page
  * @property {string} id - The uuid
- * @property {string} workspaceId - The workspace uuid that this page belongs to
- * @property {string} ownerId - The user uuid that owns this page
+ * @property {Workspace} workspace - The workspace that this page belongs to
+ * @property {User} owner - The user that owns this page
  * @property {array<User>} admins - The administrators of this page
  * @property {array<User>} members - The members of this page
  * @property {array<User>} visitors - The visitors of this page

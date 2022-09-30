@@ -60,6 +60,15 @@ const options = {
     },
     servers: [
         {
+            url: 'http://localhost:5000/{Base Path}',
+            description: 'Local API server',
+            variables: {
+                'Base Path': {
+                    default: 'v1',
+                },
+            },
+        },
+        {
             url: 'https://api.staging.lumium.space/{Base Path}',
             description: 'Staging API server',
             variables: {
@@ -87,15 +96,6 @@ const options = {
                 'Pull Request': {
                     default: '0',
                 },
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
-            url: 'http://localhost:5000/{Base Path}',
-            description: 'Local API server',
-            variables: {
                 'Base Path': {
                     default: 'v1',
                 },

@@ -77,6 +77,12 @@
             ],
             "@test": [
                 "test"
+            ],
+            "@types/*": [
+                "types/*"
+            ],
+            "@types": [
+                "types"
             ]
         },
         "incremental": true

@@ -12,22 +12,33 @@ import {
     IconButton,
     Center,
     Spacer,
-    Text
+    Text,
+    Box,
 } from "@chakra-ui/react";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
-import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import type { User } from "@types";
+import { useEffect, useState } from "react";
+import { FiEdit2 } from "react-icons/fi";
 
 const Space: React.FC = () => {
+    const [email, setEmail] = useState<string>();
     const [api] = useApi();
-
+    var emailButton = true;
+    useEffect(() => {
+        api.get<User>("/secure/user").then((userinfo) => {
+            setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
+        });
+    }, [email]);
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
-        signOut();
     };
-
+    const emailButtonClicked = () => {
+        emailButton = false
+        return emailButton
+    };
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">
@@ -75,33 +86,39 @@ const Space: React.FC = () => {
                             </Center>
                         </Stack>
                     </FormControl>
-                    <FormControl id="userName" isRequired>
-                        <FormLabel>User name</FormLabel>
-                        <Input
-                            placeholder="UserName"
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            data-cy="username-input"
-                        />
-                    </FormControl>
-                    <FormControl id="email" isRequired>
-                        <FormLabel>Email address</FormLabel>
-                        <Input
-                            placeholder="your-email@example.com"
-                            _placeholder={{ color: 'gray.500' }}
-                            type="email"
-                            data-cy="email-input"
-                        />
-                    </FormControl>
-                    <FormControl id="password" isRequired>
-                        <FormLabel>Password</FormLabel>
-                        <Input
-                            placeholder="password"
-                            _placeholder={{ color: 'gray.500' }}
-                            type="password"
-                            data-cy="password-input"
-                        />
-                    </FormControl>
+                    <Flex flexDirection="column">
+                        <Flex flexDirection="column">
+                            <Flex width="100%" >
+                                <Text mb="0" as="b">Username</Text>
+                            </Flex>
+                            <Flex width="100%">
+                                <Text margin="auto">name</Text>
+                                <Spacer />
+                                <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
+                            </Flex>
+                        </Flex>
+                        <Flex flexDirection="column" mt="1em">
+                            <Flex width="100%" >
+                                <Text mb="0" as="b">E-Mail</Text>
+                            </Flex>
+                            <Flex width="100%">
+                                <Text margin="auto">{email}</Text>
+                                <Spacer />
+                                <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
+                            </Flex>
+                        </Flex>
+                        <Flex flexDirection="column" mt="1em">
+                            <Flex width="100%" >
+                                <Text mb="0" as="b">Password</Text>
+                            </Flex>
+                            <Flex width="100%">
+                                <Text margin="auto"></Text>
+                                <Spacer />
+                                <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
+                            </Flex>
+                        </Flex>
+                    </Flex>
+
                     <Stack spacing={6} direction={['column', 'row']}>
                         <Button
                             bg={'red.400'}
@@ -125,7 +142,7 @@ const Space: React.FC = () => {
                         </Button>
                     </Stack>
                 </Stack>
-            </Flex>
+            </Flex >
         </Authenticator >
     );
 };

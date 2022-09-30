@@ -12,7 +12,7 @@ import {
     IconButton,
     Center,
     Spacer,
-    Text
+    Text,
 } from "@chakra-ui/react";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
@@ -20,7 +20,7 @@ import { Authenticator } from "@security";
 import Router from "next/router";
 import type { User } from "@types";
 import { useEffect, useState } from "react";
-import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { FiEdit2 } from "react-icons/fi";
 
 const Space: React.FC = () => {
     const [email, setEmail] = useState<string>();
@@ -30,10 +30,8 @@ const Space: React.FC = () => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
         });
     }, [email]);
-
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
-        signOut();
     };
 
     return (
@@ -90,7 +88,10 @@ const Space: React.FC = () => {
                             _placeholder={{ color: 'gray.500' }}
                             type="text"
                             data-cy="username-input"
+                            isDisabled={true}
+                            width="90%"
                         />
+                        <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
                     </FormControl>
                     <FormControl id="email" isRequired>
                         <FormLabel>Email address</FormLabel>
@@ -99,7 +100,10 @@ const Space: React.FC = () => {
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             data-cy="email-input"
+                            isDisabled={true}
+                            width="90%"
                         />
+                        <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
                     </FormControl>
                     <FormControl id="password" isRequired>
                         <FormLabel>Password</FormLabel>
@@ -108,7 +112,10 @@ const Space: React.FC = () => {
                             _placeholder={{ color: 'gray.500' }}
                             type="password"
                             data-cy="password-input"
+                            isDisabled={true}
+                            width="90%"
                         />
+                        <IconButton mb="1%" aria-label="" icon={<FiEdit2 />} />
                     </FormControl>
                     <Stack spacing={6} direction={['column', 'row']}>
                         <Button

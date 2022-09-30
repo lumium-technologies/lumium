@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import { pong } from '../../../controllers';
 import { user } from './user';
+import { workspace } from './workspace';
 
 /**
  * GET /secure/pong
@@ -14,5 +15,6 @@ import { user } from './user';
 router.get('/pong', pong);
 
 router.use('/user', user);
+router.use('/workspace', workspace);
 
 export { router as sec };

@@ -46,30 +46,3 @@ export const deleteAccount = async (req: SessionRequest, res: express.Response) 
     );
     res.send();
 }
-
-export const signIn = async (req: SessionRequest, res: express.Response, loginEmail: string, loginPassword: string) => {
-    const output = await axios.post(process.env.SUPERTOKENS_CONNECTION_URI! + "/signin",
-        {
-            formFields: [
-                {
-                    id: "email",
-                    value: loginEmail
-                },
-                {
-                    id: "password",
-                    value: loginPassword
-                }
-            ]
-        },
-        {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "api-key": process.env.SUPERTOKENS_API_KEY!,
-                "cdi-version": "2.14"
-            }
-        }
-    );
-    if (output.status == 200) {
-        res.status(200);
-    }
-}

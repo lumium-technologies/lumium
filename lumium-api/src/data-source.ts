@@ -47,7 +47,11 @@ export const connection = {
 };
 
 export const audit = async (entry: AuditEntry) => {
-    console.log(`AUDIT [${entry.level}] [${JSON.stringify(entry.user)}] [${entry.type}]: ${entry.detail}`);
+    if (entry.detail) {
+        console.log(`AUDIT [${entry.level}] [${entry.user.id!}] [${entry.type}]: ${entry.detail}`);
+    } else {
+        console.log(`AUDIT [${entry.level}] [${entry.user.id!}] [${entry.type}]`);
+    }
     await dataSource.getRepository(AuditEntry).save(entry);
 };
 

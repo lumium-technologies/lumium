@@ -10,4 +10,7 @@ export class E2EKey extends AbstractEntity {
 
     @OneToMany(() => E2EKeyVariant, (variant) => variant.key)
     keys: E2EKeyVariant[]
+
+    @Column()
+    activator: string
 }

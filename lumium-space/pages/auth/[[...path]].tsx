@@ -20,14 +20,15 @@ import SuperTokens from 'supertokens-auth-react'
 import { redirectToAuth } from 'supertokens-auth-react/recipe/thirdpartyemailpassword'
 import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import Cookies from 'js-cookie';
 
 export default function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [api] = useApi();
     const router = useRouter();
-    const { show } = router.query
+    const { show } = router.query;
     const [showPassword, setShowPassword] = useState(false);
     useEffect(() => {
         if (SuperTokens.canHandleRoute() === false) {
@@ -49,6 +50,26 @@ export default function Auth() {
         }).then(() => Router.push("/"));
         //emailPasswordSignIn(email, password).then(() => Router.push("/"));
     };
+    const handleSignUp = () => {
+        api.post("/auth/signup", {
+            "formFields": [
+                {
+                    "id": "email",
+                    "value": email
+                },
+                {
+                    "id": "password",
+                    "value": password
+                }
+            ]
+        }).then(() => {
+            const token = Cookies.get("sAccessToken");
+            /*api.post("/auth/user/email/verify", {
+                "method": "token",
+                "token": token
+            });*/
+        }).then(() => Router.push("/auth?rid=thirdpartyemailpassword&show=verify-email"));
+    };
     const switchToSignUp = () => {
         Router.push("/auth?rid=thirdpartyemailpassword&show=signup")
     };
@@ -57,6 +78,9 @@ export default function Auth() {
     };
     const switchToPasswordReset = () => {
         Router.push("/auth?rid=thirdpartyemailpassword&show=reset-password")
+    };
+    const switchToVerifyEmail = () => {
+        Router.push("/auth?rid=thirdpartyemailpassword&show=verify-email")
     };
     const signInPage =
         <Flex
@@ -144,12 +168,12 @@ export default function Auth() {
                         </HStack>
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} />
+                                <Input type={showPassword ? 'text' : 'password'} onChange={event => setPassword(event.currentTarget.value)} />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
@@ -169,7 +193,9 @@ export default function Auth() {
                                 color={'white'}
                                 _hover={{
                                     bg: 'blue.500',
-                                }}>
+                                }}
+                                onClick={handleSignUp}
+                            >
                                 Sign up
                             </Button>
                         </Stack>
@@ -226,7 +252,20 @@ export default function Auth() {
             </Stack>
         </Flex>
         ;
+    const verifyEmailPage =
+        <Box textAlign="center" py={10} px={6}>
+            <InfoIcon boxSize={'50px'} color={'blue.500'} />
+            <Heading as="h2" size="xl" mt={6} mb={2}>
+                Verify your E-Mail
+            </Heading>
+            <Text color={'gray.500'}>
+                Check your inbox to access Lumium
+            </Text>
+        </Box>
+        ;
     return (
-        show == "signin" && signInPage || show == "reset-password" && resetPasswordPage || show == "signup" && signUpPage || <p>Post: {show}</p>
+        show == "reset-password" && resetPasswordPage ||
+        show == "signup" && signUpPage ||
+        show == "verify-email" && verifyEmailPage || signInPage
     )
 }

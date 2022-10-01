@@ -48,9 +48,9 @@ export const connection = {
 
 export const audit = async (entry: AuditEntry) => {
     if (entry.detail) {
-        console.log(`AUDIT [${entry.level}] [${entry.user.id!}] [${entry.type}]: ${entry.detail}`);
+        console.log(`AUDIT [${entry.level}] [${entry.user?.id!}] [${entry.type}]: ${entry.detail}`);
     } else {
-        console.log(`AUDIT [${entry.level}] [${entry.user.id!}] [${entry.type}]`);
+        console.log(`AUDIT [${entry.level}] [${entry.user?.id!}] [${entry.type}]`);
     }
     await dataSource.getRepository(AuditEntry).save(entry);
 };

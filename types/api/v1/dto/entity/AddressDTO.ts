@@ -1,5 +1,6 @@
-export interface Address {
-    id: string;
+import { AbstractEntityDTO } from './AbstractEntityDTO';
+
+export interface AddressDTO extends AbstractEntityDTO {
     userId: string;
     kind: string;
     fullName: string;
@@ -9,8 +10,4 @@ export interface Address {
     state: string;
     postalCode: string;
     country: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
-    version: number
 }

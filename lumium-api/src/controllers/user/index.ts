@@ -28,10 +28,9 @@ export const info = async (req: SessionRequest, res: express.Response) => {
 }
 
 export const deleteAccount = async (req: SessionRequest, res: express.Response) => {
-    const user = await dataSource.getRepository(User).remove({ id: req.session!.getUserId() });
-    await i({ user, detail: req.session!.getUserId() + " has deleted his account", type: AuditEntryEvent.USER_DELETED });
+    await dataSource.getRepository(User).remove({ id: req.session!.getUserId() });
+    await i({ user: { id: req.session!.getUserId() }, detail: req.session!.getUserId() + " has deleted his account", type: AuditEntryEvent.USER_DELETED });
     await req.session!.revokeSession();
-    res.write("Success! User session revoked");
     await axios.post(process.env.SUPERTOKENS_CONNECTION_URI! + "/user/remove",
         {
             userId: req.session!.getUserId()
@@ -44,5 +43,5 @@ export const deleteAccount = async (req: SessionRequest, res: express.Response) 
             }
         }
     );
-    res.send();
+    res.status(200).send();
 }

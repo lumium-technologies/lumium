@@ -1,4 +1,4 @@
-import { app } from "./app";
+import { app } from "../../app";
 import supertest from 'supertest';
 import { randomUUID } from "crypto";
 
@@ -27,13 +27,5 @@ describe('user info', () => {
         expect(resp.body.id).toBeDefined();
         resp = await supertest(app).delete("/v1/secure/user").set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);
-    });
-});
-
-describe('ping', () => {
-    test('returns pong', async () => {
-        const response = await supertest(app).get("/v1/ping").send();
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toContain("pong");
     });
 });

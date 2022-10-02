@@ -10,5 +10,5 @@ export type {
         WorkspacePreferenceDTO
 } from './entity';
 
-export type { E2EKeyCreateDTO } from './response';
-export type { E2EKeyVariantCreateDTO } from './response';
+export type { E2EKeyCreateDTO } from './request';
+export type { E2EKeyVariantCreateDTO } from './request';

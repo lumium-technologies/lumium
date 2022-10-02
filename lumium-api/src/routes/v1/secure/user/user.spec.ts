@@ -11,4 +11,10 @@ describe('user info', () => {
         resp = await supertest(app).delete("/v1/secure/user").set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);
     });
+    test('throws 401', async () => {
+        let resp = await supertest(app).get("/v1/secure/user").send();
+        expect(resp.statusCode).toBe(401);
+        resp = await supertest(app).delete("/v1/secure/user").send();
+        expect(resp.statusCode).toBe(401);
+    })
 });

@@ -5,7 +5,7 @@ import { Workspace } from "./Workspace";
 
 @Entity()
 export class E2EKey extends AbstractEntity {
-    @OneToOne(() => Workspace, (workspace) => workspace.key, {cascade: true, onDelete: 'CASCADE'})
+    @OneToOne(() => Workspace, (workspace) => workspace.key)
     workspace: Workspace
 
     @OneToMany(() => E2EKeyVariant, (variant) => variant.key)

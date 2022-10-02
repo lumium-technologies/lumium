@@ -22,6 +22,6 @@ router.get('/:workspaceId', info);
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.get('/', create);
+router.post('/', create);
 
 export { router as workspace };

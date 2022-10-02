@@ -1,4 +1,4 @@
-import { Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { AbstractEntity } from "./AbstractEntity";
 import { E2EKey } from "./E2EKey";
 import { Page } from "./Page";
@@ -28,6 +28,7 @@ export class Workspace extends AbstractEntity {
     @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
     preferences: WorkspacePreference[]
 
-    @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace)
+    @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace, {cascade: true, onDelete: 'CASCADE'})
+    @JoinColumn()
     key: E2EKey
 }

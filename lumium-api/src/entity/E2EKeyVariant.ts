@@ -14,5 +14,5 @@ export class E2EKeyVariant extends AbstractEntity {
     value: string
 
     @Column({default: true})
-    active: boolean
+    active?: boolean
 }

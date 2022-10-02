@@ -1,22 +1,5 @@
-import { app } from "../../app";
+import { app } from "../../../../app";
 import supertest from 'supertest';
-import { randomUUID } from "crypto";
-
-const auth = async () => {
-    const response = await supertest(app).post("/v1/auth/signup").send({
-        formFields: [
-            {
-                id: "email",
-                value: randomUUID() + '@example.com'
-            },
-            {
-                id: "password",
-                value: randomUUID()
-            }
-        ]
-    });
-    return response.headers['set-cookie'];
-}
 
 describe('user info', () => {
     jest.setTimeout(60000);

@@ -5,7 +5,7 @@ import { Page } from "./Page";
 import { User } from "./User";
 import { WorkspacePreference } from "./WorkspacePreference";
 
-@Entity()
+@Entity('workspaces')
 export class Workspace extends AbstractEntity {
     @ManyToOne(() => User, (user) => user.ownedWorkspaces, {cascade: true, onDelete: 'CASCADE'})
     owner: User

@@ -156,16 +156,16 @@ supertokens.init({
                                 const response = await originalImplementation.verifyEmailPOST(input);
                                 if (response.status === 'OK') {
                                     const { id, email } = response.user;
-                                    const mails: Email[] = await dataSource.getRepository(Email).findBy({email});
+                                    const mails: Email[] = await dataSource.getRepository(Email).findBy({ email });
                                     if (mails?.length == 1) {
                                         mails[0].verified = true;
                                     } else {
                                         const detail = "Email to verify not found on account";
-                                        await error({user: {id}, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
+                                        await error({user: { id }, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
                                         throw new Error(detail);
                                     }
                                     await dataSource.getRepository(Email).save(mails[0]);
-                                    await info({user: {id}, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
+                                    await info({user: { id }, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
                                 }
                                 return response;
                             }
@@ -175,16 +175,36 @@ supertokens.init({
                 functions: (originalImplementation) => {
                     return {
                         ...originalImplementation,
+                        emailPasswordSignIn: async function(input) {
+                            const response = await originalImplementation.emailPasswordSignIn(input);
+
+                            if (!process.env.PRODUCTION && response.status === 'OK') {
+                                let user = await dataSource
+                                    .getRepository(User)
+                                    .findOne({
+                                        where: { id: response.user.id }
+                                    });
+                                if (!user) {
+                                    user = await dataSource
+                                        .getRepository(User)
+                                        .save({ id: response.user.id });
+                                    await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
+                                    await info({user: user, type: AuditEntryEvent.USER_SIGNUP_INIT_DEVELOPMENT_PATCH});
+                                }
+                            }
+
+                            return response;
+                        },
                         emailPasswordSignUp: async function(input) {
                             const response = await originalImplementation.emailPasswordSignUp(input);
                             if (response.status === 'OK') {
                                 const user = await dataSource
                                     .getRepository(User)
                                     .save({ id: response.user.id });
-                                await dataSource.getRepository(Email).save({user, primary: true, email: response.user.email});
-                                await info({user: user, type: AuditEntryEvent.USER_SIGNUP_INIT});
+                                await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
+                                await info({ user, type: AuditEntryEvent.USER_SIGNUP_INIT });
                             } else {
-                                await error({detail: JSON.stringify(response) + `email: ${input.email}`, type: AuditEntryEvent.USER_SIGNUP_FAILED});
+                                await error({ detail: JSON.stringify(response) + `email: ${input.email}`, type: AuditEntryEvent.USER_SIGNUP_FAILED });
                             }
                             return response;
                         },
@@ -199,7 +219,7 @@ supertokens.init({
                         ...originalImplementation,
                         createNewSession: async function(input) {
                             const userId = input.userId;
-                            const user = await dataSource.getRepository(User).findOneById(userId);
+                            const user = await dataSource.getRepository(User).findOne({ where: { id: userId } });
                             input.accessTokenPayload = {
                                 ...input.accessTokenPayload,
                                 roles: {

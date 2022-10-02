@@ -3,7 +3,8 @@ import { AbstractEntity } from './AbstractEntity';
 import { User } from './User';
 
 export enum AuditEntryEvent {
-    USER_SIGNUP_INIT = 'user_signup_init',
+    USER_SIGNUP_INIT_DEVELOPMENT_PATCH = 'user_signup_init_development_patch',
+        USER_SIGNUP_INIT = 'user_signup_init',
         USER_SIGNUP_COMPLETE = 'user_signup_complete',
         USER_SIGNUP_FAILED = 'user_signup_failed',
         USER_SIGNIN = 'user_signin',

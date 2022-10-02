@@ -23,7 +23,7 @@ export enum AuditEntryLevel {
         FATAL = 'fatal'
 }
 
-@Entity()
+@Entity('audit_log')
 export class AuditEntry extends AbstractEntity {
     @ManyToOne(() => User, {nullable: true, onDelete: 'SET NULL'})
     user?: User;

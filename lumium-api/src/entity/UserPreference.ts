@@ -6,7 +6,7 @@ export enum UserPreferenceOption {
     COLOR_MODE = "color_mode"
 }
 
-@Entity()
+@Entity('user_preferences')
 export class UserPreference extends AbstractEntity {
     @ManyToOne(() => User, (user) => user.preferences, {cascade: true, onDelete: 'CASCADE'})
     user: User

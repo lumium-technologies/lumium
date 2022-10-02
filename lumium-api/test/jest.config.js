@@ -10,5 +10,10 @@ module.exports = {
     },
     transformIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/build/'],
     globalTeardown: '<rootDir>/test/jest-teardown-globals.ts',
-    modulePathIgnorePatterns: ["<rootDir>/build/"]
+    modulePathIgnorePatterns: ["<rootDir>/build/"],
+    globals: {
+        "ts-jest": {
+            tsconfig: "<rootDir>/test/tsconfig.test.json"
+        }
+    }
 };

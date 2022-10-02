@@ -5,7 +5,7 @@ import { Workspace } from "./Workspace";
 export enum WorkspacePreferenceOption {
 }
 
-@Entity()
+@Entity('workspace_preferences')
 export class WorkspacePreference extends AbstractEntity {
     @ManyToOne(() => Workspace, (workspace) => workspace.preferences, {cascade: true, onDelete: 'CASCADE'})
     workspace: Workspace

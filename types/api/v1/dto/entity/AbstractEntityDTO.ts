@@ -1,4 +1,4 @@
-export interface AbstractDTO {
+export interface AbstractEntityDTO {
     id: string;
     createdAt: string;
     updatedAt: string;

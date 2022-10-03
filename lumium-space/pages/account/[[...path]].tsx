@@ -19,7 +19,7 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { useApi } from "@hooks/api";
 import { Authenticator } from "@security";
 import Router from "next/router";
-import type { User } from "@types";
+import type { UserDTO } from "@types";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 
@@ -28,10 +28,10 @@ const Space: React.FC = () => {
     const [api] = useApi();
     var emailButton = true;
     useEffect(() => {
-        api.get<User>("/secure/user").then((userinfo) => {
+        api.get<UserDTO>("/secure/user").then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
         });
-    }, [email]);
+    }, [api, email]);
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
     };

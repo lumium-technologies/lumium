@@ -1,0 +1,4 @@
+{
+    "extends": "./tsconfig.json",
+    "files": ["./test/helpers.d.ts"]
+}

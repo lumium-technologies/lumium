@@ -10,7 +10,7 @@ import { Workspace } from "./Workspace"
 export class User extends AbstractEntity {
     // SuperTokens generates this uuid, for consistency and simplicity we make sure to utilize the same value, and not generate a new one
     @PrimaryColumn("uuid")
-    id: string
+    id?: string
 
     @Column({nullable: true})
     firstName?: string

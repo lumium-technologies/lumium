@@ -8,7 +8,7 @@ import { info, create } from '../../../../controllers/workspace';
  * @security JWTAuth
  * @tags workspace
  * @param {string} id.path.required - Workspace uuid
- * @return {Workspace} 200 - Success - application/json
+ * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
 router.get('/:workspaceId', info);
@@ -18,9 +18,10 @@ router.get('/:workspaceId', info);
  * @summary Create a new workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @return {Workspace} 200 - Success - application/json
+ * @param {E2EKeyCreateDTO} request.body.required - end-to-end key variants encrypted with passwords of user's choice - application/json
+ * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.get('/', info);
+router.post('/', create);
 
 export { router as workspace };

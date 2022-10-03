@@ -7,7 +7,7 @@ import { info, deleteAccount } from '../../../../controllers/user';
  * @summary Returns all account information about the token subject
  * @security JWTAuth
  * @tags user
- * @return {User} 200 - Success - application/json
+ * @return {UserDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
 router.get('/', info);

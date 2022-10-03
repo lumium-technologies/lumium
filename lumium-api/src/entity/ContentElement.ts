@@ -6,7 +6,7 @@ export enum ContentType {
     MARKDOWN = 'markdown'
 }
 
-@Entity()
+@Entity('content_elements')
 export class ContentElement extends AbstractEntity {
     @Column()
     content: string

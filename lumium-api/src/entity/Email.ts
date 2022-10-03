@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeo
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
-@Entity()
+@Entity('emails')
 @Unique(['user', 'primary'])
 export class Email extends AbstractEntity {
     @ManyToOne(() => User, (user) => user.emails, {cascade: true, onDelete: 'CASCADE'})

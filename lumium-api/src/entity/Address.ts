@@ -9,7 +9,7 @@ export enum AddressKind {
 
 // Addresses as specified under 'Generic Formats':
 // https://www.uxmatters.com/mt/archives/2008/06/international-address-fields-in-web-forms.php
-@Entity()
+@Entity('adresses')
 @Unique(["user", "kind"])
 export class Address extends AbstractEntity {
     @ManyToOne(() => User, (user) => user.addresses, {cascade: true, onDelete: 'CASCADE'})

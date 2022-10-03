@@ -107,6 +107,7 @@ export const LogoTransition = ({ scale, strokeWidth, animationTime, numRepeats, 
         <React.Fragment>
             <Flex
                 justifyContent="center"
+                data-cy='logo-transition'
                 position="fixed"
                 padding="0"
                 margin="0"

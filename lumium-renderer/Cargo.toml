@@ -14,8 +14,8 @@ default = ["console_error_panic_hook"]
 wasm-bindgen = "=0.2.80"
 pulldown-cmark = "0.9.1"
 js-sys = "0.3.57"
-katex = { version = "0.4.4", features = ['wasm-js'], default-features = false}
 seed = "0.9.1"
+katex-renderer = { path = "./katex-renderer", features = ["wasm"], default-features = false }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

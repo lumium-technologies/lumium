@@ -1,0 +1,3 @@
+[submodule "lumium-renderer/katex-renderer"]
+	path = lumium-renderer/katex-renderer
+	url = https://github.com/D3PSI/katex-renderer.git

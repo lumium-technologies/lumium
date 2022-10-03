@@ -20,7 +20,7 @@ describe("page", () => {
     });
     afterEach(() => {
         cy.dataCy("profile-button").should("be.visible").click();
-        cy.dataCy("profile-logout-button").should("be.visible").click().click();
+        cy.dataCy("profile-logout-button").should("be.visible").click();
         cy.interceptAndWait("/", 200);
     });
 });

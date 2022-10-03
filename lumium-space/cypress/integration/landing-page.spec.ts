@@ -4,7 +4,6 @@ describe("landing page", () => {
         cy.visit("/");
     });
     it("hero screen", () => {
-        cy.dataCy("logo-transition").should("be.visible");
         cy.dataCy("github-link").should("be.visible");
         cy.dataCy("color-theme-switcher").should("be.visible");
         cy.dataCy("continue-button").should("be.visible");

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 // @ts-ignore
 import SvgLines from 'react-mt-svg-lines';
 
-import { Box, Center, ScaleFade, useUnmountEffect, useTheme, useColorModeValue, Flex } from '@chakra-ui/react'
+import { Box, Center, ScaleFade, Flex } from '@chakra-ui/react'
 
 export const LogoTransition = ({ scale, strokeWidth, animationTime, numRepeats, setDone }: {
     scale?: number, strokeWidth?: number,
@@ -21,9 +21,6 @@ export const LogoTransition = ({ scale, strokeWidth, animationTime, numRepeats, 
     if (numRepeats) {
         numRepeats *= 2;
     }
-
-    const theme = useTheme();
-    const letterBFillColor = useColorModeValue("#ffffff", theme["background"]);
 
     const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -107,7 +104,6 @@ export const LogoTransition = ({ scale, strokeWidth, animationTime, numRepeats, 
         <React.Fragment>
             <Flex
                 justifyContent="center"
-                data-cy='logo-transition'
                 position="fixed"
                 padding="0"
                 margin="0"
@@ -117,7 +113,7 @@ export const LogoTransition = ({ scale, strokeWidth, animationTime, numRepeats, 
                 width="100%"
                 height="100%"
             >
-                <Center width="100%" data-cy="logo-transition" transform={"translate(-100px, " + scrollPosition + "px)"}>
+                <Center width="100%" transform={"translate(-100px, " + scrollPosition + "px)"}>
                     <Box>
                         {animation}
                     </Box>

@@ -20,15 +20,14 @@ import SuperTokens from 'supertokens-auth-react'
 import { redirectToAuth } from 'supertokens-auth-react/recipe/thirdpartyemailpassword'
 import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
-import { InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import Cookies from 'js-cookie';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 export default function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [api] = useApi();
     const router = useRouter();
-    const { show } = router.query;
+    const { show, redirectToPath } = router.query;
     const [showPassword, setShowPassword] = useState(false);
     useEffect(() => {
         if (SuperTokens.canHandleRoute() === false) {
@@ -36,6 +35,10 @@ export default function Auth() {
         }
     }, [])
     const handleSignIn = () => {
+        var url = "/page";
+        if (redirectToPath) {
+            url = redirectToPath.toString();
+        }
         api.post("/auth/signin", {
             "formFields": [
                 {
@@ -47,7 +50,7 @@ export default function Auth() {
                     "value": password
                 }
             ]
-        }).then(() => Router.push("/"));
+        }).then(() => Router.push(url));
         //emailPasswordSignIn(email, password).then(() => Router.push("/"));
     };
     const handleSignUp = () => {
@@ -63,12 +66,8 @@ export default function Auth() {
                 }
             ]
         }).then(() => {
-            const token = Cookies.get("sAccessToken");
-            /*api.post("/auth/user/email/verify", {
-                "method": "token",
-                "token": token
-            });*/
-        }).then(() => Router.push("/auth?rid=thirdpartyemailpassword&show=verify-email"));
+            api.post("/auth/user/email/verify/token");
+        }).then(() => Router.push("/auth/verify-email"));
     };
     const switchToSignUp = () => {
         Router.push("/auth?rid=thirdpartyemailpassword&show=signup")
@@ -77,10 +76,7 @@ export default function Auth() {
         Router.push("/auth?rid=thirdpartyemailpassword&show=signin")
     };
     const switchToPasswordReset = () => {
-        Router.push("/auth?rid=thirdpartyemailpassword&show=reset-password")
-    };
-    const switchToVerifyEmail = () => {
-        Router.push("/auth?rid=thirdpartyemailpassword&show=verify-email")
+        Router.push("/auth/reset-password")
     };
     const signInPage =
         <Flex
@@ -209,63 +205,7 @@ export default function Auth() {
             </Stack>
         </Flex>
         ;
-    const resetPasswordPage =
-        <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}>
-            <Stack
-                spacing={4}
-                w={'full'}
-                maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
-                rounded={'xl'}
-                boxShadow={'lg'}
-                p={6}
-                my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Forgot your password?
-                </Heading>
-                <Text
-                    fontSize={{ base: 'sm', sm: 'md' }}
-                    color={useColorModeValue('gray.800', 'gray.400')}>
-                    You&apos;ll get an email with a reset link
-                </Text>
-                <FormControl id="email">
-                    <Input
-                        placeholder="your-email@example.com"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                    />
-                </FormControl>
-                <Stack spacing={6}>
-                    <Button
-                        bg={'blue.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'blue.500',
-                        }}>
-                        Request Reset
-                    </Button>
-                </Stack>
-            </Stack>
-        </Flex>
-        ;
-    const verifyEmailPage =
-        <Box textAlign="center" py={10} px={6}>
-            <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            <Heading as="h2" size="xl" mt={6} mb={2}>
-                Verify your E-Mail
-            </Heading>
-            <Text color={'gray.500'}>
-                Check your inbox to access Lumium
-            </Text>
-        </Box>
-        ;
     return (
-        show == "reset-password" && resetPasswordPage ||
-        show == "signup" && signUpPage ||
-        show == "verify-email" && verifyEmailPage || signInPage
+        show == "signup" && signUpPage || signInPage
     )
 }

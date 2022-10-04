@@ -25,8 +25,7 @@
     "homepage": "https://github.com/D3PSI/lumium#readme",
     "workspaces": [
         "lumium-space",
-        "lumium-api",
-        "lumium-dashboard"
+        "lumium-api"
     ],
     "devDependencies": {
         "@nrwl/cli": "14.1.9",

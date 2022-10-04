@@ -3,13 +3,16 @@ mod utils;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::JsFuture;
+use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
 use pulldown_cmark::{html, Options, Parser};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
 
-fn render_markdown(page: &Page) -> String {
+fn render_markdown(page: &JsValue) -> String {
     let markdown = "".to_string();
     return markdown;
     let preprocessed_markdown = render_katex(markdown.to_string()).expect("Failed to render katex");
@@ -36,9 +39,31 @@ pub struct Page {
     contents: Vec<PageContent>,
 }
 
-async fn query(url: Url) -> fetch::Result<Page> {
+async fn query(url: Url) -> Result<JsValue, JsValue> {
     let base_url = env!("API_HOST");
-    Ok(Page { contents: vec![] })
+    let mut opts = RequestInit::new();
+    opts.method("GET");
+    opts.mode(RequestMode::Cors);
+
+    let url = format!(
+        "https://api.github.com/repos/{}/branches/master",
+        "d3psi/lumium"
+    );
+
+    let request = Request::new_with_str_and_init(&url, &opts)?;
+
+    request
+        .headers()
+        .set("Accept", "application/vnd.github.v3+json")?;
+
+    let window = web_sys::window().unwrap();
+    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
+    assert!(resp_value.is_instance_of::<Response>());
+    let resp: Response = resp_value.dyn_into().unwrap();
+
+    let json = JsFuture::from(resp.json()?).await?;
+
+    Ok(json)
 }
 
 fn get_page(url: Url, orders: &mut impl Orders<Msg>) {
@@ -47,32 +72,28 @@ fn get_page(url: Url, orders: &mut impl Orders<Msg>) {
         .perform_cmd(async { Msg::Loaded(Some(query(url).await)) });
 }
 
-fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
+fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
     utils::set_panic_hook();
+    get_page(url.clone(), orders);
     Model { url, page: None }
 }
 
 struct Model {
     url: Url,
-    page: Option<Page>,
+    page: Option<JsValue>,
 }
 
 enum Msg {
-    Load,
-    Loaded(Option<fetch::Result<Page>>),
+    Loaded(Option<Result<JsValue, JsValue>>),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
-        Msg::Load => get_page(model.url.clone(), orders),
         Msg::Loaded(page) => model.page = Some(page.unwrap().ok().unwrap()),
     }
 }
 
 fn view(model: &Model) -> Node<Msg> {
-    if model.page.is_none() {
-        return div!(ev(Ev::Load, |f| Msg::Load));
-    }
     div![Node::from_html(
         Some(&Namespace::Html),
         &render_markdown(model.page.as_ref().unwrap()),
@@ -80,6 +101,6 @@ fn view(model: &Model) -> Node<Msg> {
 }
 
 #[wasm_bindgen]
-pub fn render_page() {
+pub async fn render_page() {
     App::start("page-canvas", init, update, view);
 }

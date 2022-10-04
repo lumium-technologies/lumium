@@ -37,6 +37,12 @@ features = [
     'Node',
     'Window',
     'console',
+    'Headers',
+    'Request',
+    'RequestInit',
+    'RequestMode',
+    'Response',
+    'Window',
 ]
 
 [dev-dependencies]

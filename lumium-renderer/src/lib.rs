@@ -1,16 +1,17 @@
 mod utils;
 
-use katex_renderer::render_katex;
-use pulldown_cmark::{html, Options, Parser};
-use seed::{prelude::*, *};
-use serde::Deserialize;
-use wasm_bindgen::prelude::*;
-use web_sys::Request;
-
 extern crate web_sys;
 
-#[wasm_bindgen]
-pub fn render_markdown(markdown: &str) -> String {
+use wasm_bindgen::prelude::*;
+
+use katex_renderer::render_katex;
+use pulldown_cmark::{html, Options, Parser};
+use seed::{self, prelude::*, *};
+use serde::{Deserialize, Serialize};
+
+fn render_markdown(page: &Page) -> String {
+    let markdown = "".to_string();
+    return markdown;
     let preprocessed_markdown = render_katex(markdown.to_string()).expect("Failed to render katex");
     let parser = Parser::new_ext(&preprocessed_markdown, Options::all());
     let mut html_out = String::new();
@@ -18,56 +19,63 @@ pub fn render_markdown(markdown: &str) -> String {
     html_out
 }
 
-#[derive(Deserialize, Clone, PartialEq, Debug)]
-#[serde(rename_all = "camelCase")]
-struct ContentElement {
+#[derive(Serialize, Deserialize)]
+pub struct ContentElement {
     content: String,
     r#type: String,
 }
 
-#[derive(Deserialize, Clone, PartialEq, Debug)]
-#[serde(rename_all = "camelCase")]
-struct PageContent {
+#[derive(Serialize, Deserialize)]
+pub struct PageContent {
     position: u32,
     content_element: ContentElement,
 }
 
-#[derive(Deserialize, Clone, PartialEq, Debug)]
-#[serde(rename_all = "camelCase")]
-struct Page {
+#[derive(Serialize, Deserialize)]
+pub struct Page {
     contents: Vec<PageContent>,
 }
 
-fn get_page_contents() -> String {
-    let url = env!("API_HOST");
-    //let req = Request::new(url);
-    "".to_string()
+async fn query(url: Url) -> fetch::Result<Page> {
+    let base_url = env!("API_HOST");
+    Ok(Page { contents: vec![] })
 }
 
-fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
+fn get_page(url: Url, orders: &mut impl Orders<Msg>) {
+    orders
+        .skip()
+        .perform_cmd(async { Msg::Loaded(Some(query(url).await)) });
+}
+
+fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
     utils::set_panic_hook();
-    let content = get_page_contents();
-    Model { content }
+    Model { url, page: None }
 }
 
 struct Model {
-    content: String,
+    url: Url,
+    page: Option<Page>,
 }
 
 enum Msg {
-    Content(String),
+    Load,
+    Loaded(Option<fetch::Result<Page>>),
 }
 
-fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
+fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
-        Msg::Content(md) => model.content = md,
+        Msg::Load => get_page(model.url.clone(), orders),
+        Msg::Loaded(page) => model.page = Some(page.unwrap().ok().unwrap()),
     }
 }
 
 fn view(model: &Model) -> Node<Msg> {
+    if model.page.is_none() {
+        return div!(ev(Ev::Load, |f| Msg::Load));
+    }
     div![Node::from_html(
         Some(&Namespace::Html),
-        &render_markdown(model.content.as_str()),
+        &render_markdown(model.page.as_ref().unwrap()),
     )]
 }
 

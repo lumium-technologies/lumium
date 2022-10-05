@@ -9,9 +9,9 @@ import {
     Text,
     Icon,
 } from "@chakra-ui/react";
-import { redirectToAuth } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import Router from "next/router";
 
-export function Hero(){
+export function Hero() {
     return (
         <Box px={8} py={24} mx="auto">
             <Box
@@ -65,7 +65,7 @@ export function Hero(){
                         mb={{ base: 2, sm: 0 }}
                         size="lg"
                         cursor="pointer"
-                        onClick={() => redirectToAuth("signin")}
+                        onClick={() => Router.push("/auth/signin")}
                     >
                         Continue
                         <Icon boxSize={4} ml={1} viewBox="0 0 20 20" fill="currentColor">
@@ -87,7 +87,7 @@ export function Hero(){
                         mb={{ base: 2, sm: 0 }}
                         size="lg"
                         cursor="pointer"
-                        onClick={() => redirectToAuth("signup")}
+                        onClick={() => Router.push("/auth/signup")}
                     >
                         Sign up
                         <Icon boxSize={4} ml={1} viewBox="0 0 20 20" fill="currentColor">

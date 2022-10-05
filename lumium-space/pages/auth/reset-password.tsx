@@ -1,27 +1,38 @@
 import { InfoIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
+import { AxiosResponse } from "axios";
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 
 export default function ResetPassword() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isShown, setIsShown] = useState(false);
+    const [resendIsShown, setResendIsShown] = useState(false);
+    const [emailExistsIsShown, setEmailExistsIsShown] = useState(false);
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
-    const [isShown, setIsShown] = useState(false);
     const handleResetPassword = () => {
-        api.post("/auth/user/password/reset/token", {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                }
-            ]
-        });
-        setIsShown(current => !current);
-    }
+        const emailExists = api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists);
+        emailExists.then(value => {
+            if (value) {
+                api.post("/auth/user/password/reset/token", {
+                    "formFields": [
+                        {
+                            "id": "email",
+                            "value": email
+                        }
+                    ]
+                });
+                setIsShown(true);
+            } else {
+                alert("Email does not exist")
+                setEmailExistsIsShown(true);
+            }
+        })
+    };
     const handleChangePassword = () => {
         api.post("/auth/user/password/reset", {
             "method": "token",
@@ -33,7 +44,19 @@ export default function ResetPassword() {
             ],
             "token": token
         }).then(() => Router.push("/auth"));
-    }
+    };
+    const handleResendEmail = () => {
+        api.post("/auth/user/password/reset/token", {
+            "formFields": [
+                {
+                    "id": "email",
+                    "value": email
+                }
+            ]
+        });
+        setIsShown(false);
+        setResendIsShown(true);
+    };
     const resetPasswordEmail =
         <Flex
             minH={'100vh'}
@@ -125,9 +148,23 @@ export default function ResetPassword() {
             <Text color={'gray.500'}>
                 Check your inbox to reset your password
             </Text>
+            <Button onClick={handleResendEmail}>
+                Resend E-Mail
+            </Button>
+        </Box>
+        ;
+    const emailResendPage =
+        <Box textAlign="center" py={10} px={6}>
+            <InfoIcon boxSize={'50px'} color={'blue.500'} />
+            <Heading as="h2" size="xl" mt={6} mb={2}>
+                E-Mail has been resend
+            </Heading>
+            <Text color={'gray.500'}>
+                Check your inbox to reset your password
+            </Text>
         </Box>
         ;
     return (
-        token && changePassword || isShown && emailSentPage || resetPasswordEmail
+        token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail
     )
 }

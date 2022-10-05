@@ -27,6 +27,7 @@ import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useLoginStatus } from "@hooks";
+import { emailPasswordSignIn, emailPasswordSignUp, getUsersByEmail } from 'supertokens-node/recipe/thirdpartyemailpassword';
 export default function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -36,6 +37,7 @@ export default function Auth() {
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, showCredentialsMatch] = useState(false);
     const [emailExistsIsShown, setEmailExistsIsShown] = useState(false);
+
     const loggedIn = useLoginStatus();
     useEffect(() => {
         if (loggedIn) {
@@ -51,7 +53,7 @@ export default function Auth() {
             redirectToAuth
         }
     }, [])
-    const handleSignIn = () => {
+    /*const handleSignIn = () => {
         var url = "/page";
         if (redirectToPath) {
             url = redirectToPath.toString();
@@ -74,32 +76,6 @@ export default function Auth() {
                 showCredentialsMatch(true)
             }
         });
-        /*
-       import { emailPasswordSignIn, emailPasswordSignUp, getUsersByEmail } from 'supertokens-node/recipe/thirdpartyemailpassword'
-        const handleSignIn = () => {
-        var url = "/page";
-        if (redirectToPath) {
-            url = redirectToPath.toString();
-        }
-        emailPasswordSignIn(email, password).then((status) => {
-            if (status.status == "OK") {
-                Router.push(url)
-            } else {
-                showCredentialsMatch(true)
-            }
-        });
-        };
-        const handleSignUp = () => {
-            emailPasswordSignUp(email, password).then((value) => {
-                if (value.status == "OK") {
-                    getUsersByEmail(email).then((value) => {
-                        console.log(value)
-                    })
-                } else {
-                    setEmailExistsIsShown(true)
-                }
-            })
-        };*/
     };
     const handleSignUp = () => {
         const emailExists = api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists);
@@ -119,6 +95,30 @@ export default function Auth() {
                 }).then(() => {
                     api.post("/auth/user/email/verify/token");
                 }).then(() => Router.push("/auth/verify-email"));
+            } else {
+                setEmailExistsIsShown(true)
+            }
+        })
+    };*/
+    const handleSignIn = () => {
+        var url = "/page";
+        if (redirectToPath) {
+            url = redirectToPath.toString();
+        }
+        emailPasswordSignIn(email, password).then((status) => {
+            if (status.status == "OK") {
+                Router.push(url)
+            } else {
+                showCredentialsMatch(true)
+            }
+        });
+    };
+    const handleSignUp = () => {
+        emailPasswordSignUp(email, password).then((value) => {
+            if (value.status == "OK") {
+                getUsersByEmail(email).then((value) => {
+                    console.log(value)
+                })
             } else {
                 setEmailExistsIsShown(true)
             }

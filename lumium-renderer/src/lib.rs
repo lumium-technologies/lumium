@@ -1,5 +1,6 @@
 mod utils;
 
+extern crate katex_renderer;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;

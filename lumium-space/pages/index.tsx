@@ -18,7 +18,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         if (loggedIn) {
-            Router.push("/page");
+            Router.push("/workspace");
         }
     }, [loggedIn]);
 

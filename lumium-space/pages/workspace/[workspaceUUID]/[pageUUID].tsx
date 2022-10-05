@@ -27,7 +27,7 @@ import React from 'react';
 import { CgProfile } from "react-icons/cg";
 import { FiSettings } from "react-icons/fi";
 import { SwitchColorTheme } from "@components/headers"
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
 

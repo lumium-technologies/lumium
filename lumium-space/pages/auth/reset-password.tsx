@@ -154,15 +154,25 @@ export default function ResetPassword() {
     const emailSentPage =
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            <Heading as="h2" size="xl" mt={6} mb={2}>
-                Check your Email
-            </Heading>
+            {resendIsShown ?
+                <Heading as="h2" size="xl" mt={6} mb={2}>
+                    E-Mail has been resend
+                </Heading>
+                :
+                <Heading as="h2" size="xl" mt={6} mb={2}>
+                    Check your Email
+                </Heading>
+            }
             <Text color={'gray.500'}>
                 Check your inbox to reset your password
             </Text>
-            <Button onClick={handleResendEmail}>
-                Resend E-Mail
-            </Button>
+            {resendIsShown ?
+                <Text></Text>
+                :
+                <Button onClick={handleResendEmail}>
+                    Resend E-Mail
+                </Button>
+            }
         </Box>
         ;
     const emailResendPage =

@@ -22,32 +22,10 @@ describe("landing page", () => {
     });
     it("sign up button", () => {
         cy.dataCy("signup-button").should("be.visible").click();
-        cy.get("#supertokens-root").should("be.visible");
+        cy.dataCy("submitSignUpButton").should("be.visible");
     });
     it("login button", () => {
         cy.dataCy("continue-button").should("be.visible").click();
-        cy.login();
-        cy.interceptAndWait("/page", 200);
-    });
-    it("redirect to login from page", () => {
-        cy.visit("/page");
-        cy.interceptAndWait("/auth", 401);
-        cy.get("#supertokens-root").should("be.visible");
-        cy.login();
-        cy.interceptAndWait("/page", 200);
-    });
-    it("redirect to login from account", () => {
-        cy.visit("/account");
-        cy.interceptAndWait("/auth", 401);
-        cy.get("#supertokens-root").should("be.visible");
-        cy.login();
-        cy.interceptAndWait("/page", 200);
-    });
-    it("redirect to login from manage workspaces", () => {
-        cy.visit("/space-manager");
-        cy.interceptAndWait("/auth", 401);
-        cy.get("#supertokens-root").should("be.visible");
-        cy.login();
-        cy.interceptAndWait("/page", 200);
+        cy.dataCy("submitSignInButton").should("be.visible");
     });
 });

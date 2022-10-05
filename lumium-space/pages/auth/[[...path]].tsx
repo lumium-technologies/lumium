@@ -47,7 +47,7 @@ export default function Auth() {
     }, [loggedIn]);
     useEffect(() => {
         if (SuperTokens.canHandleRoute() === false) {
-            redirectToAuth()
+            redirectToAuth
         }
     }, [])
     const handleSignIn = () => {
@@ -126,11 +126,19 @@ export default function Auth() {
                         <Stack spacing={4}>
                             <FormControl id="email" isRequired>
                                 <FormLabel>Email address</FormLabel>
-                                <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
+                                <Input
+                                    type="email"
+                                    onChange={event => setEmail(event.currentTarget.value)}
+                                    data-cy="signInEmailInput"
+                                />
                             </FormControl>
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
-                                <Input type="password" onChange={event => setPassword(event.currentTarget.value)} />
+                                <Input
+                                    type="password"
+                                    onChange={event => setPassword(event.currentTarget.value)}
+                                    data-cy="signInPasswordInput"
+                                />
                             </FormControl>
                             <Stack spacing={10}>
                                 <Stack
@@ -151,6 +159,7 @@ export default function Auth() {
                                     bg: 'blue.500',
                                 }}
                                 onClick={handleSignIn}
+                                data-cy="submitSignInButton"
                             >
                                 Sign in
                             </Button>
@@ -208,12 +217,20 @@ export default function Auth() {
                             </HStack>
                             <FormControl id="email" isRequired>
                                 <FormLabel>Email address</FormLabel>
-                                <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
+                                <Input
+                                    type="email"
+                                    onChange={event => setEmail(event.currentTarget.value)}
+                                    data-cy="signUpEmailInput"
+                                />
                             </FormControl>
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
-                                    <Input type={showPassword ? 'text' : 'password'} onChange={event => setPassword(event.currentTarget.value)} />
+                                    <Input
+                                        type={showPassword ? 'text' : 'password'}
+                                        onChange={event => setPassword(event.currentTarget.value)}
+                                        data-cy="signUpPasswordInput"
+                                    />
                                     <InputRightElement h={'full'}>
                                         <Button
                                             variant={'ghost'}
@@ -235,6 +252,7 @@ export default function Auth() {
                                         bg: 'blue.500',
                                     }}
                                     onClick={handleSignUp}
+                                    data-cy="submitSignUpButton"
                                 >
                                     Sign up
                                 </Button>

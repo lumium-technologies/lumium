@@ -12,7 +12,7 @@ use pulldown_cmark::{html, Options, Parser};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
 
-fn render_markdown(page: &JsValue) -> String {
+fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
     return markdown;
     let preprocessed_markdown = render_katex(markdown.to_string()).expect("Failed to render katex");
@@ -40,21 +40,16 @@ pub struct Page {
 }
 
 async fn query(url: Url) -> Result<JsValue, JsValue> {
-    let base_url = env!("API_HOST");
+    let origin = format!(
+        "{}/{}",
+        env!("API_HOST").to_string(),
+        url.path().join("/").as_str()
+    );
     let mut opts = RequestInit::new();
     opts.method("GET");
     opts.mode(RequestMode::Cors);
 
-    let url = format!(
-        "https://api.github.com/repos/{}/branches/master",
-        "d3psi/lumium"
-    );
-
-    let request = Request::new_with_str_and_init(&url, &opts)?;
-
-    request
-        .headers()
-        .set("Accept", "application/vnd.github.v3+json")?;
+    let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
 
     let window = web_sys::window().unwrap();
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
@@ -89,14 +84,20 @@ enum Msg {
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
-        Msg::Loaded(page) => model.page = Some(page.unwrap().ok().unwrap()),
+        Msg::Loaded(page) => {
+            if let Some(res) = page {
+                if let Ok(content) = res {
+                    model.page = Some(content);
+                }
+            }
+        }
     }
 }
 
 fn view(model: &Model) -> Node<Msg> {
     div![Node::from_html(
         Some(&Namespace::Html),
-        &render_markdown(model.page.as_ref().unwrap()),
+        &render_markdown(model.page.clone()),
     )]
 }
 

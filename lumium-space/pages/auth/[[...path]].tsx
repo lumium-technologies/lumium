@@ -14,6 +14,9 @@ import {
     HStack,
     InputGroup,
     InputRightElement,
+    Alert,
+    AlertIcon,
+    AlertTitle,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import SuperTokens from 'supertokens-auth-react'
@@ -21,6 +24,7 @@ import { redirectToAuth } from 'supertokens-auth-react/recipe/thirdpartyemailpas
 import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { useLoginStatus } from "@hooks";
 
 export default function Auth() {
     const [email, setEmail] = useState('');
@@ -29,6 +33,18 @@ export default function Auth() {
     const router = useRouter();
     const { show, redirectToPath } = router.query;
     const [showPassword, setShowPassword] = useState(false);
+    const [credentialsMatchError, showCredentialsMatch] = useState(false);
+    const [emailExistsIsShown, setEmailExistsIsShown] = useState(false);
+    const loggedIn = useLoginStatus();
+    useEffect(() => {
+        if (loggedIn) {
+            var url = "/page";
+            if (redirectToPath) {
+                url = redirectToPath.toString();
+            }
+            Router.push(url);
+        }
+    }, [loggedIn]);
     useEffect(() => {
         if (SuperTokens.canHandleRoute() === false) {
             redirectToAuth()
@@ -50,24 +66,37 @@ export default function Auth() {
                     "value": password
                 }
             ]
-        }).then(() => Router.push(url));
+        }).then((promise) => promise.data).then((status) => {
+            if (status.status == "OK") {
+                Router.push(url)
+            } else {
+                showCredentialsMatch(true)
+            }
+        });
         //emailPasswordSignIn(email, password).then(() => Router.push("/"));
     };
     const handleSignUp = () => {
-        api.post("/auth/signup", {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                },
-                {
-                    "id": "password",
-                    "value": password
-                }
-            ]
-        }).then(() => {
-            api.post("/auth/user/email/verify/token");
-        }).then(() => Router.push("/auth/verify-email"));
+        const emailExists = api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists);
+        emailExists.then(value => {
+            if (!value) {
+                api.post("/auth/signup", {
+                    "formFields": [
+                        {
+                            "id": "email",
+                            "value": email
+                        },
+                        {
+                            "id": "password",
+                            "value": password
+                        }
+                    ]
+                }).then(() => {
+                    api.post("/auth/user/email/verify/token");
+                }).then(() => Router.push("/auth/verify-email"));
+            } else {
+                setEmailExistsIsShown(true)
+            }
+        })
     };
     const switchToSignUp = () => {
         Router.push("/auth?rid=thirdpartyemailpassword&show=signup")
@@ -79,130 +108,157 @@ export default function Auth() {
         Router.push("/auth/reset-password")
     };
     const signInPage =
-        <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'}>Sign in to your account</Heading>
-                </Stack>
-                <Box
-                    rounded={'lg'}
-                    bg={useColorModeValue('white', 'gray.700')}
-                    boxShadow={'lg'}
-                    p={8}>
-                    <Stack spacing={4}>
-                        <FormControl id="email" isRequired>
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
-                        </FormControl>
-                        <FormControl id="password" isRequired>
-                            <FormLabel>Password</FormLabel>
-                            <Input type="password" onChange={event => setPassword(event.currentTarget.value)} />
-                        </FormControl>
-                        <Stack spacing={10}>
-                            <Stack
-                                direction={{ base: 'column', sm: 'row' }}
-                                align={'start'}
-                                justify={'space-between'}>
-                                <Checkbox>Remember me</Checkbox>
-                                <Link color={'blue.400'} onClick={switchToPasswordReset}>Forgot password?</Link>
-                            </Stack>
-                        </Stack>
-                        <Flex justifyContent="flex-end" mt="0">
-                            <Link color={'blue.400'} onClick={switchToSignUp}>Create Account</Link>
-                        </Flex>
-                        <Button
-                            bg={'blue.400'}
-                            color={'white'}
-                            _hover={{
-                                bg: 'blue.500',
-                            }}
-                            onClick={handleSignIn}
-                        >
-                            Sign in
-                        </Button>
+        <Flex flexDir="column" minH={'100vh'}>
+            <Flex
+                minH={'93vh'}
+                align={'center'}
+                justify={'center'}
+                bg={useColorModeValue('gray.50', 'gray.800')}>
+                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                    <Stack align={'center'}>
+                        <Heading fontSize={'4xl'}>Sign in to your account</Heading>
                     </Stack>
-                </Box>
-            </Stack>
-        </Flex>
-        ;
-
-    const signUpPage =
-        <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'} textAlign={'center'}>
-                        Sign up
-                    </Heading>
-                </Stack>
-                <Box
-                    rounded={'lg'}
-                    bg={useColorModeValue('white', 'gray.700')}
-                    boxShadow={'lg'}
-                    p={8}>
-                    <Stack spacing={4}>
-                        <HStack>
-                            <Box>
-                                <FormControl id="firstName">
-                                    <FormLabel>First Name</FormLabel>
-                                    <Input type="text" />
-                                </FormControl>
-                            </Box>
-                            <Box>
-                                <FormControl id="lastName">
-                                    <FormLabel>Last Name</FormLabel>
-                                    <Input type="text" />
-                                </FormControl>
-                            </Box>
-                        </HStack>
-                        <FormControl id="email" isRequired>
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
-                        </FormControl>
-                        <FormControl id="password" isRequired>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} onChange={event => setPassword(event.currentTarget.value)} />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowPassword((showPassword) => !showPassword)
-                                        }>
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                        </FormControl>
-                        <Stack spacing={10} pt={2}>
+                    <Box
+                        rounded={'lg'}
+                        bg={useColorModeValue('white', 'gray.700')}
+                        boxShadow={'lg'}
+                        p={8}>
+                        <Stack spacing={4}>
+                            <FormControl id="email" isRequired>
+                                <FormLabel>Email address</FormLabel>
+                                <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
+                            </FormControl>
+                            <FormControl id="password" isRequired>
+                                <FormLabel>Password</FormLabel>
+                                <Input type="password" onChange={event => setPassword(event.currentTarget.value)} />
+                            </FormControl>
+                            <Stack spacing={10}>
+                                <Stack
+                                    direction={{ base: 'column', sm: 'row' }}
+                                    align={'start'}
+                                    justify={'space-between'}>
+                                    <Checkbox>Remember me</Checkbox>
+                                    <Link color={'blue.400'} onClick={switchToPasswordReset}>Forgot password?</Link>
+                                </Stack>
+                            </Stack>
+                            <Flex justifyContent="flex-end" mt="0">
+                                <Link color={'blue.400'} onClick={switchToSignUp}>Create Account</Link>
+                            </Flex>
                             <Button
-                                loadingText="Submitting"
-                                size="lg"
                                 bg={'blue.400'}
                                 color={'white'}
                                 _hover={{
                                     bg: 'blue.500',
                                 }}
-                                onClick={handleSignUp}
+                                onClick={handleSignIn}
                             >
-                                Sign up
+                                Sign in
                             </Button>
                         </Stack>
-                        <Stack pt={6}>
-                            <Text align={'center'}>
-                                Already a user? <Link color={'blue.400'} onClick={switchToSignIn}>Login</Link>
-                            </Text>
-                        </Stack>
+                    </Box>
+                </Stack>
+            </Flex>
+            <Flex justifyContent="flex-end">
+                {
+                    credentialsMatchError ?
+                        <Alert status='error' width="20%" mr="1%">
+                            <AlertIcon />
+                            <AlertTitle>Email or Password is incorrect</AlertTitle>
+                        </Alert>
+                        :
+                        <Text></Text>
+                }
+            </Flex>
+        </Flex>
+
+        ;
+
+    const signUpPage =
+        <Flex flexDir="column" minH={'100vh'}>
+            <Flex
+                minH={'93vh'}
+                align={'center'}
+                justify={'center'}
+                bg={useColorModeValue('gray.50', 'gray.800')}>
+                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                    <Stack align={'center'}>
+                        <Heading fontSize={'4xl'} textAlign={'center'}>
+                            Sign up
+                        </Heading>
                     </Stack>
-                </Box>
-            </Stack>
+                    <Box
+                        rounded={'lg'}
+                        bg={useColorModeValue('white', 'gray.700')}
+                        boxShadow={'lg'}
+                        p={8}>
+                        <Stack spacing={4}>
+                            <HStack>
+                                <Box>
+                                    <FormControl id="firstName">
+                                        <FormLabel>First Name</FormLabel>
+                                        <Input type="text" />
+                                    </FormControl>
+                                </Box>
+                                <Box>
+                                    <FormControl id="lastName">
+                                        <FormLabel>Last Name</FormLabel>
+                                        <Input type="text" />
+                                    </FormControl>
+                                </Box>
+                            </HStack>
+                            <FormControl id="email" isRequired>
+                                <FormLabel>Email address</FormLabel>
+                                <Input type="email" onChange={event => setEmail(event.currentTarget.value)} />
+                            </FormControl>
+                            <FormControl id="password" isRequired>
+                                <FormLabel>Password</FormLabel>
+                                <InputGroup>
+                                    <Input type={showPassword ? 'text' : 'password'} onChange={event => setPassword(event.currentTarget.value)} />
+                                    <InputRightElement h={'full'}>
+                                        <Button
+                                            variant={'ghost'}
+                                            onClick={() =>
+                                                setShowPassword((showPassword) => !showPassword)
+                                            }>
+                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                            </FormControl>
+                            <Stack spacing={10} pt={2}>
+                                <Button
+                                    loadingText="Submitting"
+                                    size="lg"
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'blue.500',
+                                    }}
+                                    onClick={handleSignUp}
+                                >
+                                    Sign up
+                                </Button>
+                            </Stack>
+                            <Stack pt={6}>
+                                <Text align={'center'}>
+                                    Already a user? <Link color={'blue.400'} onClick={switchToSignIn}>Login</Link>
+                                </Text>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Stack>
+            </Flex>
+            <Flex justifyContent="flex-end">
+                {
+                    emailExistsIsShown ?
+                        <Alert status='error' width="20%" mr="1%">
+                            <AlertIcon />
+                            <AlertTitle>Email does already exist</AlertTitle>
+                        </Alert>
+                        :
+                        <Text></Text>
+                }
+            </Flex>
         </Flex>
         ;
     return (

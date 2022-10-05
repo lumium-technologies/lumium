@@ -17,6 +17,8 @@ import {
     Alert,
     AlertIcon,
     AlertTitle,
+    Spacer,
+    Fade,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import SuperTokens from 'supertokens-auth-react'
@@ -25,7 +27,6 @@ import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useLoginStatus } from "@hooks";
-
 export default function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -73,7 +74,32 @@ export default function Auth() {
                 showCredentialsMatch(true)
             }
         });
-        //emailPasswordSignIn(email, password).then(() => Router.push("/"));
+        /*
+       import { emailPasswordSignIn, emailPasswordSignUp, getUsersByEmail } from 'supertokens-node/recipe/thirdpartyemailpassword'
+        const handleSignIn = () => {
+        var url = "/page";
+        if (redirectToPath) {
+            url = redirectToPath.toString();
+        }
+        emailPasswordSignIn(email, password).then((status) => {
+            if (status.status == "OK") {
+                Router.push(url)
+            } else {
+                showCredentialsMatch(true)
+            }
+        });
+        };
+        const handleSignUp = () => {
+            emailPasswordSignUp(email, password).then((value) => {
+                if (value.status == "OK") {
+                    getUsersByEmail(email).then((value) => {
+                        console.log(value)
+                    })
+                } else {
+                    setEmailExistsIsShown(true)
+                }
+            })
+        };*/
     };
     const handleSignUp = () => {
         const emailExists = api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists);
@@ -145,7 +171,8 @@ export default function Auth() {
                                     direction={{ base: 'column', sm: 'row' }}
                                     align={'start'}
                                     justify={'space-between'}>
-                                    <Checkbox>Remember me</Checkbox>
+                                    {/*<Checkbox>Remember me</Checkbox>*/}
+                                    <Spacer />
                                     <Link color={'blue.400'} onClick={switchToPasswordReset}>Forgot password?</Link>
                                 </Stack>
                             </Stack>
@@ -167,17 +194,14 @@ export default function Auth() {
                     </Box>
                 </Stack>
             </Flex>
-            <Flex justifyContent="flex-end">
-                {
-                    credentialsMatchError ?
-                        <Alert status='error' width="20%" mr="1%">
-                            <AlertIcon />
-                            <AlertTitle>Email or Password is incorrect</AlertTitle>
-                        </Alert>
-                        :
-                        <Text></Text>
-                }
-            </Flex>
+            <Fade in={credentialsMatchError}>
+                <Flex justifyContent="flex-end">
+                    <Alert status='error' width="20%" mr="1%" borderRadius="10px">
+                        <AlertIcon />
+                        <AlertTitle>Email or Password is incorrect</AlertTitle>
+                    </Alert>
+                </Flex>
+            </Fade>
         </Flex>
 
         ;
@@ -280,6 +304,8 @@ export default function Auth() {
         </Flex>
         ;
     return (
-        show == "signup" && signUpPage || signInPage
+        <Fade in={true}>
+            {show == "signup" && signUpPage || signInPage}
+        </Fade>
     )
 }

@@ -1,5 +1,5 @@
 import { InfoIcon } from "@chakra-ui/icons";
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { AxiosResponse } from "axios";
 import Router, { useRouter } from 'next/router';
@@ -27,6 +27,7 @@ export default function ResetPassword() {
                     ]
                 });
                 setIsShown(true);
+                setResendIsShown(true)
             } else {
                 setEmailExistsIsShown(true);
             }
@@ -156,37 +157,39 @@ export default function ResetPassword() {
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {resendIsShown ?
                 <Heading as="h2" size="xl" mt={6} mb={2}>
-                    E-Mail has been resend
+                    Check your Email
                 </Heading>
                 :
                 <Heading as="h2" size="xl" mt={6} mb={2}>
-                    Check your Email
+                    E-Mail has been resend
                 </Heading>
             }
             <Text color={'gray.500'}>
                 Check your inbox to reset your password
             </Text>
-            {resendIsShown ?
-                <Text></Text>
-                :
+            <ScaleFade initialScale={0.9} in={resendIsShown}>
                 <Button onClick={handleResendEmail}>
                     Resend E-Mail
                 </Button>
-            }
+            </ScaleFade>
         </Box>
         ;
     const emailResendPage =
-        <Box textAlign="center" py={10} px={6}>
-            <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            <Heading as="h2" size="xl" mt={6} mb={2}>
-                E-Mail has been resend
-            </Heading>
-            <Text color={'gray.500'}>
-                Check your inbox to reset your password
-            </Text>
-        </Box>
+        <Fade in={true}>
+            <Box textAlign="center" py={10} px={6}>
+                <InfoIcon boxSize={'50px'} color={'blue.500'} />
+                <Heading as="h2" size="xl" mt={6} mb={2}>
+                    E-Mail has been resend
+                </Heading>
+                <Text color={'gray.500'}>
+                    Check your inbox to reset your password
+                </Text>
+            </Box>
+        </Fade>
         ;
     return (
-        token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail
+        <Fade in={true}>
+            {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
+        </Fade>
     )
 }

@@ -12,6 +12,8 @@ export default function Workspace() {
             setRecentWorkspace(res.data.recentWorkspace);
             if (recentWorkspace) {
                 Router.push('/' + recentWorkspace.id);
+            } else {
+                Router.push('/spaces/new');
             }
         });
     });

@@ -103,6 +103,9 @@ fn view(model: &Model) -> Node<Msg> {
 }
 
 #[wasm_bindgen]
-pub async fn render_page() {
+pub fn render_page() {
     App::start("page-canvas", init, update, view);
 }
+
+#[wasm_bindgen]
+pub fn generate_workspace_key_with_recovery(password: JsValue) {}

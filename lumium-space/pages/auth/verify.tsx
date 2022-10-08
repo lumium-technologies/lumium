@@ -12,14 +12,16 @@ export default function VerifyEmail() {
         api.post("/auth/user/email/verify", {
             "method": "token",
             "token": token
-        }).then(() => Router.push("/page"));
+        }).then(() => Router.push("/page"))
     };
     useEffect(() => {
         api.get("/auth/user/email/verify").then((promise) => promise.data).then((value) => {
             if (value.isVerified) {
                 Router.push("/page")
             }
-        })
+        }).catch(() => {
+            Router.push("/auth/signin")
+        });
     }, [])
     const handleResendEmail = () => {
         api.post("/auth/user/email/verify/token");

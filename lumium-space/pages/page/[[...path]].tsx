@@ -30,7 +30,6 @@ import { SwitchColorTheme } from "@components/headers"
 import Router from "next/router";
 import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
-
 const Space: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const onLogout = () => {

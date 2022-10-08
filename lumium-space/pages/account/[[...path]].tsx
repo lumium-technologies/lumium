@@ -26,19 +26,19 @@ import { FiEdit2 } from "react-icons/fi";
 const Space: React.FC = () => {
     const [email, setEmail] = useState<string>();
     const [api] = useApi();
-    var emailButton = true;
     useEffect(() => {
         api.get<UserDTO>("/secure/user").then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
+        }).catch(() => {
+            Router.push("/auth/signin?redirectionURL=account")
         });
-    }, [api, email]);
+    }, []);
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
     };
-    const emailButtonClicked = () => {
-        emailButton = false
-        return emailButton
-    };
+    const handleCancel = () => {
+        Router.push("/page")
+    }
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">
@@ -127,7 +127,9 @@ const Space: React.FC = () => {
                             _hover={{
                                 bg: 'red.500',
                             }}
-                            data-cy="cancel-button">
+                            data-cy="cancel-button"
+                            onClick={handleCancel}
+                        >
                             Cancel
                         </Button>
                         <Button

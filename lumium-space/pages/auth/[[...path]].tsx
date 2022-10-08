@@ -1,15 +1,10 @@
-import { useEffect } from 'react';
-import Router, { useRouter } from 'next/router';
-import { useLoginStatus } from "@hooks";
+import SignIn from './signin';
+import { Authenticator } from '@security/authentication';
 
 export default function Auth() {
-    const loggedIn = useLoginStatus();
-    useEffect(() => {
-        if (loggedIn) {
-            Router.push("/page");
-        } else {
-            Router.push("/auth/signin");
-        };
-    }, [loggedIn]);
-    return null;
+    return (
+        <Authenticator>
+            <SignIn></SignIn>
+        </Authenticator>
+    )
 }

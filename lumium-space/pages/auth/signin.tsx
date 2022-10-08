@@ -17,14 +17,20 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import { useApi } from "@hooks/api";
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [api] = useApi();
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
+    const [api] = useApi();
+    const router = useRouter();
+    const { redirectionURL } = router.query;
+    let URL = "/page"
     const handleSignIn = () => {
+        if (redirectionURL) {
+            URL = "/" + redirectionURL
+        }
         api.post("/auth/signin", {
             "formFields": [
                 {
@@ -38,7 +44,7 @@ export default function SignIn() {
             ]
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK") {
-                Router.push("/page")
+                Router.push(URL)
             } else {
                 setCredentialsMatchError(true)
             }

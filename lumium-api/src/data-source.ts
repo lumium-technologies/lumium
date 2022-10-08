@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { AuditEntry, AuditEntryLevel } from './entity/Audit';
+import { ConnectionString } from "connection-string";
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
@@ -12,6 +13,10 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
 } else if (process.env.NODE_ENV !== 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
 }
+
+const connectionObject = process.env.REDIS_URL ? new ConnectionString(process.env.REDIS_URL) : null;
+
+console.log(JSON.stringify(connectionObject));
 
 export const dataSource = new DataSource({
     type: 'postgres',
@@ -25,13 +30,17 @@ export const dataSource = new DataSource({
     migrations: [
         'src/migration/**/*.ts'
     ],
-    cache: process.env.REDIS_TLS_URL ? {
+    cache: {
         type: 'ioredis',
+        options: connectionObject && {
+            host: connectionObject.host,
+            user: connectionObject.user,
+            password: connectionObject.password,
+            port: connectionObject.port
+        },
         alwaysEnabled: true,
-        options: {
-            url: process.env.REDIS_TLS_URL
-        }
-    } : null
+        duration: 3600000
+    }
 });
 
 export const connection = {

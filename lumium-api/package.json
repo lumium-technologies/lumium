@@ -18,6 +18,7 @@
         "@types/jest": "^29.0.3",
         "axios": "^0.27.2",
         "concurrently": "7.2.1",
+        "connection-string": "^4.3.6",
         "cors": "2.8.5",
         "dotenv": "16.0.1",
         "dotenv-expand": "^9.0.0",

@@ -1,5 +1,5 @@
 {
-    "addons": ["heroku-postgresql:hobby-dev"],
+    "addons": ["heroku-postgresql:hobby-dev", "heroku-redis:hobby-dev"],
     "buildpacks": [
         {
             "url": "https://github.com/dmathieu/heroku-buildpack-submodules.git"

@@ -27,6 +27,7 @@ export const dataSource = new DataSource({
     ],
     cache: process.env.REDIS_TLS_URL ? {
         type: 'redis',
+        alwaysEnabled: true,
         options: {
             url: process.env.REDIS_TLS_URL
         }

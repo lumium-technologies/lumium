@@ -14,17 +14,23 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
 }
 
 export const dataSource = new DataSource({
-    'type': 'postgres',
-    'url': process.env.DATABASE_URL,
-    'synchronize': process.env.DB_SYNC && true || false,
-    'dropSchema': process.env.DB_DROP && true || false,
-    'logging': true,
-    'entities': [
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    synchronize: process.env.DB_SYNC && true || false,
+    dropSchema: process.env.DB_DROP && true || false,
+    logging: true,
+    entities: [
         'src/entity/**/*.ts'
     ],
-    'migrations': [
+    migrations: [
         'src/migration/**/*.ts'
-    ]
+    ],
+    cache: {
+        type: 'redis',
+        options: {
+            url: process.env.REDIS_URL
+        }
+    }
 });
 
 export const connection = {

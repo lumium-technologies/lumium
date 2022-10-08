@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { DataSource, createConnection, getConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
@@ -25,12 +25,12 @@ export const dataSource = new DataSource({
     migrations: [
         'src/migration/**/*.ts'
     ],
-    cache: {
+    cache: process.env.REDIS_TLS_URL ? {
         type: 'redis',
         options: {
-            url: process.env.REDIS_URL
+            url: process.env.REDIS_TLS_URL
         }
-    }
+    } : null
 });
 
 export const connection = {

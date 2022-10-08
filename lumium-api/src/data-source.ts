@@ -26,7 +26,7 @@ export const dataSource = new DataSource({
         'src/migration/**/*.ts'
     ],
     cache: process.env.REDIS_TLS_URL ? {
-        type: 'redis',
+        type: 'ioredis',
         alwaysEnabled: true,
         options: {
             url: process.env.REDIS_TLS_URL

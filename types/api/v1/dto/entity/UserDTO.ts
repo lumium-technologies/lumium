@@ -18,4 +18,5 @@ export interface UserDTO extends AbstractEntityDTO {
     memberPages: PageDTO[];
     visitorPages: PageDTO[];
     preferences: UserPreferences[];
+    recentWorkspace: WorkspaceDTO;
 }

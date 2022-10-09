@@ -1,100 +1,100 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "sourceMap": true,
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "noImplicitAny": false,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "preserve",
-        "baseUrl": ".",
-        "paths": {
-            "@definitions/*": [
-                "src/definitions/*"
-            ],
-            "@definitions": [
-                "src/definitions"
-            ],
-            "@components/*": [
-                "src/components/*"
-            ],
-            "@components": [
-                "src/components"
-            ],
-            "@hooks/*": [
-                "src/hooks/*"
-            ],
-            "@hooks": [
-                "src/hooks"
-            ],
-            "@security/*": [
-                "src/security/*"
-            ],
-            "@security": [
-                "src/security"
-            ],
-            "@transfer/*": [
-                "src/transfer/*"
-            ],
-            "@transfer": [
-                "src/transfer"
-            ],
-            "@public/*": [
-                "public/*"
-            ],
-            "@public": [
-                "public"
-            ],
-            "@styles/*": [
-                "src/styles/*"
-            ],
-            "@styles": [
-                "src/styles"
-            ],
-            "@redux/*": [
-                "src/redux/*"
-            ],
-            "@redux": [
-                "src/redux"
-            ],
-            "@i18n": [
-                "./i18n"
-            ],
-            "@test/*": [
-                "test/*"
-            ],
-            "@test": [
-                "test"
-            ],
-            "@types/*": [
-                "types/*"
-            ],
-            "@types": [
-                "types"
-            ]
-        },
-        "incremental": true
-    },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx"
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "exclude": [
-        "node_modules",
-        "test/*",
-        "cypress/*"
-    ]
+    "sourceMap": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@definitions/*": [
+        "src/definitions/*"
+      ],
+      "@definitions": [
+        "src/definitions"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@components": [
+        "src/components"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@hooks": [
+        "src/hooks"
+      ],
+      "@security/*": [
+        "src/security/*"
+      ],
+      "@security": [
+        "src/security"
+      ],
+      "@transfer/*": [
+        "src/transfer/*"
+      ],
+      "@transfer": [
+        "src/transfer"
+      ],
+      "@public/*": [
+        "public/*"
+      ],
+      "@public": [
+        "public"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@styles": [
+        "src/styles"
+      ],
+      "@redux/*": [
+        "src/redux/*"
+      ],
+      "@redux": [
+        "src/redux"
+      ],
+      "@i18n": [
+        "./i18n"
+      ],
+      "@test/*": [
+        "test/*"
+      ],
+      "@test": [
+        "test"
+      ],
+      "@types/*": [
+        "types/*"
+      ],
+      "@types": [
+        "types"
+      ]
+    },
+    "incremental": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "test/*",
+    "cypress/*"
+  ]
 }

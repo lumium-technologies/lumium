@@ -55,4 +55,3 @@ before(() => {
 after(() => {
     cy.deleteAccount();
 });
-

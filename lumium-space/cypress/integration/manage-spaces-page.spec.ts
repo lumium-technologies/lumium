@@ -1,9 +1,9 @@
 describe("manage spaces", () => {
     beforeEach(() => {
         cy.clearCookies();
-        cy.visit("/space-manager");
+        cy.visit("/spaces");
         cy.login();
-        cy.interceptAndWait("/space-manager", 200);
+        cy.interceptAndWait("/spaces", 200);
     });
     it("drawer", () => {
         cy.dataCy("spaces-item").should("be.visible");
@@ -13,7 +13,7 @@ describe("manage spaces", () => {
         cy.dataCy("profile-button").should("be.visible").click();
         cy.dataCy("profile-account-button").should("be.visible").click();
         cy.interceptAndWait("/account", 200);
-        cy.visit("/space-manager");
+        cy.visit("/spaces");
     });
     afterEach(() => {
         cy.dataCy("profile-button").should("be.visible").click();

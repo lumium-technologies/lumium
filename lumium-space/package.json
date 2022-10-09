@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "yarn run lumium-renderer:package && next dev",
         "build": "yarn run lumium-renderer:package && next build",
         "start": "next start",
         "test": "NODE_TEST=true jest -c test/jest.config.js",

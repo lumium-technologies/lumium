@@ -40,7 +40,7 @@ const Space: React.FC = () => {
         Router.push("/account");
     };
     const onSpaces = () => {
-        Router.push("/space-manager");
+        Router.push("/spaces");
     };
     return (
         <Authenticator>

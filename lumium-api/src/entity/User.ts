@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany } from "typeorm"
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, OneToOne, ManyToOne } from "typeorm"
 import { AbstractEntity } from "./AbstractEntity"
 import { Address } from "./Address"
 import { Email } from "./Email"
@@ -56,4 +56,7 @@ export class User extends AbstractEntity {
 
     @OneToMany(() => UserPreference, (userPreferences) => userPreferences.user)
     preferences?: UserPreference[]
+
+    @ManyToOne(() => Workspace, {nullable: true})
+    recentWorkspace?: Workspace
 }

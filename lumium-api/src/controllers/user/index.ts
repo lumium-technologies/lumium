@@ -22,7 +22,7 @@ export const info = async (req: SessionRequest, res: express.Response) => {
         },
         where: {
             id: req.session!.getUserId()
-        }
+        },
     });
     res.status(200).send(user);
 }

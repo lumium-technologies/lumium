@@ -4,7 +4,7 @@
     "description": "next level docs",
     "private": true,
     "scripts": {
-        "test": "(cd lumium-api && yarn test) && (cd lumium-space && yarn test) && (cd lumium-space && yarn run cypress:test)",
+        "test": "set -e; (cd lumium-api && yarn test) && (cd lumium-space && yarn test) && (cd lumium-space && yarn run cypress:test)",
         "build": "./scripts/build.sh",
         "start": "concurrently -n lumium-space,lumium-api \"cd lumium-space && yarn start\" \"cd lumium-api && yarn start\"",
         "dev": "concurrently -n lumium-space,lumium-api \"cd lumium-space && yarn run dev\" \"cd lumium-api && yarn run dev\"",

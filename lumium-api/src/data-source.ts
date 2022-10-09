@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { AuditEntry, AuditEntryLevel } from './entity/Audit';
-import { ConnectionString } from "connection-string";
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
@@ -14,8 +13,10 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
 }
 
-const len = 'redis://'.length;
-const redisUrl = [process.env.REDIS_URL.slice(0, len), 'default', process.env.REDIS_URL?.slice(len)].join('');
+const schema = 'rediss://';
+const len = schema.length;
+const prot = schema + 'default';
+const redisUrl = [prot, process.env.REDIS_TLS_URL?.slice(len)].join('');
 
 console.log(JSON.stringify(redisUrl));
 

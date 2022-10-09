@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { DataSource, createConnection, getConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
@@ -13,18 +13,29 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
 }
 
+const schema = 'rediss://';
+const len = schema.length;
+const prot = schema + 'default';
+const redisUrl = process.env.REDIS_TLS_URL && [prot, process.env.REDIS_TLS_URL?.slice(len)].join('');
+
 export const dataSource = new DataSource({
-    'type': 'postgres',
-    'url': process.env.DATABASE_URL,
-    'synchronize': process.env.DB_SYNC && true || false,
-    'dropSchema': process.env.DB_DROP && true || false,
-    'logging': true,
-    'entities': [
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    synchronize: process.env.DB_SYNC && true || false,
+    dropSchema: process.env.DB_DROP && true || false,
+    logging: true,
+    entities: [
         'src/entity/**/*.ts'
     ],
-    'migrations': [
+    migrations: [
         'src/migration/**/*.ts'
-    ]
+    ],
+    cache: redisUrl && {
+        type: 'ioredis',
+        options: redisUrl,
+        alwaysEnabled: true,
+        duration: 3600000
+    }
 });
 
 export const connection = {

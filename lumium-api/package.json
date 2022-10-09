@@ -9,7 +9,7 @@
         "start:dev": "nodemon src/index.ts",
         "dev": "yarn run typeorm migration:run && yarn run start:dev",
         "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
-        "db:migrate": "yarn run typeorm migration:run"
+        "db:migrate": "yarn run typeorm cache:clear && yarn run typeorm migration:run"
     },
     "author": "",
     "license": "ISC",
@@ -24,9 +24,11 @@
         "express": "4.18.1",
         "express-jsdoc-swagger": "1.6.8",
         "express-rate-limit": "6.4.0",
+        "ioredis": "^5.2.3",
         "jest": "27.5.1",
         "node-pg-migrate": "6.2.1",
         "pg": "8.7.3",
+        "redis": "^4.3.1",
         "reflect-metadata": "0.1.13",
         "supertest": "^6.2.4",
         "supertokens-node": "9.2.3",

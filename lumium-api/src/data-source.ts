@@ -14,9 +14,10 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
 }
 
-const connectionObject = process.env.REDIS_URL ? new ConnectionString(process.env.REDIS_URL) : null;
+const len = 'redis://'.length;
+const redisUrl = [process.env.REDIS_URL.slice(0, len), 'default', process.env.REDIS_URL?.slice(len)].join('');
 
-console.log(JSON.stringify(connectionObject));
+console.log(JSON.stringify(redisUrl));
 
 export const dataSource = new DataSource({
     type: 'postgres',
@@ -30,14 +31,9 @@ export const dataSource = new DataSource({
     migrations: [
         'src/migration/**/*.ts'
     ],
-    cache: {
+    cache: redisUrl && {
         type: 'ioredis',
-        options: connectionObject && {
-            host: connectionObject.host,
-            user: connectionObject.user,
-            password: connectionObject.password,
-            port: connectionObject.port
-        },
+        options: redisUrl,
         alwaysEnabled: true,
         duration: 3600000
     }

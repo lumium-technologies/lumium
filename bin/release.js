@@ -11,7 +11,7 @@ async function run() {
 			execSync(`heroku pg:copy --confirm=${appName} lumium-staging-api::DATABASE DATABASE -a ${appName}`);
 		}
 
-		const output = execSync('yarn run typeorm cache:clear && yarn run db:migrate');
+		const output = execSync('yarn run db:migrate');
 		console.log('Running database migrations..., Output:', output.toString());
 	}
 }

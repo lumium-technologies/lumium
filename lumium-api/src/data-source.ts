@@ -18,8 +18,6 @@ const len = schema.length;
 const prot = schema + 'default';
 const redisUrl = process.env.REDIS_TLS_URL && [prot, process.env.REDIS_TLS_URL?.slice(len)].join('');
 
-console.log(JSON.stringify(redisUrl));
-
 export const dataSource = new DataSource({
     type: 'postgres',
     url: process.env.DATABASE_URL,

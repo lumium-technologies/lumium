@@ -43,7 +43,7 @@ pub struct Page {
 async fn query(url: Url) -> Result<JsValue, JsValue> {
     let origin = format!(
         "{}/{}",
-        env!("NEXT_PUBLIC_API_HOST").to_string(),
+        env!("RENDERER_API_HOST").to_string(),
         url.path().join("/").as_str()
     );
     let mut opts = RequestInit::new();

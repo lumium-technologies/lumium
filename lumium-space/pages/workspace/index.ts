@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { UserDTO, WorkspaceDTO } from "@types";
 import Router from "next/router";
 
-export default function Workspace() {
+const Workspace: React.FC = () => {
     const [api] = useApi();
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
 
@@ -20,3 +20,5 @@ export default function Workspace() {
 
     return null;
 }
+
+export default Workspace;

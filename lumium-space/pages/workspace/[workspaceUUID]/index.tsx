@@ -31,7 +31,7 @@ import Router from "next/router";
 import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
 
-const Page: React.FC = () => {
+const Space: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const onLogout = () => {
         signOut().then(() => Router.push("/"));
@@ -123,4 +123,4 @@ const Page: React.FC = () => {
     );
 };
 
-export default Page;
+export default Space;

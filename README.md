@@ -10,7 +10,7 @@ CREATE DATABASE lumium WITH OWNER development;
 CREATE DATABASE lumium_test WITH OWNER development;
 ```
 
-## building and running
+## building and running locally
 ```bash
 yarn && yarn build
 yarn run dev # to start the development servers

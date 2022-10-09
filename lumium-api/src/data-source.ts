@@ -16,7 +16,7 @@ if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
 const schema = 'rediss://';
 const len = schema.length;
 const prot = schema + 'default';
-const redisUrl = [prot, process.env.REDIS_TLS_URL?.slice(len)].join('');
+const redisUrl = process.env.REDIS_TLS_URL && [prot, process.env.REDIS_TLS_URL?.slice(len)].join('');
 
 console.log(JSON.stringify(redisUrl));
 

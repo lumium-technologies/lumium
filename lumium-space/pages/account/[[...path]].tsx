@@ -30,14 +30,14 @@ const Space: React.FC = () => {
         api.get<UserDTO>("/secure/user").then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
         }).catch(() => {
-            Router.push("/auth/signin?redirectionURL=account")
+            Router.push("/auth/signin?redirectionURL=account");
         });
-    }, []);
+    }, [api]);
     const handleDelete = () => {
         api.delete("/secure/user").then(() => Router.push("/"));
     };
     const handleCancel = () => {
-        Router.push("/page")
+        Router.push("/page");
     }
     return (
         <Authenticator>

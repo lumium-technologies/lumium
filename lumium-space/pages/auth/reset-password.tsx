@@ -1,7 +1,7 @@
 import { InfoIcon } from "@chakra-ui/icons";
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
-import { AxiosResponse } from "axios";
+import { Authenticator } from "@security/authentication";
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 
@@ -188,8 +188,10 @@ export default function ResetPassword() {
         </Fade>
         ;
     return (
-        <Fade in={true}>
-            {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
-        </Fade>
+        <Authenticator>
+            <Fade in={true}>
+                {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
+            </Fade>
+        </Authenticator>
     )
 }

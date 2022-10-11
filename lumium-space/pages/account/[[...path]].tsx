@@ -22,22 +22,19 @@ import Router from "next/router";
 import type { UserDTO } from "@types";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
+import { SECURE_USER_GET, SECURE_USER_DELETE } from "@routes/v1";
 
 const Space: React.FC = () => {
     const [email, setEmail] = useState<string>();
     const [api] = useApi();
     var emailButton = true;
     useEffect(() => {
-        api.get<UserDTO>("/secure/user").then((userinfo) => {
+        api.get<UserDTO>(SECURE_USER_GET).then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
         });
     }, [api, email]);
     const handleDelete = () => {
-        api.delete("/secure/user").then(() => Router.push("/"));
-    };
-    const emailButtonClicked = () => {
-        emailButton = false
-        return emailButton
+        api.delete(SECURE_USER_DELETE).then(() => Router.push("/"));
     };
     return (
         <Authenticator>

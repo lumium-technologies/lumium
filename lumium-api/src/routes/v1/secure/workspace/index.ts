@@ -1,4 +1,6 @@
 import express from 'express';
+import { POST } from '../../../../../routes/v1/secure/workspace';
+import { WORKSPACEID_GET } from '../../../../../routes/v1/secure/workspace';
 const router = express.Router();
 import { info, create } from '../../../../controllers/workspace';
 
@@ -11,7 +13,7 @@ import { info, create } from '../../../../controllers/workspace';
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.get('/:workspaceId', info);
+router.get(WORKSPACEID_GET, info);
 
 /**
  * POST /secure/workspace
@@ -22,6 +24,6 @@ router.get('/:workspaceId', info);
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.post('/', create);
+router.post(POST, create);
 
 export { router as workspace };

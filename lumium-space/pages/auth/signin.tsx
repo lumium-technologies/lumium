@@ -27,9 +27,9 @@ export default function SignIn() {
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
-    const [loggedIn, setloggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
     useLoginStatus().then((val) => {
-        setloggedIn(val);
+        setLoggedIn(val);
     });
     useEffect(() => {
         if (loggedIn) {

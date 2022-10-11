@@ -4,11 +4,13 @@ import Router from 'next/router';
 
 export const Authenticator: React.FC = (props) => {
     const { children } = props;
-    const loggedIn = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
     useEffect(() => {
         useLoginStatus().then((val) => {
             if (!val) {
                 Router.push('/auth/signin');
+            } else {
+                setLoggedIn(true)
             }
         });
     }, []);

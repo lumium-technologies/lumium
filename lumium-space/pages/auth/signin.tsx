@@ -15,22 +15,33 @@ import {
     Spacer,
     Fade,
 } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
+import { useLoginStatus } from '@hooks/security';
+import { UserDTO, WorkspaceDTO } from "@types";
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
-    const router = useRouter();
-    const { redirectionURL } = router.query;
-    let URL = "/page"
+    const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
+    useEffect(() => {
+        useLoginStatus().then((val) => {
+            if (val) {
+                api.get<UserDTO>('/secure/user').then((res) => {
+                    setRecentWorkspace(res.data.recentWorkspace);
+                    if (recentWorkspace) {
+                        Router.push('/' + recentWorkspace.id);
+                    } else {
+                        Router.push('/spaces/new');
+                    }
+                });
+            }
+        });
+    }, []);
     const handleSignIn = () => {
-        if (redirectionURL) {
-            URL = "/" + redirectionURL
-        }
         api.post("/auth/signin", {
             "formFields": [
                 {
@@ -44,7 +55,14 @@ export default function SignIn() {
             ]
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK") {
-                Router.push(URL);
+                api.get<UserDTO>('/secure/user').then((res) => {
+                    setRecentWorkspace(res.data.recentWorkspace);
+                    if (recentWorkspace) {
+                        Router.push('/' + recentWorkspace.id);
+                    } else {
+                        Router.push('/spaces/new');
+                    }
+                });
             } else {
                 setCredentialsMatchError(true);
             };

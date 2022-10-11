@@ -18,11 +18,12 @@ import {
     AlertTitle,
     Fade,
 } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Authenticator } from '@security/authentication';
+import { useLoginStatus } from '@hooks/security';
+import { UserDTO, WorkspaceDTO } from "@types";
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
@@ -30,7 +31,21 @@ export default function SignUp() {
     const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
-
+    const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
+    useEffect(() => {
+        useLoginStatus().then((val) => {
+            if (val) {
+                api.get<UserDTO>('/secure/user').then((res) => {
+                    setRecentWorkspace(res.data.recentWorkspace);
+                    if (recentWorkspace) {
+                        Router.push('/' + recentWorkspace.id);
+                    } else {
+                        Router.push('/spaces/new');
+                    }
+                });
+            }
+        });
+    }, []);
     const handleSignUp = () => {
         api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {

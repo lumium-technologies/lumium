@@ -13,12 +13,12 @@ export default function VerifyEmail() {
         api.post("/auth/user/email/verify", {
             "method": "token",
             "token": token
-        }).then(() => Router.push("/page"));
+        }).then(() => Router.push("/workspace/new"));
     };
     useEffect(() => {
         api.get("/auth/user/email/verify").then((promise) => promise.data).then((value) => {
             if (value.isVerified) {
-                Router.push("/page");
+                Router.push("/workspace");
             }
         }).catch(() => {
             Router.push("/auth/signin");

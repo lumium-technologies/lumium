@@ -29,8 +29,6 @@ const Space: React.FC = () => {
     useEffect(() => {
         api.get<UserDTO>("/secure/user").then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
-        }).catch(() => {
-            Router.push("/auth/signin?redirectionURL=account");
         });
     }, [api]);
     const handleDelete = () => {

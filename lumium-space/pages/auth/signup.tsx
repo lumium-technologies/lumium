@@ -32,20 +32,22 @@ export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
+    const [loggedIn, setloggedIn] = useState(false);
+    useLoginStatus().then((val) => {
+        setloggedIn(val);
+    });
     useEffect(() => {
-        useLoginStatus().then((val) => {
-            if (val) {
-                api.get<UserDTO>('/secure/user').then((res) => {
-                    setRecentWorkspace(res.data.recentWorkspace);
-                    if (recentWorkspace) {
-                        Router.push('/' + recentWorkspace.id);
-                    } else {
-                        Router.push('/spaces/new');
-                    }
-                });
-            }
-        });
-    }, []);
+        if (loggedIn) {
+            api.get<UserDTO>('/secure/user').then((res) => {
+                setRecentWorkspace(res.data.recentWorkspace);
+                if (recentWorkspace) {
+                    Router.push('/' + recentWorkspace.id);
+                } else {
+                    Router.push('/spaces/new');
+                }
+            });
+        };
+    }, [loggedIn, api, recentWorkspace]);
     const handleSignUp = () => {
         api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {

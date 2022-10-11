@@ -27,20 +27,22 @@ export default function SignIn() {
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
+    const [loggedIn, setloggedIn] = useState(false);
+    useLoginStatus().then((val) => {
+        setloggedIn(val);
+    });
     useEffect(() => {
-        useLoginStatus().then((val) => {
-            if (val) {
-                api.get<UserDTO>('/secure/user').then((res) => {
-                    setRecentWorkspace(res.data.recentWorkspace);
-                    if (recentWorkspace) {
-                        Router.push('/' + recentWorkspace.id);
-                    } else {
-                        Router.push('/spaces/new');
-                    }
-                });
-            }
-        });
-    }, []);
+        if (loggedIn) {
+            api.get<UserDTO>('/secure/user').then((res) => {
+                setRecentWorkspace(res.data.recentWorkspace);
+                if (recentWorkspace) {
+                    Router.push('/' + recentWorkspace.id);
+                } else {
+                    Router.push('/spaces/new');
+                }
+            });
+        }
+    }, [loggedIn, api, recentWorkspace]);
     const handleSignIn = () => {
         api.post("/auth/signin", {
             "formFields": [

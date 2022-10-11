@@ -1,4 +1,5 @@
 import express from 'express';
+import { DELETE, GET } from '../../../../../routes/api/v1/secure/user';
 const router = express.Router();
 import { info, deleteAccount } from '../../../../controllers/user';
 
@@ -10,7 +11,7 @@ import { info, deleteAccount } from '../../../../controllers/user';
  * @return {UserDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.get('/', info);
+router.get(GET, info);
 
 /**
  * DELETE /secure/user
@@ -20,6 +21,6 @@ router.get('/', info);
  * @return 200 - Success - text/plain
  * @return 401 - Unauthorized - text/plain
  */
-router.delete('/', deleteAccount);
+router.delete(DELETE, deleteAccount);
 
 export { router as user };

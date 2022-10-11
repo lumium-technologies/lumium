@@ -1,0 +1,11 @@
+import { PONG, USER_DELETE, USER_GET, WORKSPACE_POST, WORKSPACE_WORKSPACEID_GET } from './secure';
+
+export const V1 = '/v1';
+export const PING = '/ping';
+export const SECURE = '/secure';
+
+export const SECURE_PONG = SECURE + PONG;
+export const SECURE_USER_GET = SECURE + USER_GET;
+export const SECURE_USER_DELETE = SECURE + USER_DELETE;
+export const SECURE_WORKSPACE_WORKSPACEID_GET = SECURE + WORKSPACE_WORKSPACEID_GET;
+export const SECURE_WORKSPACE_POST = SECURE + WORKSPACE_POST;

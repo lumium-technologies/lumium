@@ -2,18 +2,20 @@ import { useApi } from "@hooks/api"
 import { useEffect, useState } from "react";
 import { UserDTO, WorkspaceDTO } from "@types";
 import Router from "next/router";
+import { SECURE_USER_GET } from "@routes/api/v1";
+import { LANDING_PAGE, SPACES_NEW } from "@routes/space";
 
 const Workspace: React.FC = () => {
     const [api] = useApi();
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
 
     useEffect(() => {
-        api.get<UserDTO>('/secure/user').then((res) => {
+        api.get<UserDTO>(SECURE_USER_GET).then((res) => {
             setRecentWorkspace(res.data.recentWorkspace);
             if (recentWorkspace) {
-                Router.push('/' + recentWorkspace.id);
+                Router.push(LANDING_PAGE + '/' + recentWorkspace.id);
             } else {
-                Router.push('/spaces/new');
+                Router.push(SPACES_NEW);
             }
         });
     });

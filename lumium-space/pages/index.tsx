@@ -10,6 +10,7 @@ import Router from 'next/router'
 import { Header } from "@components/headers";
 
 import { Hero } from "@components/heros";
+import { WORKSPACE } from "@routes/space";
 
 const Main: React.FC = () => {
     const [done, setDone] = useState(false);
@@ -18,7 +19,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         if (loggedIn) {
-            Router.push("/workspace");
+            Router.push(WORKSPACE);
         }
     }, [loggedIn]);
 

@@ -19,6 +19,7 @@ import expressJSDocSwagger from 'express-jsdoc-swagger';
 import { User } from './entity/User';
 import { AuditEntryEvent } from './entity/Audit';
 import { Email } from './entity/Email';
+import { SECURE, V1 } from '../routes/api/v1';
 
 const initDataSource = async () => {
     try {
@@ -39,8 +40,8 @@ if (process.env.NODE_ENV === 'production' &&
         if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`);
         } else {
-            next();
-        }
+                next();
+            }
     });
 }
 
@@ -180,14 +181,14 @@ supertokens.init({
 
                             if (!process.env.PRODUCTION && response.status === 'OK') {
                                 let user = await dataSource
-                                    .getRepository(User)
-                                    .findOne({
-                                        where: { id: response.user.id }
-                                    });
+                                .getRepository(User)
+                                .findOne({
+                                    where: { id: response.user.id }
+                                });
                                 if (!user) {
                                     user = await dataSource
-                                        .getRepository(User)
-                                        .save({ id: response.user.id });
+                                    .getRepository(User)
+                                    .save({ id: response.user.id });
                                     await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
                                     await info({user: user, type: AuditEntryEvent.USER_SIGNUP_INIT_DEVELOPMENT_PATCH});
                                 }
@@ -199,8 +200,8 @@ supertokens.init({
                             const response = await originalImplementation.emailPasswordSignUp(input);
                             if (response.status === 'OK') {
                                 const user = await dataSource
-                                    .getRepository(User)
-                                    .save({ id: response.user.id });
+                                .getRepository(User)
+                                .save({ id: response.user.id });
                                 await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
                                 await info({ user, type: AuditEntryEvent.USER_SIGNUP_INIT });
                             } else {
@@ -224,13 +225,13 @@ supertokens.init({
                                 ...input.accessTokenPayload,
                                 roles: {
                                     workspaceOwner: user.ownedWorkspaces?.map(t => t.id),
-                                    workspaceAdmin: user.administratedWorkspaces?.map(t => t.id),
-                                    workspaceMember: user.memberWorkspaces?.map(t => t.id),
-                                    workspaceVisitor: user.visitorWorkspaces?.map(t => t.id),
-                                    pageOwner: user.ownedPages?.map(t => t.id),
-                                    pageAdmin: user.administratedPages?.map(t => t.id),
-                                    pageMember: user.memberPages?.map(t => t.id),
-                                    pageVisitor: user.visitorPages?.map(t => t.id)
+                                        workspaceAdmin: user.administratedWorkspaces?.map(t => t.id),
+                                        workspaceMember: user.memberWorkspaces?.map(t => t.id),
+                                        workspaceVisitor: user.visitorWorkspaces?.map(t => t.id),
+                                        pageOwner: user.ownedPages?.map(t => t.id),
+                                        pageAdmin: user.administratedPages?.map(t => t.id),
+                                        pageMember: user.memberPages?.map(t => t.id),
+                                        pageVisitor: user.visitorPages?.map(t => t.id)
                                 },
                             };
                             await info({user, type: AuditEntryEvent.USER_SIGNIN});
@@ -262,11 +263,11 @@ let cors_config = {
 
 app.use(cors(cors_config));
 
-app.use('/v1/', v1pub);
+app.use(V1, v1pub);
 
 app.use(middleware());
 
-app.use('/v1/secure/', verifySession(), v1sec);
+app.use(V1 + SECURE, verifySession(), v1sec);
 
 app.get('/', (req, res)  => {
     res.redirect('/docs/');

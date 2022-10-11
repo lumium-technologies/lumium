@@ -19,6 +19,7 @@ export { sec } from './secure';
  * @property {array<PageDTO>} memberPages - Pages of which the user is a member
  * @property {array<PageDTO>} visitorPages - Pages of which the user is a visitors
  * @property {array<UserPreferenceDTO>} preferences - Preferences of the user
+ * @property {WorkspaceDTO} recentWorkspace - Most recently accessed workspace
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp
  * @property {string} deletedAt - The object delete timestamp

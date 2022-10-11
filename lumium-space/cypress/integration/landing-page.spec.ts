@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 describe("landing page", () => {
     beforeEach(() => {
         cy.clearCookies();
@@ -26,6 +28,28 @@ describe("landing page", () => {
     });
     it("login button", () => {
         cy.dataCy("continue-button").should("be.visible").click();
-        cy.dataCy("submitSignInButton").should("be.visible");
+        cy.login();
+        cy.interceptAndWait("/workspace", 200);
+    });
+    it("redirect to login from workspace", () => {
+        cy.visit("/workspace/" + uuidv4());
+        cy.interceptAndWait("/auth", 401);
+        cy.get("#supertokens-root").should("be.visible");
+        cy.login();
+        cy.interceptAndWait("/workspace", 200);
+    });
+    it("redirect to login from account", () => {
+        cy.visit("/account");
+        cy.interceptAndWait("/auth", 401);
+        cy.get("#supertokens-root").should("be.visible");
+        cy.login();
+        cy.interceptAndWait("/workspace", 200);
+    });
+    it("redirect to login from manage workspaces", () => {
+        cy.visit("/spaces");
+        cy.interceptAndWait("/auth", 401);
+        cy.get("#supertokens-root").should("be.visible");
+        cy.login();
+        cy.interceptAndWait("/workspace", 200);
     });
 });

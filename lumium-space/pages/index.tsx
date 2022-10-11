@@ -30,13 +30,6 @@ const Main: React.FC = () => {
     const [y, setY] = React.useState(0);
     const { height = 0 } = ref.current ? ref.current.getBoundingClientRect() : {};
 
-    const { scrollY } = useViewportScroll();
-    React.useEffect(() => {
-        return scrollY.onChange(() => setY(scrollY.get()));
-    }, [scrollY]);
-
-    const openSourceTextColor = useColorModeValue("gray.800", "gray.10");
-    const openSourceBgColor = useColorModeValue("gray.50", "gray.800");
     return (
         <React.Fragment>
             {done || <LogoBlank animationTime={750} setDone={setDone} />}

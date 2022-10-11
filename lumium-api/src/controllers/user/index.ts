@@ -18,7 +18,8 @@ export const info = async (req: SessionRequest, res: express.Response) => {
             administratedPages: true,
             memberPages: true,
             visitorPages: true,
-            preferences: true
+            preferences: true,
+            recentWorkspace: true
         },
         where: {
             id: req.session!.getUserId()

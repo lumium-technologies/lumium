@@ -1,5 +1,5 @@
 import express from 'express';
-import { PONG, USER, WORKSPACE } from '../../../../routes/v1/secure';
+import { PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
 const router = express.Router();
 import { pong } from '../../../controllers';
 import { user } from './user';

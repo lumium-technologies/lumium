@@ -19,7 +19,7 @@ import expressJSDocSwagger from 'express-jsdoc-swagger';
 import { User } from './entity/User';
 import { AuditEntryEvent } from './entity/Audit';
 import { Email } from './entity/Email';
-import { SECURE, V1 } from '../routes/v1';
+import { SECURE, V1 } from '../routes/api/v1';
 
 const initDataSource = async () => {
     try {

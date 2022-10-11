@@ -1,6 +1,6 @@
 import express from 'express';
-import { POST } from '../../../../../routes/v1/secure/workspace';
-import { WORKSPACEID_GET } from '../../../../../routes/v1/secure/workspace';
+import { POST } from '../../../../../routes/api/v1/secure/workspace';
+import { WORKSPACEID_GET } from '../../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
 import { info, create } from '../../../../controllers/workspace';
 

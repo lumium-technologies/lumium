@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import { ping } from '../../../controllers';
-import { PING } from '../../../../routes/v1';
+import { PING } from '../../../../routes/api/v1';
 /**
  * GET /ping
  * @summary Dummy endpoint to test whether API is reachable

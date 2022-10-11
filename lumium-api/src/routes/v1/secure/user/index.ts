@@ -1,5 +1,5 @@
 import express from 'express';
-import { DELETE, GET } from '../../../../../routes/v1/secure/user';
+import { DELETE, GET } from '../../../../../routes/api/v1/secure/user';
 const router = express.Router();
 import { info, deleteAccount } from '../../../../controllers/user';
 

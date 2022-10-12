@@ -1,6 +1,7 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
+import { AUTH, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import { Authenticator } from "@security/authentication";
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
@@ -15,10 +16,10 @@ export default function ResetPassword() {
     const router = useRouter();
     const { token } = router.query;
     const handleResetPassword = () => {
-        const emailExists = api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists);
+        const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
         emailExists.then(value => {
             if (value) {
-                api.post("/auth/user/password/reset/token", {
+                api.post(PASSWORD_RESET_TOKEN, {
                     "formFields": [
                         {
                             "id": "email",
@@ -34,7 +35,7 @@ export default function ResetPassword() {
         })
     };
     const handleChangePassword = () => {
-        api.post("/auth/user/password/reset", {
+        api.post(PASSWORD_RESET, {
             "method": "token",
             "formFields": [
                 {
@@ -43,10 +44,10 @@ export default function ResetPassword() {
                 }
             ],
             "token": token
-        }).then(() => Router.push("/auth"));
+        }).then(() => Router.push(AUTH));
     };
     const handleResendEmail = () => {
-        api.post("/auth/user/password/reset/token", {
+        api.post(PASSWORD_RESET_TOKEN, {
             "formFields": [
                 {
                     "id": "email",

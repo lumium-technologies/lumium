@@ -20,6 +20,8 @@ import { useApi } from "@hooks/api";
 import Router, { useRouter } from 'next/router';
 import { useLoginStatus } from '@hooks/security';
 import { UserDTO, WorkspaceDTO } from "@types";
+import { SECURE_USER_GET } from '@routes/api/v1';
+import { AUTH_SIGNIN, SPACES_NEW } from '@routes/space';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -35,18 +37,19 @@ export default function SignIn() {
     });
     useEffect(() => {
         if (loggedIn) {
-            api.get<UserDTO>('/secure/user').then((res) => {
+            api.get<UserDTO>(SECURE_USER_GET).then((res) => {
                 setRecentWorkspace(res.data.recentWorkspace);
                 if (recentWorkspace) {
                     Router.push('/' + recentWorkspace.id);
                 } else {
-                    Router.push('/spaces/new');
+                    Router.push(SPACES_NEW);
                 }
             });
         }
     }, [loggedIn, api, recentWorkspace]);
     const handleSignIn = () => {
-        api.post("/auth/signin", {
+        console.log(AUTH_SIGNIN)
+        api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
                     "id": "email",
@@ -59,12 +62,12 @@ export default function SignIn() {
             ]
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK" && !redirectionURL) {
-                api.get<UserDTO>('/secure/user').then((res) => {
+                api.get<UserDTO>(SECURE_USER_GET).then((res) => {
                     setRecentWorkspace(res.data.recentWorkspace);
                     if (recentWorkspace) {
                         Router.push('/' + recentWorkspace.id);
                     } else {
-                        Router.push('/spaces/new');
+                        Router.push(SPACES_NEW);
                     }
                 });
             } else if (redirectionURL) {

@@ -1,4 +1,5 @@
 import express from 'express';
+import { PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
 const router = express.Router();
 import { pong } from '../../../controllers';
 import { user } from './user';
@@ -12,9 +13,9 @@ import { workspace } from './workspace';
  * @return 200 - Success, authorization accepted  - text/plain
  * @return 401 - Unauthorized - text/plain
  */
-router.get('/pong', pong);
+router.get(PONG, pong);
 
-router.use('/user', user);
-router.use('/workspace', workspace);
+router.use(USER, user);
+router.use(WORKSPACE, workspace);
 
 export { router as sec };

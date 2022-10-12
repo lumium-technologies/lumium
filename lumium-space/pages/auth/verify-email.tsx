@@ -1,6 +1,7 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { Box, Button, Fade, Heading, ScaleFade, Text } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
+import { EMAIL_VERIFY, EMAIL_VERIFY_TOKEN } from "@routes/space";
 import { Authenticator } from "@security/authentication";
 import Router, { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
@@ -10,13 +11,13 @@ export default function VerifyEmail() {
     const { token } = router.query;
     const [resendIsShown, setResendIsShown] = useState(true);
     if (token) {
-        api.post("/auth/user/email/verify", {
+        api.post(EMAIL_VERIFY, {
             "method": "token",
             "token": token
         }).then(() => Router.push("/workspace/new"));
     };
     useEffect(() => {
-        api.get("/auth/user/email/verify").then((promise) => promise.data).then((value) => {
+        api.get(EMAIL_VERIFY).then((promise) => promise.data).then((value) => {
             if (value.isVerified) {
                 Router.push("/workspace");
             }
@@ -25,7 +26,7 @@ export default function VerifyEmail() {
         });
     }, [api])
     const handleResendEmail = () => {
-        api.post("/auth/user/email/verify/token");
+        api.post(EMAIL_VERIFY_TOKEN);
         setResendIsShown(false);
     };
     return (

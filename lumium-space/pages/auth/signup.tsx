@@ -24,6 +24,8 @@ import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useLoginStatus } from '@hooks/security';
 import { UserDTO, WorkspaceDTO } from "@types";
+import { SECURE_USER_GET } from '@routes/api/v1';
+import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
@@ -38,20 +40,20 @@ export default function SignUp() {
     });
     useEffect(() => {
         if (loggedIn) {
-            api.get<UserDTO>('/secure/user').then((res) => {
+            api.get<UserDTO>(SECURE_USER_GET).then((res) => {
                 setRecentWorkspace(res.data.recentWorkspace);
                 if (recentWorkspace) {
                     Router.push('/' + recentWorkspace.id);
                 } else {
-                    Router.push('/spaces/new');
+                    Router.push(SPACES_NEW);
                 }
             });
         };
     }, [loggedIn, api, recentWorkspace]);
     const handleSignUp = () => {
-        api.get("/auth/signup/email/exists", { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
+        api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {
-                api.post("/auth/signup", {
+                api.post(AUTH_SIGNUP, {
                     "formFields": [
                         {
                             "id": "email",
@@ -63,7 +65,7 @@ export default function SignUp() {
                         }
                     ]
                 }).then(() => {
-                    api.post("/auth/user/email/verify/token");
+                    api.post(EMAIL_VERIFY_TOKEN);
                 }).then(() => Router.push("/auth/verify-email"));
             } else {
                 setEmailExistsError(true);

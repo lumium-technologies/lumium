@@ -27,7 +27,7 @@
         "concurrently": "^7.2.1",
         "dotenv": "^16.0.2",
         "dotenv-expand": "^9.0.0",
-        "framer-motion": "^3.10.6",
+        "framer-motion": "^6.5.1",
         "next": "^12.1.6",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",

@@ -28,6 +28,8 @@ export default function SignIn() {
     const [api] = useApi();
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
     const [loggedIn, setLoggedIn] = useState(false);
+    const router = useRouter()
+    const redirectionURL = router.query.redirectionURL + ""
     useLoginStatus().then((val) => {
         setLoggedIn(val);
     });
@@ -56,7 +58,7 @@ export default function SignIn() {
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
-            if (status.status == "OK") {
+            if (status.status == "OK" && !redirectionURL) {
                 api.get<UserDTO>('/secure/user').then((res) => {
                     setRecentWorkspace(res.data.recentWorkspace);
                     if (recentWorkspace) {
@@ -65,6 +67,8 @@ export default function SignIn() {
                         Router.push('/spaces/new');
                     }
                 });
+            } else if (redirectionURL) {
+                Router.push(redirectionURL);
             } else {
                 setCredentialsMatchError(true);
             };

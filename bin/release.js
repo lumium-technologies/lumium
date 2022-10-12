@@ -1,10 +1,10 @@
 const execSync = require('child_process').execSync;
 
 console.log('Running release phase...');
-run().catch(console.error);
+run();
 console.log('Done running release phase');
 
-async function run() {
+function run() {
 	const appName = process.env.HEROKU_APP_NAME;
 	if (process.env.LUMIUM_COMPONENT === 'lumium-api') {
 		if (process.env.REVIEW_APP && execSync(`PGSSLMODE=require heroku pg:psql -c \"SELECT EXISTS ( SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename  = 'typeorm_metadata' );\" -a ${appName} | grep -B1 \"(1 row)\"`).includes('f')) {

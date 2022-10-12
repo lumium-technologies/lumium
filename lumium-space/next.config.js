@@ -29,7 +29,6 @@ module.exports = withPlugins([bundleAnalyzer], {
             asyncWebAssembly: true,
             layers: true,
         };
-
         if (!dev && isServer) {
             config.output.webassemblyModuleFilename = "chunks/[id].wasm";
             config.plugins.push(new WasmChunksFixPlugin());

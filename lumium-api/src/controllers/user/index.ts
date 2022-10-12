@@ -44,5 +44,6 @@ export const deleteAccount = async (req: SessionRequest, res: express.Response) 
             }
         }
     );
+
     res.status(200).send();
 }

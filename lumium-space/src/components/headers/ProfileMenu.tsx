@@ -1,14 +1,15 @@
 import { Button, Icon, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem, MenuList } from "@chakra-ui/react";
+import { ACCOUNT, ROOT } from "@routes/space";
 import Router from "next/router";
 import { CgProfile } from "react-icons/cg";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 export function ProfileMenu() {
     const onLogout = () => {
-        signOut().then(() => Router.push("/"));
+        signOut().then(() => Router.push(ROOT));
     };
     const onAccount = () => {
-        Router.push("/account");
+        Router.push(ACCOUNT);
     };
     return (
         <Menu>

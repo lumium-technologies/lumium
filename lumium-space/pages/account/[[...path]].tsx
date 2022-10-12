@@ -23,7 +23,7 @@ import type { UserDTO } from "@types";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { SECURE_USER_GET, SECURE_USER_DELETE } from "@routes/api/v1";
-import { LANDING_PAGE } from "@routes/space";
+import { ROOT, WORKSPACE } from "@routes/space";
 
 const Space: React.FC = () => {
     const [email, setEmail] = useState<string>();
@@ -32,10 +32,13 @@ const Space: React.FC = () => {
         api.get<UserDTO>(SECURE_USER_GET).then((userinfo) => {
             setEmail(userinfo.data.emails.filter((t) => t.primary)[0]!.email);
         });
-    }, [api, email]);
+    }, [api]);
     const handleDelete = () => {
-        api.delete(SECURE_USER_DELETE).then(() => Router.push(LANDING_PAGE));
+        api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));
     };
+    const handleCancel = () => {
+        Router.push(WORKSPACE);
+    }
     return (
         <Authenticator>
             <Flex p={["1%"]} borderBottom="1px">
@@ -124,7 +127,9 @@ const Space: React.FC = () => {
                             _hover={{
                                 bg: 'red.500',
                             }}
-                            data-cy="cancel-button">
+                            data-cy="cancel-button"
+                            onClick={handleCancel}
+                        >
                             Cancel
                         </Button>
                         <Button

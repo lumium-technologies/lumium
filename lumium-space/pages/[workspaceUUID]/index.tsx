@@ -30,12 +30,12 @@ import { SwitchColorTheme } from "@components/headers"
 import Router from "next/router";
 import { Authenticator } from "@security";
 import { LumiumRenderer } from "@components";
-import { ACCOUNT, LANDING_PAGE, SPACES } from '@routes/space';
+import { ACCOUNT, ROOT, SPACES } from '@routes/space';
 
 const Space: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const onLogout = () => {
-        signOut().then(() => Router.push(LANDING_PAGE));
+        signOut().then(() => Router.push(ROOT));
     };
     const onAccount = () => {
         Router.push(ACCOUNT);

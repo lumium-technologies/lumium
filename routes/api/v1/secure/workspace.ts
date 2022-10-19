@@ -1,3 +1,3 @@
 export const WORKSPACEID_GET = '/:workspaceId';
-export const POST = '/';
+export const PUT = '/';
 export const WORKSPACEID_DELETE = '/:workspaceId';

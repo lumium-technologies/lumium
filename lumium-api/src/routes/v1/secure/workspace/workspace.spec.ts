@@ -24,7 +24,7 @@ describe('user info', () => {
             });
         }
         let key: E2EKeyCreateDTO = { activator: activatorPlaintext, keys };
-        let resp = await supertest(app).post('/v1/secure/workspace').set('cookie', cookies).send(key);
+        let resp = await supertest(app).put('/v1/secure/workspace').set('cookie', cookies).send(key);
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).get('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);

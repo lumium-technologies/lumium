@@ -1,5 +1,5 @@
 import express from 'express';
-import { POST } from '../../../../../routes/api/v1/secure/workspace';
+import { PUT as PUT } from '../../../../../routes/api/v1/secure/workspace';
 import { WORKSPACEID_GET, WORKSPACEID_DELETE } from '../../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
 import { info, create, remove } from '../../../../controllers/workspace';
@@ -16,7 +16,7 @@ import { info, create, remove } from '../../../../controllers/workspace';
 router.get(WORKSPACEID_GET, info);
 
 /**
- * POST /secure/workspace
+ * PUT /secure/workspace
  * @summary Create a new workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
@@ -24,7 +24,7 @@ router.get(WORKSPACEID_GET, info);
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.post(POST, create);
+router.put(PUT, create);
 
 /**
  * DELETE /secure/workspace/{workspaceId}

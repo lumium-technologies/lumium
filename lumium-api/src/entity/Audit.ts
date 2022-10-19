@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Timestamp } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { AbstractEntity } from './AbstractEntity';
 import { User } from './User';
 
@@ -11,7 +11,8 @@ export enum AuditEntryEvent {
         USER_INCONSISTENT_SIGNUP = 'user_inconsistent_signup',
         USER_EMAIL_VERIFIED = 'user_email_verified',
         USER_EMAIL_VERIFICATION_FAILED = 'user_email_verification_failed',
-        USER_DELETED = 'user_deleted'
+        USER_DELETED = 'user_deleted',
+        UNAUTHORIZED_WORKSPACE_DELETE_ATTEMPT = 'unauthorized_workspace_delete_attempt'
 }
 
 export enum AuditEntryLevel {

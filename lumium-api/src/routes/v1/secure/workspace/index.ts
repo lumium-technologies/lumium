@@ -1,8 +1,8 @@
 import express from 'express';
 import { PUT as PUT } from '../../../../../routes/api/v1/secure/workspace';
-import { WORKSPACEID_GET } from '../../../../../routes/api/v1/secure/workspace';
+import { WORKSPACEID_GET, WORKSPACEID_DELETE } from '../../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
-import { info, create } from '../../../../controllers/workspace';
+import { info, create, remove } from '../../../../controllers/workspace';
 
 /**
  * GET /secure/workspace/{workspaceId}
@@ -25,5 +25,16 @@ router.get(WORKSPACEID_GET, info);
  * @return 401 - Unauthorized - text/plain
  */
 router.put(PUT, create);
+
+/**
+ * DELETE /secure/workspace/{workspaceId}
+ * @summary Deletes a workspace owned by the token subject
+ * @security JWTAuth
+ * @tags workspace
+ * @param {string} id.path.required - Workspace uuid
+ * @return {WorkspaceDTO} 200 - Success - application/json
+ * @return 401 - Unauthorized - text/plain
+ */
+router.delete(WORKSPACEID_DELETE, remove);
 
 export { router as workspace };

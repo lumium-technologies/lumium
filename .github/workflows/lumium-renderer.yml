@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
     - name: wasm-pack-action
       uses: jetli/wasm-pack-action@v0.3.0
     - name: WASM Pack Build
-      run: cd lumium-space/lumium-renderer && wasm-pack build
-    - name: Cargo Build
-      run: cd lumium-space/lumium-renderer && cargo build --verbose
+      run: cd lumium-renderer && wasm-pack build
     - name: Run tests
-      run: cd lumium-space/lumium-renderer && cargo test --verbose
+      run: cd lumium-renderer && wasm-pack test --chrome --headless

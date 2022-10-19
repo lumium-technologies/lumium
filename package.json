@@ -4,6 +4,7 @@
     "description": "next level docs",
     "private": true,
     "scripts": {
+        "test": "set -e; (cd lumium-api && yarn test) && (cd lumium-space && yarn test) && (cd lumium-space && yarn run cypress:test) && (cd lumium-renderer && wasm-pack test --chrome --headless)",
         "build": "./scripts/build.sh",
         "start": "concurrently -n lumium-space,lumium-api \"cd lumium-space && yarn start\" \"cd lumium-api && yarn start\"",
         "dev": "concurrently -n lumium-space,lumium-api \"cd lumium-space && yarn run dev\" \"cd lumium-api && yarn run dev\"",
@@ -24,19 +25,19 @@
     "homepage": "https://github.com/D3PSI/lumium#readme",
     "workspaces": [
         "lumium-space",
-        "lumium-api",
-        "lumium-dashboard"
+        "lumium-api"
     ],
     "devDependencies": {
         "@nrwl/cli": "14.1.9",
         "@nrwl/nx-cloud": "14.0.5",
         "@nrwl/workspace": "14.1.9",
+        "@types/jest": "^29.0.3",
         "@types/node": "17.0.40",
+        "git-conventional-commits": "^2.1.1",
+        "husky": "^8.0.0",
         "nx": "14.1.9",
         "ts-node": "10.8.1",
-        "typescript": "4.7.3",
-        "git-conventional-commits": "^2.1.1",
-        "husky": "^8.0.0"
+        "typescript": "4.7.3"
     },
     "dependencies": {
         "child_process": "1.0.2",

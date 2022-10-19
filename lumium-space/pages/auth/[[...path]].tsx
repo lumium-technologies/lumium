@@ -1,21 +1,19 @@
-import React, { useEffect } from 'react'
-import dynamic from 'next/dynamic'
-import SuperTokens from 'supertokens-auth-react'
-import { redirectToAuth } from 'supertokens-auth-react/recipe/thirdpartyemailpassword'
-
-const SuperTokensComponentNoSSR = dynamic(
-    new Promise((res) => res(SuperTokens.getRoutingComponent)) as any,
-    { ssr: false }
-)
+import Router from 'next/router';
+import { useEffect } from 'react';
+import { Box, Heading } from '@chakra-ui/react';
+import { WarningTwoIcon } from '@chakra-ui/icons';
+import { AUTH_SIGNIN } from '@routes/space';
 
 export default function Auth() {
     useEffect(() => {
-        if (SuperTokens.canHandleRoute() === false) {
-            redirectToAuth()
-        }
-    }, [])
-
+        Router.push(AUTH_SIGNIN);
+    }, []);
     return (
-        <SuperTokensComponentNoSSR />
+        <Box textAlign="center" py={10} px={6}>
+            <WarningTwoIcon boxSize={'50px'} color={'orange.300'} />
+            <Heading as="h2" size="xl" mt={6} mb={2}>
+                You&apos;re getting redirected
+            </Heading>
+        </Box>
     )
 }

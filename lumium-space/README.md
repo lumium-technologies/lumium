@@ -12,19 +12,19 @@ superplate is a Next.js all-in-one project generator. Create your project with t
 ### Running the development server.
 
 ```bash
-    npm run dev
+yarn run dev
 ```
 
 ### Building for production.
 
 ```bash
-    npm run build
+yarn build
 ```
 
 ### Running the production server.
 
 ```bash
-    npm run start
+yarn start
 ```
 
 ## Learn More

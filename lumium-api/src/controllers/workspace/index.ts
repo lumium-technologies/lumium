@@ -12,6 +12,15 @@ export const info = async (req: SessionRequest, res: express.Response<Workspace>
     const workspace = await dataSource.getRepository(Workspace).findOne({
         where: {
             id: req.params.workspaceId
+        },
+        relations: {
+            owner: true,
+            admins: true,
+            members: true,
+            visitors: true,
+            pages: true,
+            preferences: true,
+            key: true
         }
     });
     res.status(200).send(workspace);

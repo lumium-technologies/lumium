@@ -2,14 +2,18 @@ import { app } from "../../../../app";
 import supertest from 'supertest';
 import { E2EKeyCreateDTO, E2EKeyVariantCreateDTO } from "../../../../../types";
 import cryptojs from 'crypto-js';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('user info', () => {
     jest.setTimeout(60000);
     test('creates workspace with keys', async () => {
         const cookies = await auth();
-        let keyString = 'asdkfl;laksdfa;lksdf';
-        let passwords = ['asdfeadf', 'asdfjalkejfkl', 'asdfjeafhasdfhkj']
-        let activatorPlaintext = 'alk;sdjalk;fdgalkf';
+        let keyString = uuidv4();
+        let passwords = [];
+        for (let i = 0; i < 10; i++) {
+            passwords.push(uuidv4());
+        }
+        let activatorPlaintext = uuidv4();
         let values: string[] = passwords.map((t) => cryptojs.AES.encrypt(keyString, t).ciphertext.toString());
         let activators: string[] = passwords.map((t) => cryptojs.AES.encrypt(activatorPlaintext, keyString).ciphertext.toString());
         let keys: E2EKeyVariantCreateDTO[] = [];

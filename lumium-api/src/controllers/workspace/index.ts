@@ -3,7 +3,7 @@ import express from 'express';
 import { dataSource, error } from "../../data-source";
 import { Workspace } from "../../entity/Workspace";
 import { E2EKey } from "../../entity/E2EKey";
-import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO } from '../../../types';
+import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceUpdateDTO } from '../../../types';
 import { E2EKeyVariant } from "../../entity/E2EKeyVariant";
 import { User } from "../../entity/User";
 import { AuditEntryEvent } from "../../entity/Audit";
@@ -60,3 +60,18 @@ export const remove = async (req: SessionRequest, res: express.Response) => {
     await dataSource.getRepository(Workspace).delete({ id: req.params.workspaceId });
     res.status(200).send(workspace);
 };
+
+export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response) => {
+    const workspace = await dataSource.getRepository(Workspace).findOne({
+        where: {
+            id: (req as unknown as SessionRequest).params.workspaceId,
+            owner: { id: (req as unknown as SessionRequest).session!.getUserId() }
+        }
+    });
+    if (!workspace) {
+        error({ user: { id: (req as unknown as SessionRequest).session!.getUserId() }, detail: 'Attempted to patch workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_PATCH_ATTEMPT });
+        res.status(401).send();
+    }
+    const updated = await dataSource.getRepository(Workspace).save({...workspace, ...req.body});
+    res.status(200).send(updated);
+}

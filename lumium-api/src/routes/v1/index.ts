@@ -147,3 +147,13 @@ export { sec } from './secure';
  * @property {string} activator - The encrypted activator string of the key
  * @property {string} value - The encrypted value string of the key
  */
+
+/**
+ * @typedef {object} WorkspaceUpdateDTO
+ * @property {string} ownerId - The new owner uuid
+ * @property {array<string>} admins - The new admin uuids
+ * @property {array<string>} members - The new member uuids
+ * @property {array<string>} visitors - The new visitor uuids
+ * @property {array<PageDTO>} pages - The new pages
+ * @property {array<WorkspacePreferenceDTO>} preferences - The new preferences
+ */

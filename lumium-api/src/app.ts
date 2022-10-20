@@ -253,7 +253,9 @@ const limiter = rateLimit({
     message: 'API rate limit hit, please try again in a short moment',
 });
 
-app.use(limiter);
+if (!process.env.NODE_JEST) {
+    app.use(limiter);
+}
 
 let cors_config = {
     origin: [...spaceHosts, ...apiHosts],

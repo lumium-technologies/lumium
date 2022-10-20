@@ -1,5 +1,5 @@
 import { GET as getUser, DELETE as deleteUser } from './user';
-import { WORKSPACEID_GET as getWorkspace, PUT as createWorkspace, WORKSPACEID_DELETE as deleteWorkspace } from './workspace';
+import { WORKSPACEID_GET as getWorkspace, PUT as createWorkspace, WORKSPACEID_DELETE as deleteWorkspace, WORKSPACEID_PATCH as patchWorkspace } from './workspace';
 
 export const PONG = '/pong';
 export const USER = '/user';
@@ -9,3 +9,4 @@ export const WORKSPACE = '/workspace';
 export const WORKSPACE_WORKSPACEID_GET = WORKSPACE + getWorkspace;
 export const WORKSPACE_PUT= WORKSPACE + createWorkspace;
 export const WORKSPACE_WORKSPACEID_DELETE = WORKSPACE + deleteWorkspace;
+export const WORKSPACE_WORKSPACEID_PATCH = WORKSPACE + patchWorkspace;

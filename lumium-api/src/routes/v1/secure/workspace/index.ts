@@ -12,6 +12,7 @@ import { info, create, remove, patch, post } from '../../../../controllers/works
  * @param {string} id.path.required - Workspace uuid
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
  */
 router.get(WORKSPACEID_GET, info);
 
@@ -34,6 +35,7 @@ router.put(PUT, create);
  * @param {string} id.path.required - Workspace uuid
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
  */
 router.delete(WORKSPACEID_DELETE, remove);
 
@@ -46,6 +48,7 @@ router.delete(WORKSPACEID_DELETE, remove);
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace properties - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
  */
 router.patch(WORKSPACEID_PATCH, patch);
 
@@ -58,6 +61,7 @@ router.patch(WORKSPACEID_PATCH, patch);
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace entity - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
  */
 router.post(WORKSPACEID_POST, post);
 

@@ -3,6 +3,7 @@ mod utils;
 extern crate katex_renderer;
 extern crate web_sys;
 
+use ring::aead::UnboundKey;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -10,8 +11,16 @@ use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
 use pulldown_cmark::{html, Options, Parser};
+use ring::aead::{
+    self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM,
+    CHACHA20_POLY1305, NONCE_LEN,
+};
+use ring::error;
+use ring::rand::{SecureRandom, SystemRandom};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
+
+const MASTER_KEY_BYTE_LENGTH: usize = 32;
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -108,4 +117,52 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub fn generate_workspace_key_with_recovery(password: JsValue) {}
+pub fn generate_workspace_key_with_recovery(password: JsValue) {
+    let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
+    let sr = SystemRandom::new();
+    sr.fill(&mut master_key).unwrap();
+    todo!()
+}
+
+pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
+    let (nonce, raw_nonce) = get_random_nonce();
+    let nonce_sequence = INonceSequence::new(nonce);
+    let mut encryption_key =
+        SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    encryption_key
+        .seal_in_place_append_tag(Aad::empty(), &mut data)
+        .unwrap();
+    data
+}
+
+pub fn decrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
+    let (nonce, raw_nonce) = get_random_nonce();
+    let nonce_sequence = INonceSequence::new(nonce);
+    let mut encryption_key =
+        OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    encryption_key
+        .open_in_place(Aad::empty(), &mut data)
+        .unwrap();
+    data
+}
+
+struct INonceSequence(Option<Nonce>);
+
+impl INonceSequence {
+    fn new(nonce: Nonce) -> Self {
+        Self(Some(nonce))
+    }
+}
+
+impl NonceSequence for INonceSequence {
+    fn advance(&mut self) -> Result<Nonce, error::Unspecified> {
+        self.0.take().ok_or(error::Unspecified)
+    }
+}
+
+fn get_random_nonce() -> (Nonce, [u8; NONCE_LEN]) {
+    let rand_gen = SystemRandom::new();
+    let mut raw_nonce = [0u8; NONCE_LEN];
+    rand_gen.fill(&mut raw_nonce).unwrap();
+    (Nonce::assume_unique_for_key(raw_nonce), raw_nonce)
+}

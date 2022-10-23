@@ -1,7 +1,8 @@
 import express from 'express';
-import { PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
+import { PAGE, PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
 const router = express.Router();
 import { pong } from '../../../controllers';
+import { page } from './page';
 import { user } from './user';
 import { workspace } from './workspace';
 
@@ -17,5 +18,6 @@ router.get(PONG, pong);
 
 router.use(USER, user);
 router.use(WORKSPACE, workspace);
+router.use(PAGE, page);
 
 export { router as sec };

@@ -5,7 +5,7 @@ import { info as i, dataSource } from '../../data-source';
 import { AuditEntryEvent } from '../../entity/Audit';
 import { User } from '../../entity/User';
 
-export const info = async (req: SessionRequest, res: express.Response) => {
+export const info = async (req: SessionRequest, res: express.Response<User>) => {
     const user = await dataSource.getRepository(User).findOne({
         relations: {
             emails: true,

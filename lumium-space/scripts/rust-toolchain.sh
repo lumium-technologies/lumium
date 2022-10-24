@@ -1,7 +1,4 @@
 #!/bin/bash
-CLANG_VERSION="14.0.6"
-CLANG_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-$CLANG_VERSION/clang+llvm-$CLANG_VERSION-aarch64-linux-gnu.tar.xz"
-
 if which cargo >/dev/null && which wasm-pack >/dev/null; then
     echo "rust toolchain already installed"
 else

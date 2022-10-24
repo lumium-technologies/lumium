@@ -1,3 +1,5 @@
+![Image](https://github.com/D3PSI/lumium/blob/develop/lumium-space/public/logo/logo.svg)
+
 # lumium
 next level docs
 

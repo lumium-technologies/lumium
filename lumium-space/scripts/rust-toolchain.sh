@@ -9,3 +9,19 @@ else
     . "$HOME/.cargo/env"
     export PATH="$PATH:$HOME/.cargo/bin"
 fi
+if which clang >/dev/null; then
+    echo "clang already installed"
+else
+    echo "installing clang"
+    (
+    mkdir $HOME/.clang
+    cd $HOME/.clang/
+    git clone --depth=1 https://github.com/llvm/llvm-project
+    cd llvm-project
+    mkdir build
+    cd build
+    cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm
+    make
+)
+export PATH="$PATH:$HOME/.clang/llvm/build/bin"
+fi

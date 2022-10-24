@@ -45,5 +45,6 @@
     },
     "resolutions": {
         "@types/react": "17.0.15"
-    }
+    },
+    "cacheDirectories": ["lumium_api/node_modules", "lumium_space/node_modules", "lumium-renderer/target"]
 }

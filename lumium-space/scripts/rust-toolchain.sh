@@ -1,4 +1,7 @@
 #!/bin/bash
+CLANG_VERSION="14.0.6"
+CLANG_URL="http://llvm.org/releases/$CLANG_VERSION/clang+llvm-$CLANG_VERSION-x86_64-linux-gnu-ubuntu-16.04.tar.xz"
+
 if which cargo >/dev/null && which wasm-pack >/dev/null; then
     echo "rust toolchain already installed"
 else
@@ -16,12 +19,12 @@ else
     (
     mkdir $HOME/.clang
     cd $HOME/.clang/
-    git clone --depth=1 https://github.com/llvm/llvm-project
-    cd llvm-project
-    mkdir build
-    cd build
-    cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm
-    make -j`nproc`
+    wget --quiet $CLANG_URL
+    mkdir -p libs/clang
+    tar -C libs/clang -xvf clang+llvm-$CLANG_VERSION-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+    mv libs/clang/clang+llvm-$CLANG_VERSION-x86_64-linux-gnu-ubuntu-16.04/* libs/clang
+    rmdir libs/clang/clang+llvm-$CLANG_VERSION-x86_64-linux-gnu-ubuntu-16.04
+    rm -f clang+llvm-$CLANG_VERSION-x86_64-linux-gnu-ubuntu-16.04.tar.xz
 )
-export PATH="$PATH:$HOME/.clang/llvm/build/bin"
+export PATH="$PATH:$HOME/.clang/libs/clang/bin"
 fi

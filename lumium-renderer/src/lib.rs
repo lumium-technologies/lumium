@@ -10,6 +10,7 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
+use passwords::PasswordGenerator;
 use pulldown_cmark::{html, Options, Parser};
 use ring::aead::{
     self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM,
@@ -21,6 +22,7 @@ use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
+const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -118,9 +120,23 @@ pub fn render_page() {
 
 #[wasm_bindgen]
 pub fn generate_workspace_key_with_recovery(password: JsValue) {
-    let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
-    let sr = SystemRandom::new();
-    sr.fill(&mut master_key).unwrap();
+    // let sr = SystemRandom::new();
+    // let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
+    // sr.fill(&mut master_key).unwrap();
+    // let mut activator_key: [u8; ACTIVATOR_KEY_BYTE_LENGTH] = [0; ACTIVATOR_KEY_BYTE_LENGTH];
+    // sr.fill(&mut activator_key).unwrap();
+    // let activator_master = encrypt_data(&master_key, activator_key);
+    // let pg = PasswordGenerator {
+    //     length: 8,
+    //     numbers: true,
+    //     lowercase_letters: true,
+    //     uppercase_letters: true,
+    //     symbols: true,
+    //     spaces: true,
+    //     exclude_similar_characters: false,
+    //     strict: true,
+    // };
+    // let mut recovery_codes = pg.generate(10).unwrap();
     todo!()
 }
 
@@ -138,9 +154,9 @@ pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
 pub fn decrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
     let (nonce, raw_nonce) = get_random_nonce();
     let nonce_sequence = INonceSequence::new(nonce);
-    let mut encryption_key =
+    let mut decryption_key =
         OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
-    encryption_key
+    decryption_key
         .open_in_place(Aad::empty(), &mut data)
         .unwrap();
     data
@@ -160,7 +176,7 @@ impl NonceSequence for INonceSequence {
     }
 }
 
-fn get_random_nonce() -> (Nonce, [u8; NONCE_LEN]) {
+pub fn get_random_nonce() -> (Nonce, [u8; NONCE_LEN]) {
     let rand_gen = SystemRandom::new();
     let mut raw_nonce = [0u8; NONCE_LEN];
     rand_gen.fill(&mut raw_nonce).unwrap();

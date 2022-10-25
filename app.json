@@ -10,7 +10,7 @@
     ],
     "buildpacks": [
         {
-            "url": "https://github.com/thevojacek/HerokuSwiftBuildpack.git"
+            "url": "heroku-community/apt"
         },
         {
             "url": "https://github.com/dmathieu/heroku-buildpack-submodules.git"

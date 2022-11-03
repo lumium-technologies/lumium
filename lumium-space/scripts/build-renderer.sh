@@ -2,7 +2,7 @@
 (which git >/dev/null && git submodule update --init --recursive)
     clang_present=$(which clang)
     if [ -x "$clang_present" ]; then
-        docker run --volume $(pwd)/../:/app debian /app/lumium-space/scripts/docker-entry.sh
+        docker run --volume $(pwd)/../:/app ubuntu /app/lumium-space/scripts/docker-entry.sh
     else
         . ./scripts/rust-toolchain.sh && wasm-pack build --target web lumium-renderer
     fi

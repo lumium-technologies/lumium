@@ -140,6 +140,7 @@ pub fn generate_workspace_key_with_recovery(password: JsValue) {
     todo!()
 }
 
+#[wasm_bindgen]
 pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
     let (nonce, raw_nonce) = get_random_nonce();
     let nonce_sequence = INonceSequence::new(nonce);
@@ -151,6 +152,7 @@ pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
     data
 }
 
+#[wasm_bindgen]
 pub fn decrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
     let (nonce, raw_nonce) = get_random_nonce();
     let nonce_sequence = INonceSequence::new(nonce);

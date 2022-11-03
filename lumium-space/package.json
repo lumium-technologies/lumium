@@ -10,7 +10,7 @@
         "cypress:open": "cd .. && NEXT_PUBLIC_NODE_TEST=true NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && NODE_TEST=true cypress open'",
         "cypress:run": "NODE_TEST=true cypress run",
         "cypress:test": "cd .. && NEXT_PUBLIC_NODE_TEST=true NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && yarn run cypress:run'",
-        "lumium-renderer:package": "(which git >/dev/null && git submodule update --init --recursive); . ./scripts/rust-toolchain.sh && wasm-pack build --target web lumium-renderer && cd lumium-renderer/pkg && yarn link && cd ../../ && yarn link lumium-renderer",
+        "lumium-renderer:package": "(which git >/dev/null && git submodule update --init --recursive); . ./scripts/rust-toolchain.sh && TARGET_CC=clang-10 TARGET_AR=llvm-ar-10 wasm-pack build --target web lumium-renderer && cd lumium-renderer/pkg && yarn link && cd ../../ && yarn link lumium-renderer",
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {

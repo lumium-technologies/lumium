@@ -1,3 +1,4 @@
+#!/bin/bash
 (which git >/dev/null && git submodule update --init --recursive)
     clang_present=$(which clang)
     if [ -x "$clang_present" ]; then

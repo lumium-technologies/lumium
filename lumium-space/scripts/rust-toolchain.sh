@@ -1,5 +1,5 @@
 #!/bin/bash
-if which cargo >/dev/null && which wasm-pack >/dev/null && which clang >/dev/null; then
+if which cargo >/dev/null && which wasm-pack >/dev/null; then
     echo "rust toolchain already installed"
 else
     echo "installing rust toolchain"

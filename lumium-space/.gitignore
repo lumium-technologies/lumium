@@ -12,3 +12,6 @@ cypress/screenshots/
 
 *.wasm
 coverage/
+
+*.tar.xz
+clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04

@@ -12,7 +12,7 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
 fn random_nonce() {
-    let (nonce, raw_nonce) = get_random_nonce();
+    let _ = get_random_nonce();
 }
 
 #[wasm_bindgen_test]

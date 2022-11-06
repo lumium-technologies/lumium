@@ -24,5 +24,6 @@ else
     curl https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz -L --output clang.tar.xz
     tar -xvf clang.tar.xz 
     mv clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/ $HOME/.clang
+    rm -rf clang.tar.xz
     export PATH="$PATH:$HOME/.clang/bin"
 fi

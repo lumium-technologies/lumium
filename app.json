@@ -8,9 +8,7 @@
             }
         }
     ],
-    "buildpacks": [{
-            "url": "heroku-community/apt"
-        },
+    "buildpacks": [
         {
             "url": "https://github.com/dmathieu/heroku-buildpack-submodules.git"
         },

@@ -3,6 +3,7 @@ mod utils;
 extern crate katex_renderer;
 extern crate web_sys;
 
+use js_sys::Uint8Array;
 use ring::aead::UnboundKey;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -141,9 +142,10 @@ pub fn generate_workspace_key_with_recovery(password: JsValue) {
 }
 
 #[wasm_bindgen]
-pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
-    let (nonce, raw_nonce) = get_random_nonce();
-    let nonce_sequence = INonceSequence::new(nonce);
+pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+    let mut nonce_buf = [0; NONCE_LEN];
+    nonce.copy_to(&mut nonce_buf);
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
     let mut encryption_key =
         SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
     encryption_key
@@ -153,9 +155,10 @@ pub fn encrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
 }
 
 #[wasm_bindgen]
-pub fn decrypt_data(key: &[u8], mut data: Vec<u8>) -> Vec<u8> {
-    let (nonce, raw_nonce) = get_random_nonce();
-    let nonce_sequence = INonceSequence::new(nonce);
+pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+    let mut nonce_buf = [0; NONCE_LEN];
+    nonce.copy_to(&mut nonce_buf);
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
     let mut decryption_key =
         OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
     decryption_key
@@ -178,9 +181,12 @@ impl NonceSequence for INonceSequence {
     }
 }
 
-pub fn get_random_nonce() -> (Nonce, [u8; NONCE_LEN]) {
+#[wasm_bindgen]
+pub fn get_random_nonce() -> Uint8Array {
     let rand_gen = SystemRandom::new();
     let mut raw_nonce = [0u8; NONCE_LEN];
     rand_gen.fill(&mut raw_nonce).unwrap();
-    (Nonce::assume_unique_for_key(raw_nonce), raw_nonce)
+    let mut array = Uint8Array::new_with_length(NONCE_LEN as u32);
+    array.copy_from(&raw_nonce);
+    array
 }

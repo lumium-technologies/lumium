@@ -53,7 +53,6 @@ export default function SignIn() {
         }
     }
     const handleSignIn = () => {
-        console.log(AUTH_SIGNIN)
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -75,11 +74,9 @@ export default function SignIn() {
                         Router.push(SPACES_NEW);
                     }
                 });
-            } else if (redirectionURL) {
-                Router.push(redirectionURL);
-            } else {
+            } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
-            };
+            }
         });
     };
     return (

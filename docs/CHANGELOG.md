@@ -1,4 +1,4 @@
-## **0.2.0** <sub><sup>2022-11-07 ([1f6a3e4...427cea5](https://github.com/d3psi/lumium/compare/1f6a3e4...427cea5?diff=split))</sup></sub>
+## **0.2.0** <sub><sup>2022-11-07 ([1f6a3e4...be5064e](https://github.com/d3psi/lumium/compare/1f6a3e4...be5064e?diff=split))</sup></sub>
 
 ### Features
 *  edited ui when logged in changed top menu to sidebar added profile with logout added font size ui ([976b469](https://github.com/d3psi/lumium/commit/976b469))

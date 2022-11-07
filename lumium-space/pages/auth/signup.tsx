@@ -50,6 +50,11 @@ export default function SignUp() {
             });
         };
     }, [loggedIn, api, recentWorkspace]);
+    const handleEnter = event => {
+        if (event.key == 'Enter') {
+            handleSignUp();
+        }
+    }
     const handleSignUp = () => {
         api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {
@@ -110,6 +115,7 @@ export default function SignUp() {
                                 <Input
                                     type="email"
                                     onChange={event => setEmail(event.currentTarget.value)}
+                                    onKeyPress={handleEnter}
                                     data-cy="signUpEmailInput"
                                 />
                             </FormControl>
@@ -119,6 +125,7 @@ export default function SignUp() {
                                     <Input
                                         type={showPassword ? 'text' : 'password'}
                                         onChange={event => setPassword(event.currentTarget.value)}
+                                        onKeyPress={handleEnter}
                                         data-cy="signUpPasswordInput"
                                     />
                                     <InputRightElement h={'full'}>

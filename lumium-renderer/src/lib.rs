@@ -161,10 +161,11 @@ pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8>
     let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
     let mut decryption_key =
         OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    let length = data.len() - AES_256_GCM.tag_len();
     decryption_key
         .open_in_place(Aad::empty(), &mut data)
         .unwrap();
-    data
+    data[..length].to_vec()
 }
 
 struct INonceSequence(Option<Nonce>);

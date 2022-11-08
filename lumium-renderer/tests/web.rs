@@ -23,7 +23,6 @@ fn random_nonce() {
 fn encryption_decryption() {
     const MSG: &str = "this is a super secret message, that nobody will ever be able to decrypt";
     console_log!("msg-plain: {:?}", MSG);
-    console_log!("{}", MSG.len());
     let data = MSG.as_bytes().to_vec();
     console_log!("msg-utf8: {:?}", data);
     let mut key: [u8; 32] = [0; 32];
@@ -31,12 +30,10 @@ fn encryption_decryption() {
     rand_gen.fill(&mut key).unwrap();
     console_log!("key: {:?}", key);
     let nonce = get_random_nonce();
+    console_log!("nonce: {:?}", nonce.to_string());
     let cipher = encrypt_data(&key, nonce.clone(), data.clone());
     console_log!("cipher: {:?}", cipher);
     let plain = decrypt_data(&key, nonce, cipher);
-    console_log!(
-        "decrypt: {}",
-        std::str::from_utf8(&plain[..data.len()]).unwrap()
-    );
-    assert_eq!(std::str::from_utf8(&plain[..data.len()]).unwrap(), MSG);
+    console_log!("decrypt: {}", std::str::from_utf8(&plain).unwrap());
+    assert_eq!(std::str::from_utf8(&plain).unwrap(), MSG);
 }

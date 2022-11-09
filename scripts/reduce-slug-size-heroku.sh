@@ -1,8 +1,10 @@
 #!/bin/bash
 [ -z "${LUMIUM_HEROKU_BUILD}" ] && exit 0;
-[ -z "${ENABLE_REDUCE_SLUG_SIZE_HEROKU}" ] && exit 0;
 echo "cleaning up..."
-rm -rf lumium-renderer/target
-rm -rf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04
 du -sh *
+du -sh */**
+rm -rf lumium-renderer/target
+rm -rf lumium-space/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04
+du -sh *
+du -sh */**
 echo "finished cleaning up"

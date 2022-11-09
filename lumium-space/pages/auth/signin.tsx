@@ -47,8 +47,12 @@ export default function SignIn() {
             });
         }
     }, [loggedIn, api, recentWorkspace]);
+    const handleEnter = event => {
+        if (event.key == 'Enter') {
+            handleSignIn();
+        }
+    }
     const handleSignIn = () => {
-        console.log(AUTH_SIGNIN)
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -70,11 +74,11 @@ export default function SignIn() {
                         Router.push(SPACES_NEW);
                     }
                 });
-            } else if (redirectionURL) {
-                Router.push(redirectionURL);
-            } else {
+            } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
-            };
+            } else {
+                Router.push(redirectionURL);
+            }
         });
     };
     return (
@@ -99,6 +103,7 @@ export default function SignIn() {
                                 <Input
                                     type="email"
                                     onChange={event => setEmail(event.currentTarget.value)}
+                                    onKeyPress={handleEnter}
                                     data-cy="signInEmailInput"
                                 />
                             </FormControl>
@@ -107,6 +112,7 @@ export default function SignIn() {
                                 <Input
                                     type="password"
                                     onChange={event => setPassword(event.currentTarget.value)}
+                                    onKeyPress={handleEnter}
                                     data-cy="signInPasswordInput"
                                 />
                             </FormControl>

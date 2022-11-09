@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "yarn run lumium-renderer:package && next dev",
-        "build": "export ENABLE_REDUCE_SLUG_SIZE_HEROKU=true; yarn run lumium-renderer:package && next build",
+        "build": "yarn run lumium-renderer:package && next build",
         "start": "next start",
         "test": "NODE_TEST=true jest -c test/jest.config.js",
         "cypress:open": "cd .. && NEXT_PUBLIC_NODE_TEST=true NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && NODE_TEST=true cypress open'",

@@ -76,6 +76,8 @@ export default function SignIn() {
                 });
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
+            } else {
+                Router.push(redirectionURL);
             }
         });
     };

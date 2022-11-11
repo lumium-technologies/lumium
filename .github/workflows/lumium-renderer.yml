@@ -2,6 +2,9 @@ name: lumium-renderer-unit
 
 on:
   push:
+    branches:
+      - develop
+      - master
   pull_request:
 
 env:

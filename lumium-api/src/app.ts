@@ -214,6 +214,7 @@ supertokens.init({
             }
         }),
         Session.init({
+            cookieSameSite: process.env.REVIEW_APP && "none" || "strict",
             override: {
                 functions: (originalImplementation) => {
                     return {

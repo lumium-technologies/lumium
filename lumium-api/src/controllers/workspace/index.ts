@@ -46,7 +46,9 @@ export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express
         const variant = new E2EKeyVariant();
         variant.key = savedKey;
         variant.activator = k.activator;
+        variant.activatorNonce = k.activatorNonce;
         variant.value = k.value;
+        variant.valueNonce = k.valueNonce;
         return variant;
     });
     await dataSource.getRepository(E2EKeyVariant).save(keys);

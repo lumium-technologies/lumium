@@ -11,7 +11,13 @@ export class E2EKeyVariant extends AbstractEntity {
     activator: string
 
     @Column()
+    activatorNonce: string
+
+    @Column()
     value: string
+
+    @Column()
+    valueNonce: string
 
     @Column({default: true})
     active?: boolean

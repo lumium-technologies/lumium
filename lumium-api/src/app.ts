@@ -38,7 +38,17 @@ if (process.env.NODE_ENV === 'production' &&
     process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (insecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
     app.use((req, res, next) => {
         if (req.header('x-forwarded-proto') !== 'https') {
-            res.redirect(`https://${req.header('host')}${req.url}`);
+            res.redirect(`https://${req.header('host')}${req.url}`, 301);
+        } else {
+            next();
+        }
+    });
+}
+
+if (!process.env.NODE_JEST) {
+    app.use((req, res, next) => {
+        if (!process.env.API_HOST?.includes(req.header('host'))) {
+            res.redirect(`${process.env.API_HOST!}${req.url}`, 301);
         } else {
             next();
         }

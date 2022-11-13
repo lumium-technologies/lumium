@@ -20,9 +20,9 @@ describe('workspaces', () => {
         for (let i = 0; i < passwords.length; i++) {
             keys.push({
                 activator: activators[i],
-                activatorNonce: "someTotallyRandomNonce'sHMAC",
+                activatorNonce: "someTotallyRandomNonceInBase64",
                 value: values[i],
-                valueNonce: "soneTotallyRandomNonce'sHMAC"
+                valueNonce: "someTotallyRandomNonceInBase64"
             });
         }
         let key: E2EKeyCreateDTO = { activator: activatorPlaintext, keys };

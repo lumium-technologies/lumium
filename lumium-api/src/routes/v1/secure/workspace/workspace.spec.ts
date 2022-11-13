@@ -8,6 +8,7 @@ describe('workspaces', () => {
     jest.setTimeout(60000);
     test('crud for workspaces with keys', async () => {
         const cookies = await auth();
+        console.log('cookies: ', cookies);
         let keyString = uuidv4();
         let passwords = [];
         for (let i = 0; i < 10; i++) {

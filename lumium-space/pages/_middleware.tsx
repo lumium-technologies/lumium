@@ -5,8 +5,15 @@ function redirectHttps(req: NextRequest) {
         req.headers.get('x-forwarded-proto') !== 'https') {
         return NextResponse.redirect(
             `https://${req.headers.get('host')}${req.nextUrl.pathname}`,
-            301
+                301
         );
+    }
+}
+
+function redirectHost(req: NextRequest) {
+    const host: any = req.headers.get('host');
+    if (!process.env.NEXT_PUBLIC_SPACE_HOST?.includes(host)) {
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SPACE_HOST!}${req.nextUrl.pathname}`, 301);
     }
 }
 
@@ -32,6 +39,7 @@ function processMiddlewareFunctions(req: NextRequest, middlewareFns: Function[])
 export function middleware(req: NextRequest) {
     return processMiddlewareFunctions(req, [
         redirectHttps,
-        redirectWww
+        redirectHost,
+        redirectWww,
     ]);
 }

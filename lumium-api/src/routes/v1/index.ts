@@ -145,7 +145,9 @@ export { sec } from './secure';
 /**
  * @typedef {object} E2EKeyVariantCreateDTO
  * @property {string} activator - The encrypted activator string of the key
+ * @property {string} activatorNonce - The nonce with which the activator string was encrypted
  * @property {string} value - The encrypted value string of the key
+ * @property {string} valueNonce - The nonce with which the value string was encrypted
  */
 
 /**

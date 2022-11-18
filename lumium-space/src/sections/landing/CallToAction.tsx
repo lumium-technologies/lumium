@@ -21,8 +21,8 @@ export function CallToAction() {
                     fontWeight={600}
                     fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
                     lineHeight={'110%'}>
-                    Meeting scheduling{' '}
-                    <Text as={'span'} color={'orange.400'}>
+                    shared, secure productivity{' '}
+                    <Text as={'span'} color={'red.400'}>
                         made easy
                     </Text>
                 </Heading>
@@ -35,9 +35,9 @@ export function CallToAction() {
                     <Button
                         rounded={'full'}
                         px={6}
-                        colorScheme={'orange'}
-                        bg={'orange.400'}
-                        _hover={{ bg: 'orange.500' }}>
+                        colorScheme={'red'}
+                        bg={'red.400'}
+                        _hover={{ bg: 'red.500' }}>
                         Get started
                     </Button>
                     <Button rounded={'full'} px={6}>

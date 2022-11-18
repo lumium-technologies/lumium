@@ -1,3 +1,4 @@
+import { AppScreenshot } from "@sections/landing/AppScreenshot";
 import { CallToAction } from "@sections/landing/CallToAction";
 import { Footer } from "@sections/landing/Footer";
 import { Pricing } from "@sections/landing/Pricing";
@@ -9,6 +10,7 @@ export default function LandingPage() {
             <CallToAction />
             <Statistics />
             <Pricing />
+            <AppScreenshot />
             <Footer />
         </>
     );

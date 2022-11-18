@@ -9,7 +9,7 @@ export const Authenticator: React.FC = (props) => {
     const { asPath } = useRouter()
     useEffect(() => {
         useLoginStatus().then((val) => {
-            const redirectionURL = asPath.substr(0, asPath.lastIndexOf("/"))
+            const redirectionURL = asPath.substr(0, asPath.lastIndexOf("/"));
             if (!val) {
                 if (!asPath.includes("workspace")) {
                     Router.push(AUTH_SIGNIN + '?redirectionURL=' + encodeURIComponent(redirectionURL));

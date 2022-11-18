@@ -14,7 +14,7 @@
         "preinstall": "yarn run lumium-renderer:package"
     },
     "dependencies": {
-        "@chakra-ui/icons": "1.1.7",
+        "@chakra-ui/icons": "^2.0.12",
         "@chakra-ui/react": "^1.8.8",
         "@chakra-ui/system": "1.0.0",
         "@choc-ui/logo": "^1.0.0",

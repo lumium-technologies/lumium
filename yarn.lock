@@ -486,13 +486,19 @@
   dependencies:
     "@chakra-ui/utils" "1.10.4"
 
-"@chakra-ui/icons@1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-1.1.7.tgz#f8c0c44a969c8654b90026b7d375b550c4bfbc49"
-  integrity sha512-YIHxey/B4M2PyFASlHXtAWFyW+tsAtGAChOJ8dsM2kpu1MbVUqm/6nMI1KIFd7Te5IWuNYA75rAHBdLI0Yu61A==
+"@chakra-ui/icon@3.0.12":
+  version "3.0.12"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icon/-/icon-3.0.12.tgz#04f5b38591c4ff1cc922c14f814ce6b5d67525d9"
+  integrity sha512-VbUqgMcoZ26P1MtZdUqlxAKYDi1Bt8sSPNRID8QOwWfqyRYrbzabORVhKR3gpi6GaINjm7KRHIXHarj3u6EWdA==
   dependencies:
-    "@chakra-ui/icon" "2.0.5"
-    "@types/react" "^17.0.15"
+    "@chakra-ui/shared-utils" "2.0.3"
+
+"@chakra-ui/icons@^2.0.12":
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.0.12.tgz#5b4dd53512c2543c0617d4b348bf7bd1d9284e4a"
+  integrity sha512-lZyB96Yic5qM3gWp/QlQuD8WyS+V+19mjNxFW7IVmcn7fm+bLsnPrVPv2Qmpcs6/d4jsUyc1broyuyM+Urtg8Q==
+  dependencies:
+    "@chakra-ui/icon" "3.0.12"
 
 "@chakra-ui/image@1.1.10":
   version "1.1.10"
@@ -718,6 +724,11 @@
   dependencies:
     "@chakra-ui/form-control" "1.6.0"
     "@chakra-ui/utils" "1.10.4"
+
+"@chakra-ui/shared-utils@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/shared-utils/-/shared-utils-2.0.3.tgz#97cbc11282e381ebd9f581c603088f9d60ead451"
+  integrity sha512-pCU+SUGdXzjAuUiUT8mriekL3tJVfNdwSTIaNeip7k/SWDzivrKGMwAFBxd3XVTDevtVusndkO4GJuQ3yILzDg==
 
 "@chakra-ui/skeleton@1.2.14":
   version "1.2.14"
@@ -2187,7 +2198,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17.0.15", "@types/react@>=16.9.0", "@types/react@^17", "@types/react@^17.0.0", "@types/react@^17.0.15":
+"@types/react@*", "@types/react@>=16.9.0", "@types/react@^17", "@types/react@^17.0.0":
   version "17.0.15"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.15.tgz#c7533dc38025677e312606502df7656a6ea626d0"
   integrity sha512-uTKHDK9STXFHLaKv6IMnwp52fm0hwU+N89w/p9grdUqcFA6WuqDyPhaWopbNyE1k/VhgzmHl8pu1L4wITtmlLw==

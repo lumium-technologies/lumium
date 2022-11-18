@@ -189,10 +189,8 @@ export default function ResetPassword() {
         </Fade>
         ;
     return (
-        <Authenticator>
-            <Fade in={true}>
-                {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
-            </Fade>
-        </Authenticator>
+        <Fade in={true}>
+            {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
+        </Fade>
     )
 }

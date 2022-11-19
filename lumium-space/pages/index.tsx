@@ -1,3 +1,4 @@
+import { Container } from "@chakra-ui/react";
 import { AppScreenshot } from "@sections/landing/AppScreenshot";
 import { CallToAction } from "@sections/landing/CallToAction";
 import { Footer } from "@sections/landing/Footer";
@@ -7,10 +8,12 @@ import { Statistics } from "@sections/landing/Statistics";
 export default function LandingPage() {
     return (
         <>
-            <CallToAction />
-            <Statistics />
-            <Pricing />
-            <AppScreenshot />
+            <Container maxW="container.xl">
+                <CallToAction />
+                <Statistics />
+                <Pricing />
+                <AppScreenshot />
+            </Container>
             <Footer />
         </>
     );

@@ -17,6 +17,7 @@ COPY --from=deps /app/lumium-space/node_modules ./lumium-space/node_modules
 COPY --from=deps /app/lumium-renderer/target ./lumium-renderer/target
 COPY --from=deps /app/lumium-renderer/pkg ./lumium-renderer/pkg
 WORKDIR /app/lumium-space
+RUN cd lumium-renderer/pkg && yarn link && cd ../../ && yarn link lumium-renderer
 RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
@@ -27,16 +28,17 @@ WORKDIR /app
 RUN npm install --global pm2
 
 ENV NODE_ENV production
+ENV NEXT_PUBLIC_PRODUCTION true
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/lumium-space/next.config.js ./
+COPY --from=builder /app/lumium-space/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/lumium-space/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/lumium-space/package.json ./package.json
 
 USER nextjs
 

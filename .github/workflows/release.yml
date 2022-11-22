@@ -21,13 +21,13 @@ jobs:
         run: |
           CHANGELOG=$(yarn run git-conventional-commits changelog | tail -n +3 | head -n -1)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          echo $CHANGELOG >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           VERSION=$(yarn run git-conventional-commits version | tail -2 | head -1)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           mkdir -p docs/
           touch docs/CHANGELOG.md
-          echo $CHANGELOG | cat - docs/CHANGELOG.md > temp.md && mv temp.md docs/CHANGELOG.md
+          echo "$CHANGELOG" | cat - docs/CHANGELOG.md > temp.md && mv temp.md docs/CHANGELOG.md
           rm -rf .git/hooks/commit-msg
           git config --unset core.hooksPath
           git config --global user.name "github-actions[bot]"

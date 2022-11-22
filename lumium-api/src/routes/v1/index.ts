@@ -145,5 +145,17 @@ export { sec } from './secure';
 /**
  * @typedef {object} E2EKeyVariantCreateDTO
  * @property {string} activator - The encrypted activator string of the key
+ * @property {string} activatorNonce - The nonce with which the activator string was encrypted
  * @property {string} value - The encrypted value string of the key
+ * @property {string} valueNonce - The nonce with which the value string was encrypted
+ */
+
+/**
+ * @typedef {object} WorkspaceUpdateDTO
+ * @property {string} ownerId - The new owner uuid
+ * @property {array<string>} admins - The new admin uuids
+ * @property {array<string>} members - The new member uuids
+ * @property {array<string>} visitors - The new visitor uuids
+ * @property {array<PageDTO>} pages - The new pages
+ * @property {array<WorkspacePreferenceDTO>} preferences - The new preferences
  */

@@ -24,7 +24,7 @@ import { SECURE, V1 } from '../routes/api/v1';
 const initDataSource = async () => {
     try {
         await connection.create();
-    } catch(e) {
+    } catch (e) {
         console.error(e);
     }
 };
@@ -38,10 +38,20 @@ if (process.env.NODE_ENV === 'production' &&
     process.env.PRODUCTION) { // only enforce connections to the production server, everything non-production is only guarded through Cloudflare (insecure between CF and Heroku, matter of development infrastructure cost), this serves to encrypt the production traffic between Heroku and Cloudflare
     app.use((req, res, next) => {
         if (req.header('x-forwarded-proto') !== 'https') {
-            res.redirect(`https://${req.header('host')}${req.url}`);
+            res.redirect(`https://${req.header('host')}${req.url}`, 301);
         } else {
-                next();
-            }
+            next();
+        }
+    });
+}
+
+if (!process.env.NODE_JEST) {
+    app.use((req, res, next) => {
+        if (!process.env.API_HOST?.includes(req.header('host'))) {
+            res.redirect(`${process.env.API_HOST!}${req.url}`, 301);
+        } else {
+            next();
+        }
     });
 }
 
@@ -129,7 +139,7 @@ app.use(
 );
 
 const connectionUri: string = process.env.SUPERTOKENS_CONNECTION_URI || '';
-const apiKey: string  = process.env.SUPERTOKENS_API_KEY || '';
+const apiKey: string = process.env.SUPERTOKENS_API_KEY || '';
 
 const spaceHosts: (string)[] = [process.env.SPACE_HOST, process.env.SPACE_HOST_HEROKU];
 const apiHosts: (string)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];
@@ -162,11 +172,11 @@ supertokens.init({
                                         mails[0].verified = true;
                                     } else {
                                         const detail = "Email to verify not found on account";
-                                        await error({user: { id }, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED});
+                                        await error({ user: { id }, detail, type: AuditEntryEvent.USER_EMAIL_VERIFICATION_FAILED });
                                         throw new Error(detail);
                                     }
                                     await dataSource.getRepository(Email).save(mails[0]);
-                                    await info({user: { id }, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED});
+                                    await info({ user: { id }, detail: email, type: AuditEntryEvent.USER_EMAIL_VERIFIED });
                                 }
                                 return response;
                             }
@@ -181,16 +191,16 @@ supertokens.init({
 
                             if (!process.env.PRODUCTION && response.status === 'OK') {
                                 let user = await dataSource
-                                .getRepository(User)
-                                .findOne({
-                                    where: { id: response.user.id }
-                                });
+                                    .getRepository(User)
+                                    .findOne({
+                                        where: { id: response.user.id }
+                                    });
                                 if (!user) {
                                     user = await dataSource
-                                    .getRepository(User)
-                                    .save({ id: response.user.id });
+                                        .getRepository(User)
+                                        .save({ id: response.user.id });
                                     await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
-                                    await info({user: user, type: AuditEntryEvent.USER_SIGNUP_INIT_DEVELOPMENT_PATCH});
+                                    await info({ user: user, type: AuditEntryEvent.USER_SIGNUP_INIT_DEVELOPMENT_PATCH });
                                 }
                             }
 
@@ -200,8 +210,8 @@ supertokens.init({
                             const response = await originalImplementation.emailPasswordSignUp(input);
                             if (response.status === 'OK') {
                                 const user = await dataSource
-                                .getRepository(User)
-                                .save({ id: response.user.id });
+                                    .getRepository(User)
+                                    .save({ id: response.user.id });
                                 await dataSource.getRepository(Email).save({ user, primary: true, email: response.user.email });
                                 await info({ user, type: AuditEntryEvent.USER_SIGNUP_INIT });
                             } else {
@@ -225,16 +235,16 @@ supertokens.init({
                                 ...input.accessTokenPayload,
                                 roles: {
                                     workspaceOwner: user.ownedWorkspaces?.map(t => t.id),
-                                        workspaceAdmin: user.administratedWorkspaces?.map(t => t.id),
-                                        workspaceMember: user.memberWorkspaces?.map(t => t.id),
-                                        workspaceVisitor: user.visitorWorkspaces?.map(t => t.id),
-                                        pageOwner: user.ownedPages?.map(t => t.id),
-                                        pageAdmin: user.administratedPages?.map(t => t.id),
-                                        pageMember: user.memberPages?.map(t => t.id),
-                                        pageVisitor: user.visitorPages?.map(t => t.id)
+                                    workspaceAdmin: user.administratedWorkspaces?.map(t => t.id),
+                                    workspaceMember: user.memberWorkspaces?.map(t => t.id),
+                                    workspaceVisitor: user.visitorWorkspaces?.map(t => t.id),
+                                    pageOwner: user.ownedPages?.map(t => t.id),
+                                    pageAdmin: user.administratedPages?.map(t => t.id),
+                                    pageMember: user.memberPages?.map(t => t.id),
+                                    pageVisitor: user.visitorPages?.map(t => t.id)
                                 },
                             };
-                            await info({user, type: AuditEntryEvent.USER_SIGNIN});
+                            await info({ user, type: AuditEntryEvent.USER_SIGNIN });
                             return originalImplementation.createNewSession(input);
                         },
                     };
@@ -253,7 +263,9 @@ const limiter = rateLimit({
     message: 'API rate limit hit, please try again in a short moment',
 });
 
-app.use(limiter);
+if (!process.env.NODE_JEST) {
+    app.use(limiter);
+}
 
 let cors_config = {
     origin: [...spaceHosts, ...apiHosts],
@@ -269,7 +281,7 @@ app.use(middleware());
 
 app.use(V1 + SECURE, verifySession(), v1sec);
 
-app.get('/', (req, res)  => {
+app.get('/', (req, res) => {
     res.redirect('/docs/');
 });
 

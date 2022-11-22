@@ -3,15 +3,27 @@ mod utils;
 extern crate katex_renderer;
 extern crate web_sys;
 
+use js_sys::Uint8Array;
+use ring::aead::UnboundKey;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
+use passwords::PasswordGenerator;
 use pulldown_cmark::{html, Options, Parser};
+use ring::aead::{
+    self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM,
+    CHACHA20_POLY1305, NONCE_LEN,
+};
+use ring::error;
+use ring::rand::{SecureRandom, SystemRandom};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
+
+const MASTER_KEY_BYTE_LENGTH: usize = 32;
+const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -108,4 +120,74 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub fn generate_workspace_key_with_recovery(password: JsValue) {}
+pub fn generate_workspace_key_with_recovery(password: JsValue) {
+    // let sr = SystemRandom::new();
+    // let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
+    // sr.fill(&mut master_key).unwrap();
+    // let mut activator_key: [u8; ACTIVATOR_KEY_BYTE_LENGTH] = [0; ACTIVATOR_KEY_BYTE_LENGTH];
+    // sr.fill(&mut activator_key).unwrap();
+    // let activator_master = encrypt_data(&master_key, activator_key);
+    // let pg = PasswordGenerator {
+    //     length: 8,
+    //     numbers: true,
+    //     lowercase_letters: true,
+    //     uppercase_letters: true,
+    //     symbols: true,
+    //     spaces: true,
+    //     exclude_similar_characters: false,
+    //     strict: true,
+    // };
+    // let mut recovery_codes = pg.generate(10).unwrap();
+    todo!()
+}
+
+#[wasm_bindgen]
+pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+    let mut nonce_buf = [0; NONCE_LEN];
+    nonce.copy_to(&mut nonce_buf);
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
+    let mut encryption_key =
+        SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    encryption_key
+        .seal_in_place_append_tag(Aad::empty(), &mut data)
+        .unwrap();
+    data
+}
+
+#[wasm_bindgen]
+pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+    let mut nonce_buf = [0; NONCE_LEN];
+    nonce.copy_to(&mut nonce_buf);
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
+    let mut decryption_key =
+        OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    let length = data.len() - AES_256_GCM.tag_len();
+    decryption_key
+        .open_in_place(Aad::empty(), &mut data)
+        .unwrap();
+    data[..length].to_vec()
+}
+
+struct INonceSequence(Option<Nonce>);
+
+impl INonceSequence {
+    fn new(nonce: Nonce) -> Self {
+        Self(Some(nonce))
+    }
+}
+
+impl NonceSequence for INonceSequence {
+    fn advance(&mut self) -> Result<Nonce, error::Unspecified> {
+        self.0.take().ok_or(error::Unspecified)
+    }
+}
+
+#[wasm_bindgen]
+pub fn get_random_nonce() -> Uint8Array {
+    let rand_gen = SystemRandom::new();
+    let mut raw_nonce = [0u8; NONCE_LEN];
+    rand_gen.fill(&mut raw_nonce).unwrap();
+    let mut array = Uint8Array::new_with_length(NONCE_LEN as u32);
+    array.copy_from(&raw_nonce);
+    array
+}

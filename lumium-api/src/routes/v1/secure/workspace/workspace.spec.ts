@@ -4,9 +4,9 @@ import { E2EKeyCreateDTO, E2EKeyVariantCreateDTO } from "../../../../../types";
 import cryptojs from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
 
-describe('user info', () => {
+describe('workspaces', () => {
     jest.setTimeout(60000);
-    test('creates workspace with keys', async () => {
+    test('crud for workspaces with keys', async () => {
         const cookies = await auth();
         let keyString = uuidv4();
         let passwords = [];
@@ -20,13 +20,18 @@ describe('user info', () => {
         for (let i = 0; i < passwords.length; i++) {
             keys.push({
                 activator: activators[i],
-                value: values[i]
+                activatorNonce: "someTotallyRandomNonceInBase64",
+                value: values[i],
+                valueNonce: "someTotallyRandomNonceInBase64"
             });
         }
         let key: E2EKeyCreateDTO = { activator: activatorPlaintext, keys };
         let resp = await supertest(app).put('/v1/secure/workspace').set('cookie', cookies).send(key);
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).get('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
+        expect(resp.statusCode).toBe(200);
+        resp = await supertest(app).patch('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send({ preferences: [{ option: 'something', value: 'something' }] });
+        // TODO: implement patch test correctly
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).delete('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);

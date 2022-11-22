@@ -1,0 +1,54 @@
+name: create release
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+      - name: Install dependencies
+        run: yarn install
+      - name: Generate changelog
+        if: "!startsWith(github.event.head_commit.message, '[VERSION]')"
+        id: semantic-release
+        run: |
+          CHANGELOG=$(yarn run git-conventional-commits changelog | tail -n +3 | head -n -1)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          VERSION=$(yarn run git-conventional-commits version | tail -2 | head -1)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          mkdir -p docs/
+          touch docs/CHANGELOG.md
+          echo -e "$CHANGELOG\n\n" | cat - docs/CHANGELOG.md > temp.md && mv temp.md docs/CHANGELOG.md
+          rm -rf .git/hooks/commit-msg
+          git config --unset core.hooksPath
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "actions@github.com"
+          git add -A
+          yarn version --new-version $VERSION --message "[VERSION] $VERSION"
+          git push
+          echo "COMMITISH=$(git rev-parse master)" >> $GITHUB_OUTPUT
+          git fetch --unshallow
+          git checkout develop
+          git pull
+          git merge --no-ff master -m "[BUMP] $VERSION - bump `develop` after release"
+          git push
+      - name: Create release
+        if: "!startsWith(github.event.head_commit.message, '[VERSION]')"
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.semantic-release.outputs.VERSION }}
+          release_name: v${{ steps.semantic-release.outputs.VERSION }}
+          body: ${{ steps.semantic-release.outputs.CHANGELOG }}
+          commitish: ${{ steps.semantic-release.outputs.COMMITISH }}
+          replaceArtifacts: false

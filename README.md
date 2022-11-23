@@ -1,7 +1,9 @@
-![Image](https://github.com/D3PSI/lumium/blob/develop/lumium-space/public/logo/logo.svg)
+<div align="center">
+    <image src="https://raw.githubusercontent.com/D3PSI/lumium/develop/lumium-space/public/logo/parts/fg/icon.svg"></image>
+</div>
 
 # lumium
-next level docs
+next level docs - the end-to-end secure, shared productivity platform
 
 ## local database setup
 setup and start postgres, then create the necessary databases by logging into `psql` as a privileged user:

@@ -19,6 +19,7 @@ jobs:
         if: "!startsWith(github.event.head_commit.message, '[VERSION]')"
         id: semantic-release
         run: |
+          git fetch --unshallow
           CHANGELOG=$(yarn run git-conventional-commits changelog | tail -n +3 | head -n -1)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
@@ -35,10 +36,10 @@ jobs:
           git add -A
           yarn version --new-version $VERSION --message "[VERSION] $VERSION"
           git push
-          git fetch --unshallow
+          echo "COMMITISH=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           git checkout develop
           git pull
-          git merge --no-ff master -m "[BUMP] $VERSION - bump `develop` after release"
+          git merge --no-ff master -m "[BUMP] $VERSION - bump after release"
           git push
       - name: Create release
         if: "!startsWith(github.event.head_commit.message, '[VERSION]')"
@@ -49,4 +50,5 @@ jobs:
           tag_name: ${{ steps.semantic-release.outputs.VERSION }}
           release_name: v${{ steps.semantic-release.outputs.VERSION }}
           body: ${{ steps.semantic-release.outputs.CHANGELOG }}
+          commitish: ${{ steps.semantic-release.outputs.COMMITISH }}
           replaceArtifacts: false

@@ -5,7 +5,7 @@ export const PasswordMatchError = (check: boolean) => {
         check ?
             <Alert status='error' width="20%" mr="1%">
                 <AlertIcon />
-                <AlertTitle>Passwords don't match</AlertTitle>
+                <AlertTitle>Passwords don&apos;t match</AlertTitle>
             </Alert>
             :
             <Text></Text>

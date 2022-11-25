@@ -1,5 +1,6 @@
-import { InfoIcon } from "@chakra-ui/icons";
-import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { PasswordMatchError } from "@components/notifications";
 import { useApi } from "@hooks/api";
 import { AUTH, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import { Authenticator } from "@security/authentication";
@@ -9,12 +10,25 @@ import { useState } from "react";
 export default function ResetPassword() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordVerify, setPasswordVerify] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordNotMatchError, setPasswordNotMatchError] = useState(false);
     const [isShown, setIsShown] = useState(false);
     const [resendIsShown, setResendIsShown] = useState(false);
     const [emailExistsIsShown, setEmailExistsIsShown] = useState(false);
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
+    const handleEnter = event => {
+        if (event.key == 'Enter') {
+            handleChangePassword();
+        }
+    }
+    const handleEnterEmail = event => {
+        if (event.key == 'Enter') {
+            handleResetPassword();
+        }
+    }
     const handleResetPassword = () => {
         const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
         emailExists.then(value => {
@@ -35,16 +49,20 @@ export default function ResetPassword() {
         })
     };
     const handleChangePassword = () => {
-        api.post(PASSWORD_RESET, {
-            "method": "token",
-            "formFields": [
-                {
-                    "id": "password",
-                    "value": password
-                }
-            ],
-            "token": token
-        }).then(() => Router.push(AUTH));
+        if (password == passwordVerify) {
+            api.post(PASSWORD_RESET, {
+                "method": "token",
+                "formFields": [
+                    {
+                        "id": "password",
+                        "value": password
+                    }
+                ],
+                "token": token
+            }).then(() => Router.push(AUTH));
+        } else {
+            setPasswordNotMatchError(true)
+        }
     };
     const handleResendEmail = () => {
         api.post(PASSWORD_RESET_TOKEN, {
@@ -89,6 +107,7 @@ export default function ResetPassword() {
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             onChange={event => setEmail(event.currentTarget.value)}
+                            onKeyPress={handleEnterEmail}
                         />
                     </FormControl>
                     <Stack spacing={6}>
@@ -119,38 +138,74 @@ export default function ResetPassword() {
 
     const changePassword =
         <Flex
+            flexDir="column"
             minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}>
-            <Stack
-                spacing={4}
-                w={'full'}
-                maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
-                rounded={'xl'}
-                boxShadow={'lg'}
-                p={6}
-                my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Enter new password
-                </Heading>
-                <FormControl id="password" isRequired>
-                    <FormLabel>Password</FormLabel>
-                    <Input type="password" onChange={event => setPassword(event.currentTarget.value)} />
-                </FormControl>
-                <Stack spacing={6}>
-                    <Button
-                        bg={'blue.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'blue.500',
-                        }}
-                        onClick={handleChangePassword}>
-                        Submit
-                    </Button>
+        >
+            <Flex
+                minH={'93vh'}
+                align={'center'}
+                justify={'center'}
+                bg={useColorModeValue('gray.50', 'gray.800')}
+            >
+                <Stack
+                    spacing={4}
+                    w={'full'}
+                    maxW={'md'}
+                    bg={useColorModeValue('white', 'gray.700')}
+                    rounded={'xl'}
+                    boxShadow={'lg'}
+                    p={6}
+                    my={12}>
+                    <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+                        Enter new password
+                    </Heading>
+                    <FormControl id="password" isRequired>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={event => setPassword(event.currentTarget.value)}
+                                onKeyPress={handleEnter}
+                                data-cy="signUpPasswordInput"
+                            />
+                            <InputRightElement h={'full'}>
+                                <Button
+                                    variant={'ghost'}
+                                    onClick={() =>
+                                        setShowPassword((showPassword) => !showPassword)
+                                    }>
+                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                        <FormControl id="password-verify" isRequired>
+                            <FormLabel>Repeat Password</FormLabel>
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={event => setPasswordVerify(event.currentTarget.value)}
+                                onKeyPress={handleEnter}
+                                data-cy="signUpPasswordVerifyInput"
+                            />
+                        </FormControl>
+                    </FormControl>
+                    <Stack spacing={6}>
+                        <Button
+                            bg={'blue.400'}
+                            color={'white'}
+                            _hover={{
+                                bg: 'blue.500',
+                            }}
+                            onClick={handleChangePassword}>
+                            Submit
+                        </Button>
+                    </Stack>
                 </Stack>
-            </Stack>
+            </Flex>
+            <Flex justifyContent="flex-end">
+                {
+                    PasswordMatchError(passwordNotMatchError)
+                }
+            </Flex>
         </Flex>
         ;
     const emailSentPage =

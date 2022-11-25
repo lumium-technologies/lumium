@@ -26,13 +26,16 @@ import { useLoginStatus } from '@hooks/security';
 import { UserDTO, WorkspaceDTO } from "@types";
 import { SECURE_USER_GET } from '@routes/api/v1';
 import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
+import { PasswordMatchError } from '@components/notifications';
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordVerify, setPasswordVerify] = useState('');
     const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
+    const [passwordNotMatchError, setPasswordNotMatchError] = useState(false);
     const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
     const [loggedIn, setloggedIn] = useState(false);
     useLoginStatus().then((val) => {
@@ -56,26 +59,30 @@ export default function SignUp() {
         }
     }
     const handleSignUp = () => {
-        api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
-            if (!value) {
-                api.post(AUTH_SIGNUP, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        },
-                        {
-                            "id": "password",
-                            "value": password
-                        }
-                    ]
-                }).then(() => {
-                    api.post(EMAIL_VERIFY_TOKEN);
-                }).then(() => Router.push("/auth/verify-email"));
-            } else {
-                setEmailExistsError(true);
-            }
-        })
+        if (password == passwordVerify) {
+            api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
+                if (!value) {
+                    api.post(AUTH_SIGNUP, {
+                        "formFields": [
+                            {
+                                "id": "email",
+                                "value": email
+                            },
+                            {
+                                "id": "password",
+                                "value": password
+                            }
+                        ]
+                    }).then(() => {
+                        api.post(EMAIL_VERIFY_TOKEN);
+                    }).then(() => Router.push("/auth/verify-email"));
+                } else {
+                    setEmailExistsError(true);
+                }
+            })
+        } else {
+            setPasswordNotMatchError(true);
+        }
     };
     return (
         <Flex flexDir="column" minH={'100vh'}>
@@ -139,6 +146,15 @@ export default function SignUp() {
                                     </InputRightElement>
                                 </InputGroup>
                             </FormControl>
+                            <FormControl id="password-verify" isRequired>
+                                <FormLabel>Repeat Password</FormLabel>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={event => setPasswordVerify(event.currentTarget.value)}
+                                    onKeyPress={handleEnter}
+                                    data-cy="signUpPasswordVerifyInput"
+                                />
+                            </FormControl>
                             <Stack spacing={10} pt={2}>
                                 <Button
                                     loadingText="Submitting"
@@ -172,6 +188,9 @@ export default function SignUp() {
                         </Alert>
                         :
                         <Text></Text>
+                }
+                {
+                    PasswordMatchError(passwordNotMatchError)
                 }
             </Flex>
         </Flex>

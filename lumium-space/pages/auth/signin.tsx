@@ -28,11 +28,11 @@ export default function SignIn() {
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const router = useRouter();
+    const userInfo = useUserInfo();
     const redirectionURL = router.query.redirectionURL + ""
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
             if (loggedIn) {
-                const userInfo = useUserInfo();
                 if (userInfo?.recentWorkspace) {
                     Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
@@ -40,7 +40,7 @@ export default function SignIn() {
                 };
             };
         });
-    }, [api]);
+    }, []);
     const handleEnter = event => {
         if (event.key == 'Enter') {
             handleSignIn();
@@ -60,7 +60,6 @@ export default function SignIn() {
             ]
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK" && !redirectionURL) {
-                const userInfo = useUserInfo();
                 if (userInfo?.recentWorkspace) {
                     Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {

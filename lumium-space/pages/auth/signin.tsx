@@ -23,27 +23,24 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 import { ShowError } from '@components/notifications';
 export default function SignIn() {
-    const redirectionLogic = () => {
-        if (userInfo?.recentWorkspace) {
-            Router.push('/' + userInfo?.recentWorkspace.id);
-        } else {
-            Router.push(SPACES_NEW);
-        }
-    }
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const router = useRouter();
-    const userInfo = useUserInfo();
     const redirectionURL = router.query.redirectionURL + ""
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
             if (loggedIn) {
-                redirectionLogic()
-            }
-        })
-    }, [api, userInfo, redirectionLogic]);
+                const userInfo = useUserInfo();
+                if (userInfo?.recentWorkspace) {
+                    Router.push('/' + userInfo?.recentWorkspace.id);
+                } else {
+                    Router.push(SPACES_NEW);
+                };
+            };
+        });
+    }, [api]);
     const handleEnter = event => {
         if (event.key == 'Enter') {
             handleSignIn();
@@ -63,7 +60,12 @@ export default function SignIn() {
             ]
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK" && !redirectionURL) {
-                redirectionLogic()
+                const userInfo = useUserInfo();
+                if (userInfo?.recentWorkspace) {
+                    Router.push('/' + userInfo?.recentWorkspace.id);
+                } else {
+                    Router.push(SPACES_NEW);
+                }
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
             } else {

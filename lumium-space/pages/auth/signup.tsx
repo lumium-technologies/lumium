@@ -13,10 +13,6 @@ import {
     HStack,
     InputGroup,
     InputRightElement,
-    Alert,
-    AlertIcon,
-    AlertTitle,
-    Fade,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from "@hooks/api";
@@ -36,6 +32,7 @@ export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
             if (loggedIn) {
@@ -46,12 +43,14 @@ export default function SignUp() {
                 };
             };
         });
-    }, []);
+    }, [userInfo?.recentWorkspace]);
+
     const handleEnter = event => {
         if (event.key == 'Enter') {
             handleSignUp();
         }
     }
+
     const handleSignUp = () => {
         if (password == passwordVerify) {
             api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
@@ -78,6 +77,7 @@ export default function SignUp() {
             setPasswordError(true)
         }
     };
+
     return (
         <Flex flexDir="column" minH={'100vh'}>
             <Flex

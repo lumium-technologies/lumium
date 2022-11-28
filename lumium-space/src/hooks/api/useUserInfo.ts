@@ -10,6 +10,6 @@ export const useUserInfo = () => {
         api.get<UserDTO>(SECURE_USER_GET).then((res) => {
             setUserInfo(res.data);
         });
-    }, [userInfo]);
+    }, [api, userInfo]);
     return userInfo;
 }

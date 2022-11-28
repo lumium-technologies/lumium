@@ -9,16 +9,12 @@ import {
     Button,
     Heading,
     useColorModeValue,
-    Alert,
-    AlertIcon,
-    AlertTitle,
     Spacer,
-    Fade,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
 import Router, { useRouter } from 'next/router';
-import { AUTH_SIGNIN, SPACES_NEW } from '@routes/space';
+import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 import { ShowError } from '@components/notifications';
@@ -30,7 +26,8 @@ export default function SignIn() {
     const [api] = useApi();
     const router = useRouter();
     const userInfo = useUserInfo();
-    const redirectionURL = router.query.redirectionURL + ""
+    const redirectTo = router.query.redirectTo + ""
+
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
             if (loggedIn) {
@@ -41,12 +38,14 @@ export default function SignIn() {
                 };
             };
         });
-    }, []);
-    const handleEnter = event => {
+    }, [userInfo?.recentWorkspace]);
+
+    const handleEnter = (event) => {
         if (event.key == 'Enter') {
             handleSignIn();
         }
-    }
+    };
+
     const handleSignIn = () => {
         api.post(AUTH_SIGNIN, {
             "formFields": [
@@ -60,7 +59,7 @@ export default function SignIn() {
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
-            if (status.status == "OK" && !redirectionURL) {
+            if (status.status == "OK" && !redirectTo) {
                 if (userInfo?.recentWorkspace) {
                     Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
@@ -69,10 +68,11 @@ export default function SignIn() {
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
             } else {
-                Router.push(redirectionURL);
+                Router.push(redirectTo);
             }
         });
     };
+
     return (
         <Flex flexDir="column" minH={'100vh'}>
             <Flex
@@ -113,13 +113,12 @@ export default function SignIn() {
                                     direction={{ base: 'column', sm: 'row' }}
                                     align={'start'}
                                     justify={'space-between'}>
-                                    {/*<Checkbox>Remember me</Checkbox>*/}
                                     <Spacer />
-                                    <Link color={'blue.400'} onClick={() => Router.push("/auth/reset-password")}>Forgot password?</Link>
+                                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)}>Forgot password?</Link>
                                 </Stack>
                             </Stack>
                             <Flex justifyContent="flex-end" mt="0">
-                                <Link color={'blue.400'} onClick={() => Router.push("/auth/signup")}>Create Account</Link>
+                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)}>Create Account</Link>
                             </Flex>
                             <Button
                                 bg={'blue.400'}
@@ -137,7 +136,7 @@ export default function SignIn() {
                 </Stack>
             </Flex >
             <Flex justifyContent="flex-end">
-                <ShowError show={credentialsMatchError} message={"E-Mail or Password don't match"} />
+                <ShowError show={credentialsMatchError} message={"E-Mail or Password incorrect"} />
             </Flex>
         </Flex >
     )

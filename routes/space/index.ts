@@ -3,6 +3,7 @@ export const ACCOUNT = ROOT + 'account';
 export const AUTH = ROOT + 'auth';
 export const AUTH_SIGNIN = AUTH + '/signin';
 export const AUTH_SIGNUP = AUTH + '/signup';
+export const AUTH_PASSWORD_RESET = AUTH + '/reset';
 export const SPACES = ROOT + 'spaces';
 export const SPACES_NEW = SPACES + '/new';
 export const WORKSPACE = ROOT + 'workspace';

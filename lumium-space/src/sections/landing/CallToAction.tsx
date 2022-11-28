@@ -21,7 +21,7 @@ export function CallToAction() {
                     fontWeight={600}
                     fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
                     lineHeight={'110%'}>
-                    shared, secure productivity{' '}
+                    shared, secured productivity{' '}
                     <Text as={'span'} color={'red.400'}>
                         made easy
                     </Text>

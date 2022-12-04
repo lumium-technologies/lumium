@@ -10,6 +10,7 @@ import {
     Heading,
     useColorModeValue,
     Spacer,
+    FormErrorMessage,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
@@ -21,7 +22,9 @@ import { ShowError } from '@components/notifications';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const router = useRouter();
@@ -47,6 +50,8 @@ export default function SignIn() {
     };
 
     const handleSignIn = () => {
+        setEmailError(email == '');
+        setPasswordError(password == '');
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -66,7 +71,10 @@ export default function SignIn() {
                     Router.push(SPACES_NEW);
                 }
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
-                setCredentialsMatchError(true);
+                if (email != '' && password != '') {
+                    setCredentialsMatchError(true);
+                }
+
             } else {
                 Router.push(redirectTo);
             }
@@ -80,7 +88,7 @@ export default function SignIn() {
                 align={'center'}
                 justify={'center'}
                 bg={useColorModeValue('gray.50', 'gray.800')}>
-                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6} width="100%">
                     <Stack align={'center'}>
                         <Heading fontSize={'4xl'}>Sign in to your account</Heading>
                     </Stack>
@@ -90,7 +98,7 @@ export default function SignIn() {
                         boxShadow={'lg'}
                         p={8}>
                         <Stack spacing={4}>
-                            <FormControl id="email" isRequired>
+                            <FormControl id="email" isRequired isInvalid={emailError}>
                                 <FormLabel>Email address</FormLabel>
                                 <Input
                                     type="email"
@@ -98,8 +106,12 @@ export default function SignIn() {
                                     onKeyPress={handleEnter}
                                     data-cy="signInEmailInput"
                                 />
+                                {emailError ? (
+                                    <FormErrorMessage>E-Mail is required.</FormErrorMessage>
+                                ) : (null)
+                                }
                             </FormControl>
-                            <FormControl id="password" isRequired>
+                            <FormControl id="password" isRequired isInvalid={passwordError}>
                                 <FormLabel>Password</FormLabel>
                                 <Input
                                     type="password"
@@ -107,6 +119,10 @@ export default function SignIn() {
                                     onKeyPress={handleEnter}
                                     data-cy="signInPasswordInput"
                                 />
+                                {passwordError ? (
+                                    <FormErrorMessage>Password is required.</FormErrorMessage>
+                                ) : (null)
+                                }
                             </FormControl>
                             <Stack spacing={10}>
                                 <Stack

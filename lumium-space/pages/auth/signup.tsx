@@ -13,25 +13,27 @@ import {
     HStack,
     InputGroup,
     InputRightElement,
+    FormErrorMessage,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
-import { ShowError } from '@components/notifications';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
     const [passwordVerify, setPasswordVerify] = useState('');
     const [api] = useApi();
     const userInfo = useUserInfo();
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
+    const [passwordMatchError, setPasswordMatchError] = useState(false);
 
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
@@ -52,29 +54,35 @@ export default function SignUp() {
     }
 
     const handleSignUp = () => {
-        if (password == passwordVerify) {
-            api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
-                if (!value) {
-                    api.post(AUTH_SIGNUP, {
-                        "formFields": [
-                            {
-                                "id": "email",
-                                "value": email
-                            },
-                            {
-                                "id": "password",
-                                "value": password
-                            }
-                        ]
-                    }).then(() => {
-                        api.post(EMAIL_VERIFY_TOKEN);
-                    }).then(() => Router.push(EMAIL_VERIFY));
-                } else {
-                    setEmailExistsError(true);
-                }
-            })
-        } else {
-            setPasswordError(true)
+        setEmailError(email == '');
+        setPasswordError(password == '');
+        setPasswordMatchError(password != passwordVerify)
+        if (email != '' && password != '' && passwordVerify != '') {
+            if (password == passwordVerify) {
+                api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
+                    if (!value) {
+                        api.post(AUTH_SIGNUP, {
+                            "formFields": [
+                                {
+                                    "id": "email",
+                                    "value": email
+                                },
+                                {
+                                    "id": "password",
+                                    "value": password
+                                }
+                            ]
+                        }).then(() => {
+                            api.post(EMAIL_VERIFY_TOKEN);
+                        }).then(() => Router.push(EMAIL_VERIFY));
+                    } else {
+                        setEmailExistsError(true);
+                        setEmailError(true);
+                    }
+                })
+            } else {
+                setPasswordMatchError(true)
+            }
         }
     };
 
@@ -85,7 +93,7 @@ export default function SignUp() {
                 align={'center'}
                 justify={'center'}
                 bg={useColorModeValue('gray.50', 'gray.800')}>
-                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6} width="100%">
                     <Stack align={'center'}>
                         <Heading fontSize={'4xl'} textAlign={'center'}>
                             Sign up
@@ -97,21 +105,7 @@ export default function SignUp() {
                         boxShadow={'lg'}
                         p={8}>
                         <Stack spacing={4}>
-                            <HStack>
-                                <Box>
-                                    <FormControl id="firstName">
-                                        <FormLabel>First Name</FormLabel>
-                                        <Input type="text" />
-                                    </FormControl>
-                                </Box>
-                                <Box>
-                                    <FormControl id="lastName">
-                                        <FormLabel>Last Name</FormLabel>
-                                        <Input type="text" />
-                                    </FormControl>
-                                </Box>
-                            </HStack>
-                            <FormControl id="email" isRequired>
+                            <FormControl id="email" isRequired isInvalid={emailError}>
                                 <FormLabel>Email address</FormLabel>
                                 <Input
                                     type="email"
@@ -119,8 +113,16 @@ export default function SignUp() {
                                     onKeyPress={handleEnter}
                                     data-cy="signUpEmailInput"
                                 />
+                                {emailError && emailExistsError ? (
+                                    <FormErrorMessage>Email already exists.</FormErrorMessage>
+                                ) : (null)
+                                }
+                                {emailError && !emailExistsError ? (
+                                    <FormErrorMessage>Email is required.</FormErrorMessage>
+                                ) : (null)
+                                }
                             </FormControl>
-                            <FormControl id="password" isRequired>
+                            <FormControl id="password" isRequired isInvalid={passwordError}>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
                                     <Input
@@ -139,8 +141,12 @@ export default function SignUp() {
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
+                                {passwordError ? (
+                                    <FormErrorMessage>Password is required.</FormErrorMessage>
+                                ) : (null)
+                                }
                             </FormControl>
-                            <FormControl id="password-verify" isRequired>
+                            <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
                                 <FormLabel>Repeat Password</FormLabel>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
@@ -148,6 +154,10 @@ export default function SignUp() {
                                     onKeyPress={handleEnter}
                                     data-cy="signUpPasswordVerifyInput"
                                 />
+                                {passwordMatchError ? (
+                                    <FormErrorMessage>Password do not match.</FormErrorMessage>
+                                ) : (null)
+                                }
                             </FormControl>
                             <Stack spacing={10} pt={2}>
                                 <Button
@@ -172,10 +182,6 @@ export default function SignUp() {
                         </Stack>
                     </Box>
                 </Stack>
-            </Flex>
-            <Flex justifyContent="flex-end">
-                <ShowError show={emailExistsError} message={"Email does already exist"} />
-                <ShowError show={passwordError} message={"Passwords don't match"} />
             </Flex>
         </Flex>
     )

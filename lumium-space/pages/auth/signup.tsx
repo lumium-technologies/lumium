@@ -14,7 +14,7 @@ import {
     InputRightElement,
     FormErrorMessage,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -23,11 +23,11 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 
 export default function SignUp() {
-    const [email, setEmail] = useState('');
+    const inputEmail = useRef<HTMLInputElement>(null);
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState('');
+    const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
-    const [passwordVerify, setPasswordVerify] = useState('');
+    const inputPasswordVerify = useRef<HTMLInputElement>(null);
     const [api] = useApi();
     const userInfo = useUserInfo();
     const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +53,10 @@ export default function SignUp() {
     }
 
     const handleSignUp = () => {
+        const email = inputEmail.current?.value;
+        const password = inputPassword.current?.value;
+        const passwordVerify = inputPasswordVerify.current?.value;
+
         setEmailError(email == '');
         setPasswordError(password == '');
         setPasswordMatchError(password != passwordVerify);
@@ -104,21 +108,17 @@ export default function SignUp() {
                         boxShadow={'lg'}
                         p={8}>
                         <Stack spacing={4}>
-                            <FormControl id="email" isRequired isInvalid={emailError}>
+                            <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
                                 <FormLabel>Email address</FormLabel>
                                 <Input
                                     type="email"
-                                    onChange={event => setEmail(event.currentTarget.value)}
+                                    ref={inputEmail}
                                     onKeyPress={handleEnter}
                                     data-cy="signUpEmailInput"
                                 />
-                                {emailError && emailExistsError ? (
-                                    <FormErrorMessage>Email already exists.</FormErrorMessage>
-                                ) : (null)
-                                }
-                                {emailError && !emailExistsError ? (
-                                    <FormErrorMessage>Email is required.</FormErrorMessage>
-                                ) : (null)
+                                {
+                                    emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
+                                    emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
                                 }
                             </FormControl>
                             <FormControl id="password" isRequired isInvalid={passwordError}>
@@ -126,7 +126,7 @@ export default function SignUp() {
                                 <InputGroup>
                                     <Input
                                         type={showPassword ? 'text' : 'password'}
-                                        onChange={event => setPassword(event.currentTarget.value)}
+                                        ref={inputPassword}
                                         onKeyPress={handleEnter}
                                         data-cy="signUpPasswordInput"
                                     />
@@ -140,23 +140,17 @@ export default function SignUp() {
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
-                                {passwordError ? (
-                                    <FormErrorMessage>Password is required.</FormErrorMessage>
-                                ) : (null)
-                                }
+                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
                             </FormControl>
                             <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
                                 <FormLabel>Repeat Password</FormLabel>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
-                                    onChange={event => setPasswordVerify(event.currentTarget.value)}
+                                    ref={inputPasswordVerify}
                                     onKeyPress={handleEnter}
                                     data-cy="signUpPasswordVerifyInput"
                                 />
-                                {passwordMatchError ? (
-                                    <FormErrorMessage>Password do not match.</FormErrorMessage>
-                                ) : (null)
-                                }
+                                {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
                             </FormControl>
                             <Stack spacing={10} pt={2}>
                                 <Button

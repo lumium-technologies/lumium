@@ -51,17 +51,20 @@ export default function SignIn() {
     };
 
     const handleSignIn = () => {
-        setEmailError(inputEmail.current?.value == '');
-        setPasswordError(inputPassword.current?.value == '');
+        const email = inputEmail.current?.value;
+        const password = inputPassword.current?.value;
+
+        setEmailError(email == '');
+        setPasswordError(password == '');
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
                     "id": "email",
-                    "value": inputEmail.current?.value
+                    "value": email
                 },
                 {
                     "id": "password",
-                    "value": inputPassword.current?.value
+                    "value": password
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
@@ -72,7 +75,7 @@ export default function SignIn() {
                     Router.push(SPACES_NEW);
                 }
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
-                if (inputEmail.current?.value != '' && inputPassword.current?.value != '') {
+                if (email != '' && password != '') {
                     setCredentialsMatchError(true);
                 }
 
@@ -107,9 +110,7 @@ export default function SignIn() {
                                     onKeyPress={handleEnter}
                                     data-cy="signInEmailInput"
                                 />
-                                {
-                                    emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)
-                                }
+                                {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
                             </FormControl>
                             <FormControl id="password" isRequired isInvalid={passwordError}>
                                 <FormLabel>Password</FormLabel>
@@ -119,9 +120,7 @@ export default function SignIn() {
                                     onKeyPress={handleEnter}
                                     data-cy="signInPasswordInput"
                                 />
-                                {
-                                    passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)
-                                }
+                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
                             </FormControl>
                             <Stack spacing={10}>
                                 <Stack

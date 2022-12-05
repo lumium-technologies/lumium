@@ -6,6 +6,8 @@ export const AUTH_SIGNUP = AUTH + '/signup';
 export const AUTH_PASSWORD_RESET = AUTH + '/reset-password';
 export const SPACES = ROOT + 'spaces';
 export const SPACES_NEW = SPACES + '/new';
+export const SPACES_CREATE = SPACES + '/create';
+export const SPACES_JOIN = SPACES + '/join';
 export const WORKSPACE = ROOT + 'workspace';
 
 export const AUTH_USER = AUTH + '/user';

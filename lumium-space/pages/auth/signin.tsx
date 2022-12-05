@@ -18,7 +18,6 @@ import Router, { useRouter } from 'next/router';
 import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
-import { ShowError } from '@components/notifications';
 import { useRef } from 'react';
 import { useEnter } from '@hooks/useEnter';
 
@@ -44,12 +43,6 @@ export default function SignIn() {
             };
         });
     }, [userInfo?.recentWorkspace]);
-
-    const handleEnter = (handleSignIn: Function, event) => {
-        if (event.key == 'Enter') {
-            handleSignIn();
-        }
-    };
 
     const handleSignIn = () => {
         const email = inputEmail.current?.value;

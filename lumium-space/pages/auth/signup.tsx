@@ -21,6 +21,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
+import { useEnter } from '@hooks/useEnter';
 
 export default function SignUp() {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -45,12 +46,6 @@ export default function SignUp() {
             };
         });
     }, [userInfo?.recentWorkspace]);
-
-    const handleEnter = event => {
-        if (event.key == 'Enter') {
-            handleSignUp();
-        }
-    }
 
     const handleSignUp = () => {
         const email = inputEmail.current?.value;
@@ -113,7 +108,7 @@ export default function SignUp() {
                                 <Input
                                     type="email"
                                     ref={inputEmail}
-                                    onKeyPress={handleEnter}
+                                    onKeyPress={event => useEnter(handleSignUp, event)}
                                     data-cy="signUpEmailInput"
                                 />
                                 {
@@ -127,7 +122,7 @@ export default function SignUp() {
                                     <Input
                                         type={showPassword ? 'text' : 'password'}
                                         ref={inputPassword}
-                                        onKeyPress={handleEnter}
+                                        onKeyPress={event => useEnter(handleSignUp, event)}
                                         data-cy="signUpPasswordInput"
                                     />
                                     <InputRightElement h={'full'}>
@@ -147,7 +142,7 @@ export default function SignUp() {
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
                                     ref={inputPasswordVerify}
-                                    onKeyPress={handleEnter}
+                                    onKeyPress={event => useEnter(handleSignUp, event)}
                                     data-cy="signUpPasswordVerifyInput"
                                 />
                                 {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}

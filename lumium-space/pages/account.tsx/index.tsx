@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { Authenticator } from "@components/Authenticator";
+import { Authenticator } from "@components/security/Authenticator";
 import { useApi } from "@hooks/api";
 import { SECURE_USER_DELETE } from "@routes/api/v1";
 import { ROOT } from "@routes/space";

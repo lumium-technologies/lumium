@@ -70,9 +70,7 @@ export default function SignUp() {
                                     "value": password
                                 }
                             ]
-                        }).then(() => {
-                            api.post(EMAIL_VERIFY_TOKEN);
-                        }).then(() => Router.push(EMAIL_VERIFY));
+                        }).then(() => Router.push(SPACES_NEW));
                     } else {
                         setEmailExistsError(true);
                         setEmailError(true);

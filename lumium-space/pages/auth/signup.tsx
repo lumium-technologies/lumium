@@ -10,7 +10,6 @@ import {
     Heading,
     Text,
     useColorModeValue,
-    HStack,
     InputGroup,
     InputRightElement,
     FormErrorMessage,
@@ -56,7 +55,7 @@ export default function SignUp() {
     const handleSignUp = () => {
         setEmailError(email == '');
         setPasswordError(password == '');
-        setPasswordMatchError(password != passwordVerify)
+        setPasswordMatchError(password != passwordVerify);
         if (email != '' && password != '' && passwordVerify != '') {
             if (password == passwordVerify) {
                 api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {

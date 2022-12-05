@@ -1,5 +1,5 @@
-import { InfoIcon } from "@chakra-ui/icons";
-import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormLabel, Heading, Input, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { AUTH, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
@@ -7,43 +7,67 @@ import { useState } from "react";
 
 export default function ResetPassword() {
     const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordVerify, setPasswordVerify] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordMatchError, setPasswordMatchError] = useState(false);
+
     const [isShown, setIsShown] = useState(false);
     const [resendIsShown, setResendIsShown] = useState(false);
-    const [emailExistsIsShown, setEmailExistsIsShown] = useState(false);
+    const [emailExistsError, setEmailExistsError] = useState(false);
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
-    const handleResetPassword = () => {
-        const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
-        emailExists.then(value => {
-            if (value) {
-                api.post(PASSWORD_RESET_TOKEN, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        }
-                    ]
-                });
-                setIsShown(true);
-                setResendIsShown(true)
-            } else {
-                setEmailExistsIsShown(true);
+    const handleEnter = (event) => {
+        if (token) {
+            if (event.key == 'Enter') {
+                handleChangePassword();
             }
-        })
+        } else {
+            if (event.key == 'Enter') {
+                handleResetPassword();
+            }
+        }
+    };
+    const handleResetPassword = () => {
+        setEmailError(email == '');
+        if (email != '') {
+            const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
+            emailExists.then(value => {
+                if (value) {
+                    api.post(PASSWORD_RESET_TOKEN, {
+                        "formFields": [
+                            {
+                                "id": "email",
+                                "value": email
+                            }
+                        ]
+                    });
+                    setIsShown(true);
+                    setResendIsShown(true)
+                } else {
+                    setEmailExistsError(true);
+                }
+            });
+        }
     };
     const handleChangePassword = () => {
-        api.post(PASSWORD_RESET, {
-            "method": "token",
-            "formFields": [
-                {
-                    "id": "password",
-                    "value": password
-                }
-            ],
-            "token": token
-        }).then(() => Router.push(AUTH));
+        setPasswordError(password == '');
+        setPasswordMatchError(password != passwordVerify);
+        if (password != '' && passwordVerify != '' && password == passwordVerify) {
+            api.post(PASSWORD_RESET, {
+                "method": "token",
+                "formFields": [
+                    {
+                        "id": "password",
+                        "value": password
+                    }
+                ],
+                "token": token
+            }).then(() => Router.push(AUTH));
+        }
     };
     const handleResendEmail = () => {
         api.post(PASSWORD_RESET_TOKEN, {
@@ -82,13 +106,18 @@ export default function ResetPassword() {
                         color={useColorModeValue('gray.800', 'gray.400')}>
                         You&apos;ll get an email with a reset link
                     </Text>
-                    <FormControl id="email">
+                    <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
                         <Input
                             placeholder="your-email@example.com"
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             onChange={event => setEmail(event.currentTarget.value)}
+                            onKeyPress={handleEnter}
                         />
+                        {
+                            emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
+                            emailExistsError && (<FormErrorMessage>E-Mail doesn't exist.</FormErrorMessage>)
+                        }
                     </FormControl>
                     <Stack spacing={6}>
                         <Button
@@ -102,17 +131,6 @@ export default function ResetPassword() {
                         </Button>
                     </Stack>
                 </Stack>
-            </Flex>
-            <Flex justifyContent="flex-end">
-                {
-                    emailExistsIsShown ?
-                        <Alert status='error' width="20%" mr="1%">
-                            <AlertIcon />
-                            <AlertTitle>Email doesn&apos;t exists</AlertTitle>
-                        </Alert>
-                        :
-                        <Text></Text>
-                }
             </Flex>
         </Flex >;
 
@@ -134,9 +152,36 @@ export default function ResetPassword() {
                 <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
                     Enter new password
                 </Heading>
-                <FormControl id="password" isRequired>
+                <FormControl id="password" isRequired isInvalid={passwordError}>
                     <FormLabel>Password</FormLabel>
-                    <Input type="password" onChange={event => setPassword(event.currentTarget.value)} />
+                    <InputGroup>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            onChange={event => setPassword(event.currentTarget.value)}
+                            onKeyPress={handleEnter}
+                            data-cy="signUpPasswordInput"
+                        />
+                        <InputRightElement h={'full'}>
+                            <Button
+                                variant={'ghost'}
+                                onClick={() =>
+                                    setShowPassword((showPassword) => !showPassword)
+                                }>
+                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                    {passwordError ? (<FormErrorMessage>Password is required.</FormErrorMessage>) : (null)}
+                </FormControl>
+                <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
+                    <FormLabel>Repeat Password</FormLabel>
+                    <Input
+                        type={showPassword ? 'text' : 'password'}
+                        onChange={event => setPasswordVerify(event.currentTarget.value)}
+                        onKeyPress={handleEnter}
+                        data-cy="signUpPasswordVerifyInput"
+                    />
+                    {passwordMatchError ? (<FormErrorMessage>Password do not match.</FormErrorMessage>) : (null)}
                 </FormControl>
                 <Stack spacing={6}>
                     <Button

@@ -20,6 +20,7 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 import { ShowError } from '@components/notifications';
 import { useRef } from 'react';
+import { useEnter } from '@hooks/useEnter';
 
 export default function SignIn() {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -44,7 +45,7 @@ export default function SignIn() {
         });
     }, [userInfo?.recentWorkspace]);
 
-    const handleEnter = (event) => {
+    const handleEnter = (handleSignIn: Function, event) => {
         if (event.key == 'Enter') {
             handleSignIn();
         }
@@ -102,25 +103,28 @@ export default function SignIn() {
                         boxShadow={'lg'}
                         p={8}>
                         <Stack spacing={4}>
-                            <FormControl id="email" isRequired isInvalid={emailError}>
+                            <FormControl id="email" isRequired isInvalid={emailError || credentialsMatchError}>
                                 <FormLabel>Email address</FormLabel>
                                 <Input
                                     type="email"
                                     ref={inputEmail}
-                                    onKeyPress={handleEnter}
+                                    onKeyPress={event => useEnter(handleSignIn, event)}
                                     data-cy="signInEmailInput"
                                 />
                                 {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
                             </FormControl>
-                            <FormControl id="password" isRequired isInvalid={passwordError}>
+                            <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
                                 <FormLabel>Password</FormLabel>
                                 <Input
                                     type="password"
                                     ref={inputPassword}
-                                    onKeyPress={handleEnter}
+                                    onKeyPress={event => useEnter(handleSignIn, event)}
                                     data-cy="signInPasswordInput"
                                 />
-                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                                {
+                                    passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
+                                    credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
+                                }
                             </FormControl>
                             <Stack spacing={10}>
                                 <Stack
@@ -148,10 +152,7 @@ export default function SignIn() {
                         </Stack>
                     </Box>
                 </Stack>
-            </Flex >
-            <Flex justifyContent="flex-end">
-                <ShowError show={credentialsMatchError} message={"E-Mail or Password incorrect"} />
             </Flex>
-        </Flex >
+        </Flex>
     )
 }

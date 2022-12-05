@@ -1,7 +1,8 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
-import { AUTH, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
+import { useEnter } from "@hooks/useEnter";
+import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
 import { useRef, useState } from "react";
 
@@ -9,28 +10,20 @@ export default function ResetPassword() {
     const inputEmail = useRef<HTMLInputElement>(null);
     const [email, setEmail] = useState<string>();
     const [emailError, setEmailError] = useState(false);
+    const [emailExistsError, setEmailExistsError] = useState(false);
+
     const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
+
     const inputPasswordVerify = useRef<HTMLInputElement>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [passwordMatchError, setPasswordMatchError] = useState(false);
-    const [isShown, setIsShown] = useState(false);
-    const [resendIsShown, setResendIsShown] = useState(false);
-    const [emailExistsError, setEmailExistsError] = useState(false);
+
+    const [emailSent, setEmailSent] = useState(false);
+    const [emailResent, setEmailResent] = useState(false);
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
-    const handleEnter = (event) => {
-        if (token) {
-            if (event.key == 'Enter') {
-                handleChangePassword();
-            }
-        } else {
-            if (event.key == 'Enter') {
-                handleResetPassword();
-            }
-        }
-    };
     const handleResetPassword = () => {
         setEmail(inputEmail.current?.value);
         setEmailError(email == '');
@@ -46,8 +39,8 @@ export default function ResetPassword() {
                             }
                         ]
                     });
-                    setIsShown(true);
-                    setResendIsShown(true)
+                    setEmailSent(true);
+                    setEmailResent(true);
                 } else {
                     setEmailExistsError(true);
                 }
@@ -70,7 +63,7 @@ export default function ResetPassword() {
                     }
                 ],
                 "token": token
-            }).then(() => Router.push(AUTH));
+            }).then(() => Router.push(AUTH_SIGNIN));
         }
     };
     const handleResendEmail = () => {
@@ -82,8 +75,8 @@ export default function ResetPassword() {
                 }
             ]
         });
-        setIsShown(false);
-        setResendIsShown(true);
+        setEmailSent(false);
+        setEmailResent(true);
     };
     const resetPasswordEmail =
         <Flex flexDir="column" minH={'100vh'}>
@@ -116,7 +109,7 @@ export default function ResetPassword() {
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             ref={inputEmail}
-                            onKeyPress={handleEnter}
+                            onKeyPress={event => useEnter(handleResetPassword, event)}
                         />
                         {
                             emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
@@ -130,7 +123,8 @@ export default function ResetPassword() {
                             _hover={{
                                 bg: 'blue.500',
                             }}
-                            onClick={handleResetPassword}>
+                            onClick={handleResetPassword}
+                        >
                             Request Reset
                         </Button>
                     </Stack>
@@ -162,7 +156,7 @@ export default function ResetPassword() {
                         <Input
                             type={showPassword ? 'text' : 'password'}
                             ref={inputPassword}
-                            onKeyPress={handleEnter}
+                            onKeyPress={event => useEnter(handleChangePassword, event)}
                             data-cy="signUpPasswordInput"
                         />
                         <InputRightElement h={'full'}>
@@ -182,7 +176,7 @@ export default function ResetPassword() {
                     <Input
                         type={showPassword ? 'text' : 'password'}
                         ref={inputPasswordVerify}
-                        onKeyPress={handleEnter}
+                        onKeyPress={event => useEnter(handleChangePassword, event)}
                         data-cy="signUpPasswordVerifyInput"
                     />
                     {passwordMatchError ? (<FormErrorMessage>Password do not match.</FormErrorMessage>) : (null)}
@@ -204,7 +198,7 @@ export default function ResetPassword() {
     const emailSentPage =
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            {resendIsShown ?
+            {emailResent ?
                 <Heading as="h2" size="xl" mt={6} mb={2}>
                     Check your Email
                 </Heading>
@@ -216,7 +210,7 @@ export default function ResetPassword() {
             <Text color={'gray.500'}>
                 Check your inbox to reset your password
             </Text>
-            <ScaleFade initialScale={0.9} in={resendIsShown}>
+            <ScaleFade initialScale={0.9} in={emailResent}>
                 <Button onClick={handleResendEmail}>
                     Resend E-Mail
                 </Button>
@@ -238,7 +232,7 @@ export default function ResetPassword() {
         ;
     return (
         <Fade in={true}>
-            {token && changePassword || isShown && emailSentPage || resendIsShown && emailResendPage || resetPasswordEmail}
+            {token && changePassword || emailSent && emailSentPage || emailResent && emailResendPage || resetPasswordEmail}
         </Fade>
     )
 }

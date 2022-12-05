@@ -20,7 +20,7 @@ import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
-import { useUserInfo } from '@hooks/api/useUserInfo';
+import { useUserInfo } from '@hooks/api';
 import { useEnter } from '@hooks/useEnter';
 
 export default function SignUp() {

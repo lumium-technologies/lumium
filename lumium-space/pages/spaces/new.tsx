@@ -3,7 +3,6 @@ import {
     Button,
     Flex,
 } from '@chakra-ui/react';
-import { CheckIcon } from '@chakra-ui/icons';
 import Router from 'next/router';
 import { SPACES_CREATE, SPACES_JOIN } from '@routes/space';
 

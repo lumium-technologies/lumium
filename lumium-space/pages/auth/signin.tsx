@@ -14,10 +14,10 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
-import { useUserInfo } from '@hooks/api/useUserInfo';
+import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
 import { useEnter } from '@hooks/useEnter';
 

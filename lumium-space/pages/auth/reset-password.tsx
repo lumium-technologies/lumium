@@ -1,19 +1,19 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Alert, AlertIcon, AlertTitle, Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { AUTH, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function ResetPassword() {
-    const [email, setEmail] = useState('');
+    const inputEmail = useRef<HTMLInputElement>(null);
+    const [email, setEmail] = useState<string>();
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState('');
+    const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
-    const [passwordVerify, setPasswordVerify] = useState('');
+    const inputPasswordVerify = useRef<HTMLInputElement>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [passwordMatchError, setPasswordMatchError] = useState(false);
-
     const [isShown, setIsShown] = useState(false);
     const [resendIsShown, setResendIsShown] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
@@ -32,6 +32,7 @@ export default function ResetPassword() {
         }
     };
     const handleResetPassword = () => {
+        setEmail(inputEmail.current?.value);
         setEmailError(email == '');
         if (email != '') {
             const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
@@ -54,6 +55,9 @@ export default function ResetPassword() {
         }
     };
     const handleChangePassword = () => {
+        const password = inputPassword.current?.value;
+        const passwordVerify = inputPasswordVerify.current?.value;
+
         setPasswordError(password == '');
         setPasswordMatchError(password != passwordVerify);
         if (password != '' && passwordVerify != '' && password == passwordVerify) {
@@ -111,7 +115,7 @@ export default function ResetPassword() {
                             placeholder="your-email@example.com"
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
-                            onChange={event => setEmail(event.currentTarget.value)}
+                            ref={inputEmail}
                             onKeyPress={handleEnter}
                         />
                         {
@@ -157,7 +161,7 @@ export default function ResetPassword() {
                     <InputGroup>
                         <Input
                             type={showPassword ? 'text' : 'password'}
-                            onChange={event => setPassword(event.currentTarget.value)}
+                            ref={inputPassword}
                             onKeyPress={handleEnter}
                             data-cy="signUpPasswordInput"
                         />
@@ -177,7 +181,7 @@ export default function ResetPassword() {
                     <FormLabel>Repeat Password</FormLabel>
                     <Input
                         type={showPassword ? 'text' : 'password'}
-                        onChange={event => setPasswordVerify(event.currentTarget.value)}
+                        ref={inputPasswordVerify}
                         onKeyPress={handleEnter}
                         data-cy="signUpPasswordVerifyInput"
                     />

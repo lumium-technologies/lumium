@@ -30,7 +30,6 @@ export default function SignIn() {
     const [api] = useApi();
     const router = useRouter();
     const userInfo = useUserInfo();
-    const redirectTo = router.query.redirectTo + ""
 
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
@@ -62,7 +61,7 @@ export default function SignIn() {
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
-            if (status.status == "OK" && !redirectTo) {
+            if (status.status == "OK") {
                 if (userInfo?.recentWorkspace) {
                     Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
@@ -72,9 +71,6 @@ export default function SignIn() {
                 if (email != '' && password != '') {
                     setCredentialsMatchError(true);
                 }
-
-            } else {
-                Router.push(redirectTo);
             }
         });
     };

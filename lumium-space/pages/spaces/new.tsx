@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
     Progress,
-    Box,
     ButtonGroup,
     Button,
     Heading,
@@ -19,76 +18,31 @@ import { useToast } from '@chakra-ui/react';
 import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-const SpaceSpecification = () => {
+export default function multistep() {
+    const inputSpaceName = useRef<HTMLInputElement>(null);
+    const [spaceNameError, setspaceNameError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
     const inputPasswordVerify = useRef<HTMLInputElement>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [passwordMatchError, setPasswordMatchError] = useState(false);
-    return (
-        <>
-            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                Private Space Creation
-            </Heading>
-            <FormControl mr="5%">
-                <FormLabel htmlFor="first-name" fontWeight={'normal'}>
-                    Your Private Space Name
-                </FormLabel>
-                <Input />
-            </FormControl>
-            <FormControl id="password" isRequired isInvalid={passwordError}>
-                <FormLabel>Password</FormLabel>
-                <InputGroup>
-                    <Input
-                        type={showPassword ? 'text' : 'password'}
-                        ref={inputPassword}
-                        data-cy="signUpPasswordInput"
-                    />
-                    <InputRightElement h={'full'}>
-                        <Button
-                            variant={'ghost'}
-                            onClick={() =>
-                                setShowPassword((showPassword) => !showPassword)
-                            }>
-                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                        </Button>
-                    </InputRightElement>
-                </InputGroup>
-                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
-            </FormControl>
-            <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
-                <FormLabel>Repeat Password</FormLabel>
-                <Input
-                    type={showPassword ? 'text' : 'password'}
-                    ref={inputPasswordVerify}
-                    data-cy="signUpPasswordVerifyInput"
-                />
-                {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
-            </FormControl>
-        </>
-    );
-};
-
-const DownloadPrivateKeysPage = () => {
-    return (
-        <>
-            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                Download Private Keys
-            </Heading>
-            <Text w="100%" textAlign={'center'}>
-                Download your private keys and secure them in a safe location. These will be needed in case you forget your password.
-            </Text>
-            <Flex w="100%" justifyContent="center">
-                <Button backgroundColor={"lightgreen"}>Download Keys</Button>
-            </Flex>
-        </>
-    );
-};
-
-export default function multistep() {
+    const [downloadedKeys, setDownloadedKeys] = useState(false);
     const toast = useToast();
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
+    const handleDownloadKeys = () => {
+        setDownloadedKeys(true)
+    }
+    const handleEnter = (event) => {
+        if (event.key == "Enter") {
+            setStep(step + 1);
+            if (step === 2) {
+                setProgress(100);
+            } else {
+                setProgress(progress + 50);
+            }
+        }
+    }
     return (
         <Authenticator>
             <Flex
@@ -106,8 +60,67 @@ export default function multistep() {
                     value={progress}
                     mb="5%"
                     mx="5%"
-                    isAnimated></Progress>
-                {step === 1 && <SpaceSpecification /> || step === 2 && <DownloadPrivateKeysPage />}
+                    isAnimated />
+                {
+                    step === 1 && (
+                        <>
+                            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                Private Space Creation
+                            </Heading>
+                            <FormControl isRequired isInvalid={spaceNameError}>
+                                <FormLabel fontWeight={'normal'}>
+                                    Your Private Space Name
+                                </FormLabel>
+                                <Input
+                                    type='text'
+                                    ref={inputSpaceName}
+                                    onKeyPress={handleEnter}
+                                />
+                            </FormControl>
+                            <FormControl isRequired isInvalid={passwordError}>
+                                <FormLabel>Password</FormLabel>
+                                <InputGroup>
+                                    <Input
+                                        type={showPassword ? 'text' : 'password'}
+                                        ref={inputPassword}
+                                        onKeyPress={handleEnter}
+                                    />
+                                    <InputRightElement h={'full'}>
+                                        <Button
+                                            variant={'ghost'}
+                                            onClick={() =>
+                                                setShowPassword((showPassword) => !showPassword)
+                                            }>
+                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                            </FormControl>
+                            <FormControl isRequired isInvalid={passwordMatchError}>
+                                <FormLabel>Repeat Password</FormLabel>
+                                <Input
+                                    type={'password'}
+                                    ref={inputPasswordVerify}
+                                    onKeyPress={handleEnter}
+                                />
+                                {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
+                            </FormControl>
+                        </>
+                    ) ||
+                    step === 2 && (
+                        <>
+                            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                Download Recovery Keys
+                            </Heading>
+                            <Text w="100%" textAlign={'center'}>
+                                Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
+                            </Text>
+                            <Flex w="100%" justifyContent="center">
+                                <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys}>Download Keys</Button>
+                            </Flex>
+                        </>
+                    )}
                 <ButtonGroup w="100%" mt="auto">
                     <Flex w="100%" justifyContent="space-between">
                         <Flex>
@@ -125,10 +138,10 @@ export default function multistep() {
                             </Button>
                             <Button
                                 w="7rem"
-                                isDisabled={step === 3}
+                                isDisabled={step === 2}
                                 onClick={() => {
                                     setStep(step + 1);
-                                    if (step === 3) {
+                                    if (step === 2) {
                                         setProgress(100);
                                     } else {
                                         setProgress(progress + 50);
@@ -139,23 +152,25 @@ export default function multistep() {
                                 Next
                             </Button>
                         </Flex>
-                        {step === 3 ? (
-                            <Button
-                                w="7rem"
-                                colorScheme="red"
-                                variant="solid"
-                                onClick={() => {
-                                    toast({
-                                        title: 'Account created.',
-                                        description: "We've created your account for you.",
-                                        status: 'success',
-                                        duration: 3000,
-                                        isClosable: true,
-                                    });
-                                }}>
-                                Submit
-                            </Button>
-                        ) : null}
+                        {
+                            downloadedKeys && (
+                                <Button
+                                    w="7rem"
+                                    colorScheme="red"
+                                    variant="solid"
+                                    onClick={() => {
+                                        toast({
+                                            title: 'Space created.',
+                                            description: "We've created your private space.",
+                                            status: 'success',
+                                            duration: 3000,
+                                            isClosable: true,
+                                        });
+                                    }}>
+                                    Submit
+                                </Button>
+                            )
+                        }
                     </Flex>
                 </ButtonGroup>
             </Flex>

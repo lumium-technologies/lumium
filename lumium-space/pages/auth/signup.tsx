@@ -138,7 +138,7 @@ export default function SignUp() {
                             <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
                                 <FormLabel>Repeat Password</FormLabel>
                                 <Input
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={'password'}
                                     ref={inputPasswordVerify}
                                     onKeyPress={event => useEnter(handleSignUp, event)}
                                     data-cy="signUpPasswordVerifyInput"

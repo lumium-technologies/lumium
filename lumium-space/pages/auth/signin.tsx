@@ -19,11 +19,12 @@ import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@rout
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api/useUserInfo';
 import { ShowError } from '@components/notifications';
+import { useRef } from 'react';
 
 export default function SignIn() {
-    const [email, setEmail] = useState('');
+    const inputEmail = useRef<HTMLInputElement>(null);
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState('');
+    const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
@@ -50,17 +51,17 @@ export default function SignIn() {
     };
 
     const handleSignIn = () => {
-        setEmailError(email == '');
-        setPasswordError(password == '');
+        setEmailError(inputEmail.current?.value == '');
+        setPasswordError(inputPassword.current?.value == '');
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
                     "id": "email",
-                    "value": email
+                    "value": inputEmail.current?.value
                 },
                 {
                     "id": "password",
-                    "value": password
+                    "value": inputPassword.current?.value
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
@@ -71,7 +72,7 @@ export default function SignIn() {
                     Router.push(SPACES_NEW);
                 }
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
-                if (email != '' && password != '') {
+                if (inputEmail.current?.value != '' && inputPassword.current?.value != '') {
                     setCredentialsMatchError(true);
                 }
 
@@ -102,26 +103,24 @@ export default function SignIn() {
                                 <FormLabel>Email address</FormLabel>
                                 <Input
                                     type="email"
-                                    onChange={event => setEmail(event.currentTarget.value)}
+                                    ref={inputEmail}
                                     onKeyPress={handleEnter}
                                     data-cy="signInEmailInput"
                                 />
-                                {emailError ? (
-                                    <FormErrorMessage>E-Mail is required.</FormErrorMessage>
-                                ) : (null)
+                                {
+                                    emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)
                                 }
                             </FormControl>
                             <FormControl id="password" isRequired isInvalid={passwordError}>
                                 <FormLabel>Password</FormLabel>
                                 <Input
                                     type="password"
-                                    onChange={event => setPassword(event.currentTarget.value)}
+                                    ref={inputPassword}
                                     onKeyPress={handleEnter}
                                     data-cy="signInPasswordInput"
                                 />
-                                {passwordError ? (
-                                    <FormErrorMessage>Password is required.</FormErrorMessage>
-                                ) : (null)
+                                {
+                                    passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)
                                 }
                             </FormControl>
                             <Stack spacing={10}>

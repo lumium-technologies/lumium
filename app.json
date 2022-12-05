@@ -1,15 +1,14 @@
 {
     "addons": [
-        "heroku-postgresql:hobby-dev",
+        "heroku-postgresql:mini",
         {
-            "plan": "heroku-redis:hobby-dev",
+            "plan": "heroku-redis:mini",
             "options": {
                 "policy": "allkeys-lru"
             }
         }
     ],
-    "buildpacks": [
-        {
+    "buildpacks": [{
             "url": "https://github.com/dmathieu/heroku-buildpack-submodules.git"
         },
         {

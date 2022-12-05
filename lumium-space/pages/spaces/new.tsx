@@ -57,7 +57,7 @@ export default function CreateOrJoin() {
                     Join Space
                 </Text>
                 <Text fontSize={'2xl'}>
-                    Request to join an existing Space.
+                    Join an existing collaborative Space with Spacekey and Spacepassword.
                 </Text>
                 <Button
                     mt="auto"

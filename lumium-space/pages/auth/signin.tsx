@@ -28,7 +28,6 @@ export default function SignIn() {
     const [passwordError, setPasswordError] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
-    const router = useRouter();
     const userInfo = useUserInfo();
 
     useEffect(() => {

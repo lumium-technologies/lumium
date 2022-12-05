@@ -8,9 +8,15 @@ import {
     Text,
     useColorModeValue,
     FormLabel,
+    FormErrorMessage,
 } from '@chakra-ui/react';
+import { useRef, useState } from 'react';
 
 export default function JoinSpace(): JSX.Element {
+    const inputSpaceInfo = useRef<HTMLInputElement>(null);
+    const inputPassword = useRef<HTMLInputElement>(null);
+    const [passwordError, setPasswordError] = useState(false);
+    const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     return (
         <Flex
             minH={'100vh'}
@@ -27,24 +33,30 @@ export default function JoinSpace(): JSX.Element {
                 p={6}
                 my={12}>
                 <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Request to join a Space
+                    Join a Space
                 </Heading>
                 <Text
                     fontSize={{ base: 'sm', sm: 'md' }}
                     color={useColorModeValue('gray.800', 'gray.400')}>
-                    The owner will receive an e-mail and an notification in lumium to add you to his space.
+                    Fill out this form to gain access to an collaborative space.
                 </Text>
                 <FormControl>
                     <FormLabel>Space name or key</FormLabel>
-                    <Input />
-                </FormControl>
-                <FormControl id="email">
-                    <FormLabel>E-Mail of the owner</FormLabel>
                     <Input
-                        placeholder="your-email@example.com"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
+                        type="text"
+                        ref={inputSpaceInfo}
                     />
+                </FormControl>
+                <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
+                    <FormLabel>Password</FormLabel>
+                    <Input
+                        type="password"
+                        ref={inputPassword}
+                    />
+                    {
+                        passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
+                        credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
+                    }
                 </FormControl>
                 <Stack spacing={6}>
                     <Button

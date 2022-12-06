@@ -6,7 +6,7 @@ import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from 
 import Router, { useRouter } from 'next/router';
 import { useRef, useState } from "react";
 
-export default function ResetPassword() {
+const ResetPassword: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
     const [email, setEmail] = useState<string>();
     const [emailError, setEmailError] = useState(false);
@@ -24,6 +24,7 @@ export default function ResetPassword() {
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
+
     const handleResetPassword = () => {
         setEmail(inputEmail.current?.value);
         setEmailError(email == '');
@@ -47,6 +48,7 @@ export default function ResetPassword() {
             });
         }
     };
+
     const handleChangePassword = () => {
         const password = inputPassword.current?.value;
         const passwordVerify = inputPasswordVerify.current?.value;
@@ -66,6 +68,7 @@ export default function ResetPassword() {
             }).then(() => Router.push(AUTH_SIGNIN));
         }
     };
+
     const handleResendEmail = () => {
         api.post(PASSWORD_RESET_TOKEN, {
             "formFields": [
@@ -78,7 +81,8 @@ export default function ResetPassword() {
         setEmailSent(false);
         setEmailResent(true);
     };
-    const resetPasswordEmail =
+
+    const resetPasswordEmail = (
         <Flex flexDir="column" minH={'100vh'}>
             <Flex
                 minH={'93vh'}
@@ -113,7 +117,7 @@ export default function ResetPassword() {
                         />
                         {
                             emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
-                            emailExistsError && (<FormErrorMessage>E-Mail doesn't exist.</FormErrorMessage>)
+                                emailExistsError && (<FormErrorMessage>E-Mail doesn't exist.</FormErrorMessage>)
                         }
                     </FormControl>
                     <Stack spacing={6}>
@@ -130,9 +134,10 @@ export default function ResetPassword() {
                     </Stack>
                 </Stack>
             </Flex>
-        </Flex >;
+        </Flex>
+    );
 
-    const changePassword =
+    const changePassword = (
         <Flex
             minH={'100vh'}
             align={'center'}
@@ -194,8 +199,9 @@ export default function ResetPassword() {
                 </Stack>
             </Stack>
         </Flex>
-        ;
-    const emailSentPage =
+    );
+
+    const emailSentPage = (
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {emailResent ?
@@ -216,8 +222,9 @@ export default function ResetPassword() {
                 </Button>
             </ScaleFade>
         </Box>
-        ;
-    const emailResendPage =
+    );
+
+    const emailResendPage = (
         <Fade in={true}>
             <Box textAlign="center" py={10} px={6}>
                 <InfoIcon boxSize={'50px'} color={'blue.500'} />
@@ -229,10 +236,13 @@ export default function ResetPassword() {
                 </Text>
             </Box>
         </Fade>
-        ;
+    );
+
     return (
         <Fade in={true}>
             {token && changePassword || emailSent && emailSentPage || emailResent && emailResendPage || resetPasswordEmail}
         </Fade>
-    )
+    );
 }
+
+export default ResetPassword;

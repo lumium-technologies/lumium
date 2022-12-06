@@ -3,7 +3,7 @@ import { makeid } from "./makeid"
 declare global {
     namespace Cypress {
         interface Chainable {
-            dataCy(value: string): Chainable<Element>;
+            dataCy(value: string): Chainable<Element>
             interceptAndWait(page: string, code: number): void;
             signUp(): { email: string, password: string };
             signIn(): void;
@@ -14,8 +14,8 @@ declare global {
 var email: string;
 var password: string;
 Cypress.Commands.add('dataCy', (value) => {
-    return cy.get(`[data-cy=${value}]`);
-});
+    return cy.get(`[data-cy=${value}]`)
+})
 Cypress.Commands.add('interceptAndWait', (page, code) => {
     cy.intercept(`${page}`).as("wait");
     cy.wait("@wait").its("response.statusCode").should("eq", code);
@@ -39,7 +39,7 @@ Cypress.Commands.add("signIn", () => {
 });
 Cypress.Commands.add("requestReset", () => {
     cy.dataCy("emailInput").should("be.visible").type(email);
-    cy.dataCy("requestResetButton").should("be.visible").click().click();
+    cy.dataCy("requestResetButton").should("be.visible").click();
     cy.dataCy("resendButton").should("be.visible");
 });
 beforeEach(() => {

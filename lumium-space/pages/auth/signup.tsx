@@ -92,21 +92,21 @@ const SignUp: React.FC = () => {
                         type="email"
                         ref={inputEmail}
                         onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                        data-cy="signUpEmailInput"
+                        data-cy="emailInput"
                     />
                     {
-                        emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
-                        emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
+                        emailError && (<FormErrorMessage data-cy="emailError">Email is required.</FormErrorMessage>) ||
+                        emailExistsError && (<FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>)
                     }
                 </FormControl>
-                <FormControl id="password" isRequired isInvalid={passwordError}>
+                <FormControl id="password" isRequired isInvalid={passwordError || passwordMatchError}>
                     <FormLabel>Password</FormLabel>
                     <InputGroup>
                         <Input
                             type={showPassword ? 'text' : 'password'}
                             ref={inputPassword}
                             onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                            data-cy="signUpPasswordInput"
+                            data-cy="passwordInput"
                         />
                         <InputRightElement h={'full'}>
                             <Button
@@ -118,7 +118,7 @@ const SignUp: React.FC = () => {
                             </Button>
                         </InputRightElement>
                     </InputGroup>
-                    {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                    {passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>)}
                 </FormControl>
                 <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
                     <FormLabel>Repeat Password</FormLabel>
@@ -126,9 +126,9 @@ const SignUp: React.FC = () => {
                         type={'password'}
                         ref={inputPasswordVerify}
                         onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                        data-cy="signUpPasswordVerifyInput"
+                        data-cy="passwordVerifyInput"
                     />
-                    {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
+                    {passwordMatchError && (<FormErrorMessage data-cy="passwordMatchError">Password do not match.</FormErrorMessage>)}
                 </FormControl>
                 <Stack spacing={10} pt={2}>
                     <Button
@@ -140,7 +140,7 @@ const SignUp: React.FC = () => {
                             bg: 'blue.500',
                         }}
                         onClick={handleSignUp}
-                        data-cy="submitSignUpButton"
+                        data-cy="signUpButton"
                     >
                         Sign up
                     </Button>
@@ -149,7 +149,7 @@ const SignUp: React.FC = () => {
                     <Text mb={"0"}>
                         Already an account?
                     </Text>
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
                 </Flex>
             </Stack>
         </AuthBox>

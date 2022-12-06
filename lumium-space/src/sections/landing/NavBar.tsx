@@ -74,7 +74,7 @@ export const NavBar = () => {
                     justify={'flex-end'}
                     direction={'row'}
                     spacing={6}>
-                    <Button onClick={toggleColorMode}>
+                    <Button onClick={toggleColorMode} data-cy="switchThemeButton">
                         {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
                     </Button>
                     <Button
@@ -83,6 +83,7 @@ export const NavBar = () => {
                         fontWeight={400}
                         variant={'link'}
                         onClick={() => Router.push(AUTH_SIGNIN)}
+                        data-cy="signInButton"
                     >
                         Sign In
                     </Button>
@@ -96,6 +97,7 @@ export const NavBar = () => {
                             bg: 'pink.300',
                         }}
                         onClick={() => Router.push(AUTH_SIGNUP)}
+                        data-cy="signUpButton"
                     >
                         Sign Up
                     </Button>

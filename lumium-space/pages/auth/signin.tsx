@@ -53,6 +53,7 @@ const SignIn: React.FC = () => {
 
         setEmailError(email == '');
         setPasswordError(password == '');
+        setCredentialsMatchError(false);
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -90,7 +91,7 @@ const SignIn: React.FC = () => {
                         onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
                         data-cy="emailInput"
                     />
-                    {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
+                    {emailError && (<FormErrorMessage data-cy="emailError">E-Mail is required.</FormErrorMessage>)}
                 </FormControl>
                 <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
                     <FormLabel>Password</FormLabel>
@@ -112,8 +113,8 @@ const SignIn: React.FC = () => {
                         </InputRightElement>
                     </InputGroup>
                     {
-                        passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
-                        credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
+                        passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>) ||
+                        credentialsMatchError && <FormErrorMessage data-cy="credentialsMatchError">E-Mail or Password incorrect.</FormErrorMessage>
                     }
                 </FormControl>
                 <Flex justifyContent="space-between" mt="0">

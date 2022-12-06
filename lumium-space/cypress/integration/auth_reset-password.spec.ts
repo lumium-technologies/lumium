@@ -8,7 +8,12 @@ describe("/auth/reset-password", () => {
         cy.visit(AUTH_PASSWORD_RESET);
     });
     it("forgot password", () => {
-        cy.dataCy("forgotPasswordButton").should("be.visible").click();
-        cy.url().should('include', AUTH_PASSWORD_RESET);
+        cy.requestReset();
+        cy.dataCy("resendButton").should("be.visible");
+    });
+    it("resend email", () => {
+        cy.requestReset();
+        cy.dataCy("resendButton").should("be.visible").click();
+        cy.dataCy("resendHeader").should("be.visible");
     });
 });

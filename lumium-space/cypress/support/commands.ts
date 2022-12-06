@@ -1,5 +1,5 @@
 import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from "@routes/space";
-
+import { makeid } from "./makeid"
 declare global {
     namespace Cypress {
         interface Chainable {
@@ -7,19 +7,9 @@ declare global {
             interceptAndWait(page: string, code: number): void;
             signUp(): { email: string, password: string };
             signIn(): void;
+            requestReset(): void;
         }
     }
-}
-
-function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-    }
-    return result;
 }
 var email: string;
 var password: string;
@@ -47,6 +37,11 @@ Cypress.Commands.add("signIn", () => {
     cy.dataCy("signInButton").should("be.visible").click();
     cy.url().should('include', SPACES_NEW);
 });
+Cypress.Commands.add("requestReset", () => {
+    cy.dataCy("emailInput").should("be.visible").type(email);
+    cy.dataCy("requestResetButton").should("be.visible").click().click();
+    cy.dataCy("resendButton").should("be.visible");
+});
 beforeEach(() => {
     cy.clearCookies();
-})
+});

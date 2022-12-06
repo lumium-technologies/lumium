@@ -5,6 +5,15 @@
 # lumium
 next level docs - the end-to-end secure, shared productivity platform
 
+[discord](https://discord.gg/fCyzDzhvd4)
+
+## dependencies
+- psql
+- clang
+- yarn
+- node.js v16
+- [rustup](https://rustup.rs/)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
 ## local database setup
 setup and start postgres, then create the necessary databases by logging into `psql` as a privileged user:
 
@@ -28,3 +37,4 @@ yarn test # run all test suites
 (cd lumium-space && yarn run cypress:test) # run cypress integration tests headless
 (cd lumium-space && yarn run cypress:open) # run cypress integration tests headed
 ```
+

@@ -22,6 +22,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, ROOT, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
+import { AuthBox } from '@components/auth/AuthBox';
 
 const SignUp: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -83,95 +84,75 @@ const SignUp: React.FC = () => {
     };
 
     return (
-        <Flex
-            minH={'100vh'}
-            flexDir="column"
-        >
-            <Flex maxHeight={"10%"} justify="center" pt="1%">
-                <Link>
-                    <Image src={"/logo/logo.svg"} minWidth={"20%"} alt="lumium logo" onClick={() => Router.push(ROOT)} />
-                </Link>
-            </Flex>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={"3%"} px={"2%"} width="100%">
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'} textAlign={'center'}>
-                        Create a new Account
-                    </Heading>
-                </Stack>
-                <Box
-                    rounded={'lg'}
-                    boxShadow={'lg'}
-                    p={"10%"}>
-                    <Stack spacing={4}>
-                        <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
-                            <FormLabel>Email address</FormLabel>
-                            <Input
-                                type="email"
-                                ref={inputEmail}
-                                onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                data-cy="signUpEmailInput"
-                            />
-                            {
-                                emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
-                                emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
-                            }
-                        </FormControl>
-                        <FormControl id="password" isRequired isInvalid={passwordError}>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    ref={inputPassword}
-                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                    data-cy="signUpPasswordInput"
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowPassword((showPassword) => !showPassword)
-                                        }>
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                            {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
-                        </FormControl>
-                        <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
-                            <FormLabel>Repeat Password</FormLabel>
-                            <Input
-                                type={'password'}
-                                ref={inputPasswordVerify}
-                                onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                data-cy="signUpPasswordVerifyInput"
-                            />
-                            {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
-                        </FormControl>
-                        <Stack spacing={10} pt={2}>
+        <AuthBox title="Create your account">
+            <Stack spacing={4}>
+                <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
+                    <FormLabel>Email address</FormLabel>
+                    <Input
+                        type="email"
+                        ref={inputEmail}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                        data-cy="signUpEmailInput"
+                    />
+                    {
+                        emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
+                        emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
+                    }
+                </FormControl>
+                <FormControl id="password" isRequired isInvalid={passwordError}>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            ref={inputPassword}
+                            onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                            data-cy="signUpPasswordInput"
+                        />
+                        <InputRightElement h={'full'}>
                             <Button
-                                loadingText="Submitting"
-                                size="lg"
-                                bg={'blue.400'}
-                                color={'white'}
-                                _hover={{
-                                    bg: 'blue.500',
-                                }}
-                                onClick={handleSignUp}
-                                data-cy="submitSignUpButton"
-                            >
-                                Sign up
+                                variant={'ghost'}
+                                onClick={() =>
+                                    setShowPassword((showPassword) => !showPassword)
+                                }>
+                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                             </Button>
-                        </Stack>
-                        <Flex flexDir="column" alignItems={"center"}>
-                            <Text mb={"0"}>
-                                Already an account?
-                            </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
-                        </Flex>
-                    </Stack>
-                </Box>
+                        </InputRightElement>
+                    </InputGroup>
+                    {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                </FormControl>
+                <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
+                    <FormLabel>Repeat Password</FormLabel>
+                    <Input
+                        type={'password'}
+                        ref={inputPasswordVerify}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                        data-cy="signUpPasswordVerifyInput"
+                    />
+                    {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
+                </FormControl>
+                <Stack spacing={10} pt={2}>
+                    <Button
+                        loadingText="Submitting"
+                        size="lg"
+                        bg={'blue.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'blue.500',
+                        }}
+                        onClick={handleSignUp}
+                        data-cy="submitSignUpButton"
+                    >
+                        Sign up
+                    </Button>
+                </Stack>
+                <Flex flexDir="column" alignItems={"center"}>
+                    <Text mb={"0"}>
+                        Already an account?
+                    </Text>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
+                </Flex>
             </Stack>
-        </Flex >
+        </AuthBox>
     );
 };
 

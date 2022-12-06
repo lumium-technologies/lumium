@@ -8,10 +8,10 @@ next level docs - the end-to-end secure, shared productivity platform
 [discord](https://discord.gg/fCyzDzhvd4)
 
 ## dependencies
-- psql
-- clang
+- postgres
+- node v16
 - yarn
-- node.js v16
+- clang
 - [rustup](https://rustup.rs/)
 - [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
 ## local database setup

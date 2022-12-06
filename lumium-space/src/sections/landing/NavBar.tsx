@@ -14,18 +14,22 @@ import {
     useColorModeValue,
     useBreakpointValue,
     useDisclosure,
+    useColorMode,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
     CloseIcon,
     ChevronDownIcon,
     ChevronRightIcon,
+    MoonIcon,
+    SunIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
 import { AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
+    const { colorMode, toggleColorMode } = useColorMode();
 
     return (
         <Box>
@@ -70,6 +74,9 @@ export const NavBar = () => {
                     justify={'flex-end'}
                     direction={'row'}
                     spacing={6}>
+                    <Button onClick={toggleColorMode}>
+                        {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
+                    </Button>
                     <Button
                         as={'a'}
                         fontSize={'sm'}

@@ -107,7 +107,7 @@ const SignIn: React.FC = () => {
                                 type="email"
                                 ref={inputEmail}
                                 onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                                data-cy="signInEmailInput"
+                                data-cy="emailInput"
                             />
                             {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
                         </FormControl>
@@ -118,7 +118,7 @@ const SignIn: React.FC = () => {
                                     type={showPassword ? 'text' : 'password'}
                                     ref={inputPassword}
                                     onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                                    data-cy="signInPasswordInput"
+                                    data-cy="passwordInput"
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
@@ -136,7 +136,7 @@ const SignIn: React.FC = () => {
                             }
                         </FormControl>
                         <Flex justifyContent="space-between" mt="0">
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)}>Forgot password?</Link>
+                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
                         </Flex>
                         <Button
                             bg={'blue.400'}
@@ -145,7 +145,7 @@ const SignIn: React.FC = () => {
                                 bg: 'blue.500',
                             }}
                             onClick={handleSignIn}
-                            data-cy="submitSignInButton"
+                            data-cy="signInButton"
                         >
                             Sign in
                         </Button>
@@ -153,7 +153,7 @@ const SignIn: React.FC = () => {
                             <Text mb={"0"}>
                                 Create a new account?
                             </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)}>Create Account</Link>
+                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
                         </Flex>
                     </Stack>
                 </Box>

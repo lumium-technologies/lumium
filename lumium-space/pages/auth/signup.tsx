@@ -109,7 +109,7 @@ const SignUp: React.FC = () => {
                                 type="email"
                                 ref={inputEmail}
                                 onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                data-cy="signUpEmailInput"
+                                data-cy="emailInput"
                             />
                             {
                                 emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
@@ -123,7 +123,7 @@ const SignUp: React.FC = () => {
                                     type={showPassword ? 'text' : 'password'}
                                     ref={inputPassword}
                                     onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                    data-cy="signUpPasswordInput"
+                                    data-cy="passwordInput"
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
@@ -143,7 +143,7 @@ const SignUp: React.FC = () => {
                                 type={'password'}
                                 ref={inputPasswordVerify}
                                 onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                data-cy="signUpPasswordVerifyInput"
+                                data-cy="passwordVerifyInput"
                             />
                             {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
                         </FormControl>
@@ -157,7 +157,7 @@ const SignUp: React.FC = () => {
                                     bg: 'blue.500',
                                 }}
                                 onClick={handleSignUp}
-                                data-cy="submitSignUpButton"
+                                data-cy="signUpButton"
                             >
                                 Sign up
                             </Button>
@@ -166,7 +166,7 @@ const SignUp: React.FC = () => {
                             <Text mb={"0"}>
                                 Already an account?
                             </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
+                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
                         </Flex>
                     </Stack>
                 </Box>

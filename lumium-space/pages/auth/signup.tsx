@@ -13,6 +13,7 @@ import {
     InputGroup,
     InputRightElement,
     FormErrorMessage,
+    Image
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useApi } from "@hooks/api";
@@ -82,94 +83,93 @@ const SignUp: React.FC = () => {
     };
 
     return (
-        <Flex flexDir="column" minH={'100vh'}>
-            <Flex
-                minH={'93vh'}
-                align={'center'}
-                justify={'center'}
-                bg={useColorModeValue('gray.50', 'gray.800')}>
-                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6} width="100%">
-                    <Stack align={'center'}>
-                        <Heading fontSize={'4xl'} textAlign={'center'}>
-                            Sign up
-                        </Heading>
-                    </Stack>
-                    <Box
-                        rounded={'lg'}
-                        bg={useColorModeValue('white', 'gray.700')}
-                        boxShadow={'lg'}
-                        p={8}>
-                        <Stack spacing={4}>
-                            <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
-                                <FormLabel>Email address</FormLabel>
-                                <Input
-                                    type="email"
-                                    ref={inputEmail}
-                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                    data-cy="signUpEmailInput"
-                                />
-                                {
-                                    emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
-                                    emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
-                                }
-                            </FormControl>
-                            <FormControl id="password" isRequired isInvalid={passwordError}>
-                                <FormLabel>Password</FormLabel>
-                                <InputGroup>
-                                    <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        ref={inputPassword}
-                                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                        data-cy="signUpPasswordInput"
-                                    />
-                                    <InputRightElement h={'full'}>
-                                        <Button
-                                            variant={'ghost'}
-                                            onClick={() =>
-                                                setShowPassword((showPassword) => !showPassword)
-                                            }>
-                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                        </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
-                            </FormControl>
-                            <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
-                                <FormLabel>Repeat Password</FormLabel>
-                                <Input
-                                    type={'password'}
-                                    ref={inputPasswordVerify}
-                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                                    data-cy="signUpPasswordVerifyInput"
-                                />
-                                {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
-                            </FormControl>
-                            <Stack spacing={10} pt={2}>
-                                <Button
-                                    loadingText="Submitting"
-                                    size="lg"
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                        bg: 'blue.500',
-                                    }}
-                                    onClick={handleSignUp}
-                                    data-cy="submitSignUpButton"
-                                >
-                                    Sign up
-                                </Button>
-                            </Stack>
-                            <Flex flexDir="column" alignItems={"center"}>
-                                <Text mb={"0"}>
-                                    Already an account?
-                                </Text>
-                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
-                            </Flex>
-                        </Stack>
-                    </Box>
-                </Stack>
+        <Flex
+            minH={'100vh'}
+            flexDir="column"
+        >
+            <Flex maxHeight={"10%"} justify="center" pt="1%">
+                <Image src={"/logo/logo.svg"} minWidth={"20%"} />
             </Flex>
-        </Flex>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={"3%"} px={"2%"} width="100%">
+                <Stack align={'center'}>
+                    <Heading fontSize={'4xl'} textAlign={'center'}>
+                        Create a new Account
+                    </Heading>
+                </Stack>
+                <Box
+                    rounded={'lg'}
+                    boxShadow={'lg'}
+                    p={"10%"}>
+                    <Stack spacing={4}>
+                        <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
+                            <FormLabel>Email address</FormLabel>
+                            <Input
+                                type="email"
+                                ref={inputEmail}
+                                onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                                data-cy="signUpEmailInput"
+                            />
+                            {
+                                emailError && (<FormErrorMessage>Email is required.</FormErrorMessage>) ||
+                                emailExistsError && (<FormErrorMessage>Email already exists.</FormErrorMessage>)
+                            }
+                        </FormControl>
+                        <FormControl id="password" isRequired isInvalid={passwordError}>
+                            <FormLabel>Password</FormLabel>
+                            <InputGroup>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    ref={inputPassword}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                                    data-cy="signUpPasswordInput"
+                                />
+                                <InputRightElement h={'full'}>
+                                    <Button
+                                        variant={'ghost'}
+                                        onClick={() =>
+                                            setShowPassword((showPassword) => !showPassword)
+                                        }>
+                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                            {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                        </FormControl>
+                        <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
+                            <FormLabel>Repeat Password</FormLabel>
+                            <Input
+                                type={'password'}
+                                ref={inputPasswordVerify}
+                                onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                                data-cy="signUpPasswordVerifyInput"
+                            />
+                            {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
+                        </FormControl>
+                        <Stack spacing={10} pt={2}>
+                            <Button
+                                loadingText="Submitting"
+                                size="lg"
+                                bg={'blue.400'}
+                                color={'white'}
+                                _hover={{
+                                    bg: 'blue.500',
+                                }}
+                                onClick={handleSignUp}
+                                data-cy="submitSignUpButton"
+                            >
+                                Sign up
+                            </Button>
+                        </Stack>
+                        <Flex flexDir="column" alignItems={"center"}>
+                            <Text mb={"0"}>
+                                Already an account?
+                            </Text>
+                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
+                        </Flex>
+                    </Stack>
+                </Box>
+            </Stack>
+        </Flex >
     );
 };
 

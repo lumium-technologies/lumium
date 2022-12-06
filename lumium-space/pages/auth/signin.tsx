@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
 import Router from 'next/router';
-import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
+import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
@@ -84,7 +84,9 @@ const SignIn: React.FC = () => {
             flexDir="column"
         >
             <Flex maxHeight={"10%"} justify="center" pt="1%">
-                <Image src={"/logo/logo.svg"} minWidth={"20%"} alt="lumium logo" />
+                <Link>
+                    <Image src={"/logo/logo.svg"} minWidth={"20%"} alt="lumium logo" onClick={() => Router.push(ROOT)} />
+                </Link>
             </Flex>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={"3%"} px={"2%"} width="100%">
                 <Stack align={'center'}>

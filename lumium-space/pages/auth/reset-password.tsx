@@ -1,7 +1,6 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
-import { useEnter } from "@hooks/useEnter";
 import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
 import { useRef, useState } from "react";
@@ -113,11 +112,11 @@ const ResetPassword: React.FC = () => {
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
                             ref={inputEmail}
-                            onKeyPress={event => useEnter(handleResetPassword, event)}
+                            onKeyPress={event => { if (event.key == 'Enter') handleResetPassword() }}
                         />
                         {
                             emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
-                                emailExistsError && (<FormErrorMessage>E-Mail doesn't exist.</FormErrorMessage>)
+                            emailExistsError && (<FormErrorMessage>E-Mail doesn&apos;t exist.</FormErrorMessage>)
                         }
                     </FormControl>
                     <Stack spacing={6}>
@@ -161,7 +160,7 @@ const ResetPassword: React.FC = () => {
                         <Input
                             type={showPassword ? 'text' : 'password'}
                             ref={inputPassword}
-                            onKeyPress={event => useEnter(handleChangePassword, event)}
+                            onKeyPress={event => { if (event.key == 'Enter') handleChangePassword() }}
                             data-cy="signUpPasswordInput"
                         />
                         <InputRightElement h={'full'}>
@@ -181,7 +180,7 @@ const ResetPassword: React.FC = () => {
                     <Input
                         type={'password'}
                         ref={inputPasswordVerify}
-                        onKeyPress={event => useEnter(handleChangePassword, event)}
+                        onKeyPress={event => { if (event.key == 'Enter') handleChangePassword() }}
                         data-cy="signUpPasswordVerifyInput"
                     />
                     {passwordMatchError ? (<FormErrorMessage>Password do not match.</FormErrorMessage>) : (null)}

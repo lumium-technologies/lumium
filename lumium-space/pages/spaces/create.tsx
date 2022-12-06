@@ -18,7 +18,7 @@ import { useToast } from '@chakra-ui/react';
 import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-export default function multistep() {
+export default function MultistepForm() {
     const inputSpaceName = useRef<HTMLInputElement>(null);
     const [spaceNameError, setspaceNameError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);

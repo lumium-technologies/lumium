@@ -9,7 +9,7 @@ import {
     Button,
     Heading,
     useColorModeValue,
-    Spacer,
+    Text,
     FormErrorMessage,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
@@ -19,7 +19,6 @@ import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@rout
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
-import { useEnter } from '@hooks/useEnter';
 
 export default function SignIn() {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -96,7 +95,7 @@ export default function SignIn() {
                                 <Input
                                     type="email"
                                     ref={inputEmail}
-                                    onKeyPress={event => useEnter(handleSignIn, event)}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
                                     data-cy="signInEmailInput"
                                 />
                                 {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
@@ -106,7 +105,7 @@ export default function SignIn() {
                                 <Input
                                     type="password"
                                     ref={inputPassword}
-                                    onKeyPress={event => useEnter(handleSignIn, event)}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
                                     data-cy="signInPasswordInput"
                                 />
                                 {
@@ -114,17 +113,8 @@ export default function SignIn() {
                                     credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
                                 }
                             </FormControl>
-                            <Stack spacing={10}>
-                                <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}>
-                                    <Spacer />
-                                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)}>Forgot password?</Link>
-                                </Stack>
-                            </Stack>
-                            <Flex justifyContent="flex-end" mt="0">
-                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)}>Create Account</Link>
+                            <Flex justifyContent="space-between" mt="0">
+                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)}>Forgot password?</Link>
                             </Flex>
                             <Button
                                 bg={'blue.400'}
@@ -137,6 +127,12 @@ export default function SignIn() {
                             >
                                 Sign in
                             </Button>
+                            <Flex flexDir="column" alignItems={"center"}>
+                                <Text mb={"0"}>
+                                    Create a new account?
+                                </Text>
+                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)}>Create Account</Link>
+                            </Flex>
                         </Stack>
                     </Box>
                 </Stack>

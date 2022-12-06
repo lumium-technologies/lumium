@@ -18,10 +18,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, SPACES_NEW } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
-import { useEnter } from '@hooks/useEnter';
 
 export default function SignUp() {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -106,7 +105,7 @@ export default function SignUp() {
                                 <Input
                                     type="email"
                                     ref={inputEmail}
-                                    onKeyPress={event => useEnter(handleSignUp, event)}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
                                     data-cy="signUpEmailInput"
                                 />
                                 {
@@ -120,7 +119,7 @@ export default function SignUp() {
                                     <Input
                                         type={showPassword ? 'text' : 'password'}
                                         ref={inputPassword}
-                                        onKeyPress={event => useEnter(handleSignUp, event)}
+                                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
                                         data-cy="signUpPasswordInput"
                                     />
                                     <InputRightElement h={'full'}>
@@ -140,7 +139,7 @@ export default function SignUp() {
                                 <Input
                                     type={'password'}
                                     ref={inputPasswordVerify}
-                                    onKeyPress={event => useEnter(handleSignUp, event)}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
                                     data-cy="signUpPasswordVerifyInput"
                                 />
                                 {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
@@ -160,11 +159,12 @@ export default function SignUp() {
                                     Sign up
                                 </Button>
                             </Stack>
-                            <Stack pt={6}>
-                                <Text align={'center'}>
-                                    Already a user? <Link color={'blue.400'} onClick={() => Router.push("/auth/signin")}>Login</Link>
+                            <Flex flexDir="column" alignItems={"center"}>
+                                <Text mb={"0"}>
+                                    Already an account?
                                 </Text>
-                            </Stack>
+                                <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)}>Login</Link>
+                            </Flex>
                         </Stack>
                     </Box>
                 </Stack>

@@ -23,6 +23,7 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { AuthBox } from '@components/auth/AuthBox';
 
 const SignIn: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
@@ -79,86 +80,64 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <Flex
-            minH={'100vh'}
-            flexDir="column"
-        >
-            <Flex maxHeight={"10%"} justify="center" pt="1%">
-                <Link>
-                    <Image src={"/logo/logo.svg"} minWidth={"20%"} alt="lumium logo" onClick={() => Router.push(ROOT)} />
-                </Link>
-            </Flex>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={"3%"} px={"2%"} width="100%">
-                <Stack align={'center'}>
-                    <Heading fontSize={'4xl'} textAlign={'center'}>
-                        Sign in to your account
-                    </Heading>
-                </Stack>
-                <Box
-                    rounded={'lg'}
-                    bg={useColorModeValue('white', 'gray.700')}
-                    boxShadow={'lg'}
-                    p={"10%"}
+        <AuthBox title="Sign in to your account">
+            <Stack spacing={4}>
+                <FormControl id="email" isRequired isInvalid={emailError || credentialsMatchError}>
+                    <FormLabel>Email address</FormLabel>
+                    <Input
+                        type="email"
+                        ref={inputEmail}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                        data-cy="emailInput"
+                    />
+                    {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
+                </FormControl>
+                <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            ref={inputPassword}
+                            onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                            data-cy="passwordInput"
+                        />
+                        <InputRightElement h={'full'}>
+                            <Button
+                                variant={'ghost'}
+                                onClick={() =>
+                                    setShowPassword((showPassword) => !showPassword)
+                                }>
+                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                    {
+                        passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
+                        credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
+                    }
+                </FormControl>
+                <Flex justifyContent="space-between" mt="0">
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
+                </Flex>
+                <Button
+                    bg={'blue.400'}
+                    color={'white'}
+                    _hover={{
+                        bg: 'blue.500',
+                    }}
+                    onClick={handleSignIn}
+                    data-cy="signInButton"
                 >
-                    <Stack spacing={4}>
-                        <FormControl id="email" isRequired isInvalid={emailError || credentialsMatchError}>
-                            <FormLabel>Email address</FormLabel>
-                            <Input
-                                type="email"
-                                ref={inputEmail}
-                                onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                                data-cy="emailInput"
-                            />
-                            {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
-                        </FormControl>
-                        <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    ref={inputPassword}
-                                    onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                                    data-cy="passwordInput"
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowPassword((showPassword) => !showPassword)
-                                        }>
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                            {
-                                passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
-                                credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
-                            }
-                        </FormControl>
-                        <Flex justifyContent="space-between" mt="0">
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
-                        </Flex>
-                        <Button
-                            bg={'blue.400'}
-                            color={'white'}
-                            _hover={{
-                                bg: 'blue.500',
-                            }}
-                            onClick={handleSignIn}
-                            data-cy="signInButton"
-                        >
-                            Sign in
-                        </Button>
-                        <Flex flexDir="column" alignItems={"center"}>
-                            <Text mb={"0"}>
-                                Create a new account?
-                            </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
-                        </Flex>
-                    </Stack>
-                </Box>
+                    Sign in
+                </Button>
+                <Flex flexDir="column" alignItems={"center"}>
+                    <Text mb={"0"}>
+                        Create a new account?
+                    </Text>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
+                </Flex>
             </Stack>
-        </Flex>
+        </AuthBox>
     );
 };
 

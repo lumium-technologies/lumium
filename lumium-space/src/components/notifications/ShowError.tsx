@@ -1,9 +1,9 @@
-import { Alert, AlertIcon, AlertTitle, Text } from "@chakra-ui/react"
+import { Alert, AlertIcon, AlertTitle, Text } from "@chakra-ui/react";
 
 interface ErrorProps {
     show: boolean;
     message: string;
-}
+};
 
 export const ShowError = ({ show, message }: ErrorProps) => {
     return (
@@ -14,5 +14,5 @@ export const ShowError = ({ show, message }: ErrorProps) => {
             </Alert>
             :
             <Text></Text>
-    )
-}
+    );
+};

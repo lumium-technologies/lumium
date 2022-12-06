@@ -3,7 +3,7 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 import Session from 'supertokens-auth-react/recipe/session';
 
-export const Authenticator = (props) => {
+export const Authenticator: React.FC = (props) => {
     const [loginStatus, setLoginStatus] = useState(false);
     useEffect(() => {
         Session.doesSessionExist().then((loggedIn) => {
@@ -17,5 +17,5 @@ export const Authenticator = (props) => {
         <>
             {loginStatus && props.children}
         </>
-    )
-}
+    );
+};

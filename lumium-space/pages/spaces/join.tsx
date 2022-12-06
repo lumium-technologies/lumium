@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 
-export default function JoinSpace(): JSX.Element {
+const JoinSpace: React.FC = () => {
     const inputSpaceInfo = useRef<HTMLInputElement>(null);
     const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
@@ -71,4 +71,6 @@ export default function JoinSpace(): JSX.Element {
             </Stack>
         </Flex>
     );
-}
+};
+
+export default JoinSpace;

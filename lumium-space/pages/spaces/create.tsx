@@ -13,12 +13,11 @@ import {
     FormErrorMessage,
     Text
 } from '@chakra-ui/react';
-
 import { useToast } from '@chakra-ui/react';
 import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-export default function MultistepForm() {
+const MultistepForm: React.FC = () => {
     const inputSpaceName = useRef<HTMLInputElement>(null);
     const [spaceNameError, setspaceNameError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
@@ -31,8 +30,8 @@ export default function MultistepForm() {
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
     const handleDownloadKeys = () => {
-        setDownloadedKeys(true)
-    }
+        setDownloadedKeys(true);
+    };
     const handleEnter = (event) => {
         if (event.key == "Enter") {
             setStep(step + 1);
@@ -40,9 +39,9 @@ export default function MultistepForm() {
                 setProgress(100);
             } else {
                 setProgress(progress + 50);
-            }
-        }
-    }
+            };
+        };
+    };
     return (
         <Authenticator>
             <Flex
@@ -174,6 +173,8 @@ export default function MultistepForm() {
                     </Flex>
                 </ButtonGroup>
             </Flex>
-        </Authenticator >
+        </Authenticator>
     );
-}
+};
+
+export default MultistepForm;

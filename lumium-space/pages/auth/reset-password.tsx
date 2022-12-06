@@ -43,9 +43,9 @@ const ResetPassword: React.FC = () => {
                     setEmailResent(true);
                 } else {
                     setEmailExistsError(true);
-                }
+                };
             });
-        }
+        };
     };
 
     const handleChangePassword = () => {
@@ -65,7 +65,7 @@ const ResetPassword: React.FC = () => {
                 ],
                 "token": token
             }).then(() => Router.push(AUTH_SIGNIN));
-        }
+        };
     };
 
     const handleResendEmail = () => {
@@ -242,6 +242,6 @@ const ResetPassword: React.FC = () => {
             {token && changePassword || emailSent && emailSentPage || emailResent && emailResendPage || resetPasswordEmail}
         </Fade>
     );
-}
+};
 
 export default ResetPassword;

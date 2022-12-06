@@ -5,7 +5,7 @@ import { Footer } from "@sections/landing/Footer";
 import { Pricing } from "@sections/landing/Pricing";
 import { Statistics } from "@sections/landing/Statistics";
 
-export default function LandingPage() {
+const LandingPage = () => {
     return (
         <>
             <Container maxW="container.xl">
@@ -18,4 +18,6 @@ export default function LandingPage() {
         </>
     );
 };
+
+export default LandingPage;
 

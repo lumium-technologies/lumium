@@ -20,7 +20,7 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
 
-export default function SignIn() {
+export const SignIn: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
     const [emailError, setEmailError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
@@ -138,5 +138,7 @@ export default function SignIn() {
                 </Stack>
             </Flex>
         </Flex>
-    )
-}
+    );
+};
+
+export default SignIn;

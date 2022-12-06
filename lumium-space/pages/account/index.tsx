@@ -6,7 +6,7 @@ import { ROOT } from "@routes/space";
 import Router from "next/router";
 import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
-export default function AccountPage() {
+const AccountPage: React.FC = () => {
     const [api] = useApi();
     const handleDelete = () => {
         api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));
@@ -23,5 +23,7 @@ export default function AccountPage() {
                 Delete Account
             </Button>
         </Authenticator>
-    )
-}
+    );
+};
+
+export default AccountPage;

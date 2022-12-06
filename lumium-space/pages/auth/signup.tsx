@@ -14,7 +14,7 @@ import {
     InputRightElement,
     FormErrorMessage,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -22,7 +22,7 @@ import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, SPACES_NEW } from '@routes/spac
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 
-export default function SignUp() {
+const SignUp: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
     const [emailError, setEmailError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
@@ -73,12 +73,12 @@ export default function SignUp() {
                     } else {
                         setEmailExistsError(true);
                         setEmailError(true);
-                    }
-                })
+                    };
+                });
             } else {
                 setPasswordMatchError(true)
-            }
-        }
+            };
+        };
     };
 
     return (
@@ -170,5 +170,7 @@ export default function SignUp() {
                 </Stack>
             </Flex>
         </Flex>
-    )
-}
+    );
+};
+
+export default SignUp;

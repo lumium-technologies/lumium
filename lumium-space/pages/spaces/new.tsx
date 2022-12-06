@@ -6,7 +6,7 @@ import {
 import Router from 'next/router';
 import { SPACES_CREATE, SPACES_JOIN } from '@routes/space';
 
-export default function CreateOrJoin() {
+const CreateOrJoin: React.FC = () => {
     return (
         <Flex justifyContent={"center"} width="100%">
             <Flex
@@ -78,4 +78,6 @@ export default function CreateOrJoin() {
             </Flex>
         </Flex>
     );
-}
+};
+
+export default CreateOrJoin;

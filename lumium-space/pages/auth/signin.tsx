@@ -11,7 +11,9 @@ import {
     useColorModeValue,
     Text,
     FormErrorMessage,
-    Image
+    Image,
+    InputRightElement,
+    InputGroup
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
@@ -20,12 +22,14 @@ import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@rout
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const SignIn: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
     const [emailError, setEmailError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const userInfo = useUserInfo();
@@ -107,12 +111,23 @@ const SignIn: React.FC = () => {
                         </FormControl>
                         <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
                             <FormLabel>Password</FormLabel>
-                            <Input
-                                type="password"
-                                ref={inputPassword}
-                                onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                                data-cy="signInPasswordInput"
-                            />
+                            <InputGroup>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    ref={inputPassword}
+                                    onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                                    data-cy="signInPasswordInput"
+                                />
+                                <InputRightElement h={'full'}>
+                                    <Button
+                                        variant={'ghost'}
+                                        onClick={() =>
+                                            setShowPassword((showPassword) => !showPassword)
+                                        }>
+                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
                             {
                                 passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
                                 credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>

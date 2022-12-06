@@ -27,6 +27,12 @@
             "@definitions": [
                 "src/definitions"
             ],
+            "@sections/*": [
+                "src/sections/*"
+            ],
+            "@sections": [
+                "src/sections"
+            ],
             "@components/*": [
                 "src/components/*"
             ],

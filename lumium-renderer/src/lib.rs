@@ -14,8 +14,7 @@ use katex_renderer::render_katex;
 use passwords::PasswordGenerator;
 use pulldown_cmark::{html, Options, Parser};
 use ring::aead::{
-    self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM,
-    CHACHA20_POLY1305, NONCE_LEN,
+    self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM, NONCE_LEN,
 };
 use ring::error;
 use ring::rand::{SecureRandom, SystemRandom};
@@ -33,6 +32,20 @@ fn render_markdown(page: Option<JsValue>) -> String {
     let mut html_out = String::new();
     html::push_html(&mut html_out, parser);
     html_out
+}
+
+#[derive(Serialize)]
+struct KeyVariantCreateDTO {
+    activator: Vec<u8>,
+    activator_nonce: Vec<u8>,
+    value: Vec<u8>,
+    value_nonce: Vec<u8>,
+}
+
+#[derive(Serialize)]
+struct KeyCreateDTO {
+    keys: Vec<KeyVariantCreateDTO>,
+    activator: Vec<u8>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -120,25 +133,86 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub fn generate_workspace_key_with_recovery(password: JsValue) {
-    // let sr = SystemRandom::new();
-    // let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
-    // sr.fill(&mut master_key).unwrap();
-    // let mut activator_key: [u8; ACTIVATOR_KEY_BYTE_LENGTH] = [0; ACTIVATOR_KEY_BYTE_LENGTH];
-    // sr.fill(&mut activator_key).unwrap();
-    // let activator_master = encrypt_data(&master_key, activator_key);
-    // let pg = PasswordGenerator {
-    //     length: 8,
-    //     numbers: true,
-    //     lowercase_letters: true,
-    //     uppercase_letters: true,
-    //     symbols: true,
-    //     spaces: true,
-    //     exclude_similar_characters: false,
-    //     strict: true,
-    // };
-    // let mut recovery_codes = pg.generate(10).unwrap();
-    todo!()
+pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<JsValue, JsValue> {
+    let sr = SystemRandom::new();
+    let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
+    sr.fill(&mut master_key).unwrap();
+    let mut activator_key: [u8; ACTIVATOR_KEY_BYTE_LENGTH] = [0; ACTIVATOR_KEY_BYTE_LENGTH];
+    sr.fill(&mut activator_key).unwrap();
+    let nonce_master_activator = get_random_nonce();
+    let cipher_master_activator = encrypt_data(
+        password.as_string().unwrap().as_bytes(),
+        nonce_master_activator.clone(),
+        activator_key.to_vec(),
+    );
+    let nonce_master_value = get_random_nonce();
+    let cipher_master_value = encrypt_data(
+        password.as_string().unwrap().as_bytes(),
+        nonce_master_value.clone(),
+        master_key.to_vec(),
+    );
+    let pg = PasswordGenerator {
+        length: 8,
+        numbers: true,
+        lowercase_letters: true,
+        uppercase_letters: true,
+        symbols: true,
+        spaces: true,
+        exclude_similar_characters: false,
+        strict: true,
+    };
+    let recovery_codes = pg.generate(10).unwrap();
+    let mut variants = Vec::<KeyVariantCreateDTO>::new();
+    variants.push(KeyVariantCreateDTO {
+        activator_nonce: nonce_master_activator.to_vec(),
+        activator: cipher_master_activator,
+        value_nonce: nonce_master_value.to_vec(),
+        value: cipher_master_value,
+    });
+    for recovery in recovery_codes {
+        let nonce_recovery_activator = get_random_nonce();
+        let cipher_recovery_activator = encrypt_data(
+            recovery.as_bytes(),
+            nonce_recovery_activator.clone(),
+            activator_key.to_vec(),
+        );
+        let nonce_recovery_value = get_random_nonce();
+        let cipher_recovery_value = encrypt_data(
+            recovery.as_bytes(),
+            nonce_recovery_value.clone(),
+            master_key.to_vec(),
+        );
+        variants.push(KeyVariantCreateDTO {
+            activator_nonce: nonce_recovery_activator.to_vec(),
+            activator: cipher_recovery_activator,
+            value_nonce: nonce_recovery_value.to_vec(),
+            value: cipher_recovery_value,
+        });
+    }
+    let key_create_dto = KeyCreateDTO {
+        keys: variants,
+        activator: activator_key.to_vec(),
+    };
+    let mut opts = RequestInit::new();
+    opts.method("PUT");
+    opts.mode(RequestMode::Cors);
+    opts.body(JsValue::from_serde(&key_create_dto).ok().as_ref());
+
+    let origin = format!(
+        "{}/{}",
+        env!("RENDERER_API_HOST").to_string(),
+        "secure/workspace"
+    );
+    let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
+
+    let window = web_sys::window().unwrap();
+    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
+    assert!(resp_value.is_instance_of::<Response>());
+    let resp: Response = resp_value.dyn_into().unwrap();
+
+    let json = JsFuture::from(resp.json()?).await?;
+
+    Ok(json)
 }
 
 #[wasm_bindgen]
@@ -187,7 +261,7 @@ pub fn get_random_nonce() -> Uint8Array {
     let rand_gen = SystemRandom::new();
     let mut raw_nonce = [0u8; NONCE_LEN];
     rand_gen.fill(&mut raw_nonce).unwrap();
-    let mut array = Uint8Array::new_with_length(NONCE_LEN as u32);
+    let array = Uint8Array::new_with_length(NONCE_LEN as u32);
     array.copy_from(&raw_nonce);
     array
 }

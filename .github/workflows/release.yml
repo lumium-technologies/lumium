@@ -39,7 +39,7 @@ jobs:
           echo "COMMITISH=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           git checkout develop
           git pull
-          git merge --no-ff master -m "[BUMP] $VERSION - bump `develop` after release"
+          git merge --no-ff master -m "[BUMP] $VERSION - bump after release"
           git push
       - name: Create release
         if: "!startsWith(github.event.head_commit.message, '[VERSION]')"

@@ -10,170 +10,150 @@ import {
     Heading,
     Text,
     useColorModeValue,
-    HStack,
     InputGroup,
     InputRightElement,
-    Alert,
-    AlertIcon,
-    AlertTitle,
-    Fade,
+    FormErrorMessage,
+    Image
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { useLoginStatus } from '@hooks/security';
-import { UserDTO, WorkspaceDTO } from "@types";
-import { SECURE_USER_GET } from '@routes/api/v1';
-import { AUTH_SIGNUP, EMAIL_EXISTS, EMAIL_VERIFY_TOKEN, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, ROOT, SPACES_NEW } from '@routes/space';
+import Session from 'supertokens-auth-react/recipe/session';
+import { useUserInfo } from '@hooks/api';
+import { AuthBox } from '@components/auth/AuthBox';
 
-export default function SignUp() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const SignUp: React.FC = () => {
+    const inputEmail = useRef<HTMLInputElement>(null);
+    const [emailError, setEmailError] = useState(false);
+    const inputPassword = useRef<HTMLInputElement>(null);
+    const [passwordError, setPasswordError] = useState(false);
+    const inputPasswordVerify = useRef<HTMLInputElement>(null);
     const [api] = useApi();
+    const userInfo = useUserInfo();
     const [showPassword, setShowPassword] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
-    const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
-    const [loggedIn, setloggedIn] = useState(false);
-    useLoginStatus().then((val) => {
-        setloggedIn(val);
-    });
+    const [passwordMatchError, setPasswordMatchError] = useState(false);
+
     useEffect(() => {
-        if (loggedIn) {
-            api.get<UserDTO>(SECURE_USER_GET).then((res) => {
-                setRecentWorkspace(res.data.recentWorkspace);
-                if (recentWorkspace) {
-                    Router.push('/' + recentWorkspace.id);
+        Session.doesSessionExist().then((loggedIn) => {
+            if (loggedIn) {
+                if (userInfo?.recentWorkspace) {
+                    Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
                     Router.push(SPACES_NEW);
-                }
-            });
-        };
-    }, [loggedIn, api, recentWorkspace]);
-    const handleEnter = event => {
-        if (event.key == 'Enter') {
-            handleSignUp();
-        }
-    }
+                };
+            };
+        });
+    }, [userInfo?.recentWorkspace]);
+
     const handleSignUp = () => {
-        api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
-            if (!value) {
-                api.post(AUTH_SIGNUP, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        },
-                        {
-                            "id": "password",
-                            "value": password
-                        }
-                    ]
-                }).then(() => {
-                    api.post(EMAIL_VERIFY_TOKEN);
-                }).then(() => Router.push("/auth/verify-email"));
+        const email = inputEmail.current?.value;
+        const password = inputPassword.current?.value;
+        const passwordVerify = inputPasswordVerify.current?.value;
+
+        setEmailError(email == '');
+        setPasswordError(password == '');
+        setPasswordMatchError(password != passwordVerify);
+        if (email != '' && password != '' && passwordVerify != '') {
+            if (password == passwordVerify) {
+                api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
+                    if (!value) {
+                        api.post(AUTH_SIGNUP, {
+                            "formFields": [
+                                {
+                                    "id": "email",
+                                    "value": email
+                                },
+                                {
+                                    "id": "password",
+                                    "value": password
+                                }
+                            ]
+                        }).then(() => Router.push(SPACES_NEW));
+                    } else {
+                        setEmailExistsError(true);
+                        setEmailError(true);
+                    };
+                });
             } else {
-                setEmailExistsError(true);
-            }
-        })
+                setPasswordMatchError(true)
+            };
+        };
     };
+
     return (
-        <Flex flexDir="column" minH={'100vh'}>
-            <Flex
-                minH={'93vh'}
-                align={'center'}
-                justify={'center'}
-                bg={useColorModeValue('gray.50', 'gray.800')}>
-                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                    <Stack align={'center'}>
-                        <Heading fontSize={'4xl'} textAlign={'center'}>
-                            Sign up
-                        </Heading>
-                    </Stack>
-                    <Box
-                        rounded={'lg'}
-                        bg={useColorModeValue('white', 'gray.700')}
-                        boxShadow={'lg'}
-                        p={8}>
-                        <Stack spacing={4}>
-                            <HStack>
-                                <Box>
-                                    <FormControl id="firstName">
-                                        <FormLabel>First Name</FormLabel>
-                                        <Input type="text" />
-                                    </FormControl>
-                                </Box>
-                                <Box>
-                                    <FormControl id="lastName">
-                                        <FormLabel>Last Name</FormLabel>
-                                        <Input type="text" />
-                                    </FormControl>
-                                </Box>
-                            </HStack>
-                            <FormControl id="email" isRequired>
-                                <FormLabel>Email address</FormLabel>
-                                <Input
-                                    type="email"
-                                    onChange={event => setEmail(event.currentTarget.value)}
-                                    onKeyPress={handleEnter}
-                                    data-cy="signUpEmailInput"
-                                />
-                            </FormControl>
-                            <FormControl id="password" isRequired>
-                                <FormLabel>Password</FormLabel>
-                                <InputGroup>
-                                    <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        onChange={event => setPassword(event.currentTarget.value)}
-                                        onKeyPress={handleEnter}
-                                        data-cy="signUpPasswordInput"
-                                    />
-                                    <InputRightElement h={'full'}>
-                                        <Button
-                                            variant={'ghost'}
-                                            onClick={() =>
-                                                setShowPassword((showPassword) => !showPassword)
-                                            }>
-                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                        </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                            </FormControl>
-                            <Stack spacing={10} pt={2}>
-                                <Button
-                                    loadingText="Submitting"
-                                    size="lg"
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                        bg: 'blue.500',
-                                    }}
-                                    onClick={handleSignUp}
-                                    data-cy="submitSignUpButton"
-                                >
-                                    Sign up
-                                </Button>
-                            </Stack>
-                            <Stack pt={6}>
-                                <Text align={'center'}>
-                                    Already a user? <Link color={'blue.400'} onClick={() => Router.push("/auth/signin")}>Login</Link>
-                                </Text>
-                            </Stack>
-                        </Stack>
-                    </Box>
+        <AuthBox title="Create your account">
+            <Stack spacing={4}>
+                <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
+                    <FormLabel>Email address</FormLabel>
+                    <Input
+                        type="email"
+                        ref={inputEmail}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                        data-cy="emailInput"
+                    />
+                    {
+                        emailError && (<FormErrorMessage data-cy="emailError">Email is required.</FormErrorMessage>) ||
+                        emailExistsError && (<FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>)
+                    }
+                </FormControl>
+                <FormControl id="password" isRequired isInvalid={passwordError || passwordMatchError}>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            ref={inputPassword}
+                            onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                            data-cy="passwordInput"
+                        />
+                        <InputRightElement h={'full'}>
+                            <Button
+                                variant={'ghost'}
+                                onClick={() =>
+                                    setShowPassword((showPassword) => !showPassword)
+                                }>
+                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                    {passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>)}
+                </FormControl>
+                <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
+                    <FormLabel>Repeat Password</FormLabel>
+                    <Input
+                        type={'password'}
+                        ref={inputPasswordVerify}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
+                        data-cy="passwordVerifyInput"
+                    />
+                    {passwordMatchError && (<FormErrorMessage data-cy="passwordMatchError">Password do not match.</FormErrorMessage>)}
+                </FormControl>
+                <Stack spacing={10} pt={2}>
+                    <Button
+                        loadingText="Submitting"
+                        size="lg"
+                        bg={'blue.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'blue.500',
+                        }}
+                        onClick={handleSignUp}
+                        data-cy="signUpButton"
+                    >
+                        Sign up
+                    </Button>
                 </Stack>
-            </Flex>
-            <Flex justifyContent="flex-end">
-                {
-                    emailExistsError ?
-                        <Alert status='error' width="20%" mr="1%">
-                            <AlertIcon />
-                            <AlertTitle>Email does already exist</AlertTitle>
-                        </Alert>
-                        :
-                        <Text></Text>
-                }
-            </Flex>
-        </Flex>
-    )
-}
+                <Flex flexDir="column" alignItems={"center"}>
+                    <Text mb={"0"}>
+                        Already an account?
+                    </Text>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
+                </Flex>
+            </Stack>
+        </AuthBox>
+    );
+};
+
+export default SignUp;

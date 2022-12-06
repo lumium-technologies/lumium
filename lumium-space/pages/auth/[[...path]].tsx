@@ -7,6 +7,7 @@ const Auth: React.FC = () => {
     useEffect(() => {
         Router.push(AUTH_SIGNIN);
     });
+
     return (
         <Box textAlign="center" py={10} px={6}>
             <Heading
@@ -22,7 +23,7 @@ const Auth: React.FC = () => {
                 Page Not Found
             </Text>
             <Text color={'gray.500'} mb={6}>
-                The page you're looking for does not seem to exist
+                The page you&apos;re looking for does not seem to exist
             </Text>
         </Box>
     );

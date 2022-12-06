@@ -84,7 +84,7 @@ const SignIn: React.FC = () => {
             flexDir="column"
         >
             <Flex maxHeight={"10%"} justify="center" pt="1%">
-                <Image src={"/logo/logo.svg"} minWidth={"20%"} />
+                <Image src={"/logo/logo.svg"} minWidth={"20%"} alt="lumium logo" />
             </Flex>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={"3%"} px={"2%"} width="100%">
                 <Stack align={'center'}>

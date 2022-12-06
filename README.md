@@ -36,6 +36,5 @@ yarn test # run all test suites
 (cd lumium-api && yarn test) # run backend unit tests
 (cd lumium-space && yarn run cypress:test) # run cypress integration tests headless
 (cd lumium-space && yarn run cypress:open) # run cypress integration tests headed
-(cd lumium-space && yarn test) # run frontend unit tests
 ```
 

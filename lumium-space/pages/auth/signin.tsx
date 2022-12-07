@@ -53,6 +53,7 @@ const SignIn: React.FC = () => {
 
         setEmailError(email == '');
         setPasswordError(password == '');
+        setCredentialsMatchError(false);
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -88,9 +89,9 @@ const SignIn: React.FC = () => {
                         type="email"
                         ref={inputEmail}
                         onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                        data-cy="signInEmailInput"
+                        data-cy="emailInput"
                     />
-                    {emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>)}
+                    {emailError && (<FormErrorMessage data-cy="emailError">E-Mail is required.</FormErrorMessage>)}
                 </FormControl>
                 <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
                     <FormLabel>Password</FormLabel>
@@ -99,7 +100,7 @@ const SignIn: React.FC = () => {
                             type={showPassword ? 'text' : 'password'}
                             ref={inputPassword}
                             onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                            data-cy="signInPasswordInput"
+                            data-cy="passwordInput"
                         />
                         <InputRightElement h={'full'}>
                             <Button
@@ -112,12 +113,12 @@ const SignIn: React.FC = () => {
                         </InputRightElement>
                     </InputGroup>
                     {
-                        passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>) ||
-                        credentialsMatchError && <FormErrorMessage>E-Mail or Password incorrect</FormErrorMessage>
+                        passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>) ||
+                        credentialsMatchError && <FormErrorMessage data-cy="credentialsMatchError">E-Mail or Password incorrect.</FormErrorMessage>
                     }
                 </FormControl>
                 <Flex justifyContent="space-between" mt="0">
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)}>Forgot password?</Link>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
                 </Flex>
                 <Button
                     bg={'blue.400'}
@@ -126,7 +127,7 @@ const SignIn: React.FC = () => {
                         bg: 'blue.500',
                     }}
                     onClick={handleSignIn}
-                    data-cy="submitSignInButton"
+                    data-cy="signInButton"
                 >
                     Sign in
                 </Button>
@@ -134,7 +135,7 @@ const SignIn: React.FC = () => {
                     <Text mb={"0"}>
                         Create a new account?
                     </Text>
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)}>Create Account</Link>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
                 </Flex>
             </Stack>
         </AuthBox>

@@ -41,7 +41,6 @@ const ResetPassword: React.FC = () => {
                         ]
                     });
                     setEmailSent(true);
-                    setEmailResent(true);
                 } else {
                     setEmailExistsError(true);
                 };
@@ -78,7 +77,6 @@ const ResetPassword: React.FC = () => {
                 }
             ]
         });
-        setEmailSent(false);
         setEmailResent(true);
     };
 
@@ -96,7 +94,7 @@ const ResetPassword: React.FC = () => {
                         type="email"
                         ref={inputEmail}
                         onKeyPress={event => { if (event.key == 'Enter') handleResetPassword() }}
-                        data-cy="signInEmailInput"
+                        data-cy="emailInput"
                     />
                     {
                         emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
@@ -110,11 +108,37 @@ const ResetPassword: React.FC = () => {
                         bg: 'blue.500',
                     }}
                     onClick={handleResetPassword}
+                    data-cy="requestResetButton"
                 >
                     Request Reset
                 </Button>
             </Stack>
         </AuthBox>
+    );
+
+    const emailSentPage = (
+        <Box textAlign="center" py={10} px={6}>
+            <InfoIcon boxSize={'50px'} color={'blue.500'} />
+            {!emailResent &&
+                <Heading as="h2" size="xl" mt={6} mb={2}>
+                    Check your Email
+                </Heading>
+                ||
+                <Heading as="h2" size="xl" mt={6} mb={2} data-cy="resendHeader">
+                    E-Mail has been resent
+                </Heading>
+            }
+            <Text color={'gray.500'}>
+                Check your inbox to reset your password
+            </Text>
+            {!emailResent &&
+                <ScaleFade initialScale={0.9} in={emailSent}>
+                    <Button onClick={handleResendEmail} data-cy="resendButton">
+                        Resend E-Mail
+                    </Button>
+                </ScaleFade>
+            }
+        </Box>
     );
 
     const changePassword = (
@@ -166,46 +190,9 @@ const ResetPassword: React.FC = () => {
         </AuthBox>
     );
 
-    const emailSentPage = (
-        <Box textAlign="center" py={10} px={6}>
-            <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            {emailResent ?
-                <Heading as="h2" size="xl" mt={6} mb={2}>
-                    Check your Email
-                </Heading>
-                :
-                <Heading as="h2" size="xl" mt={6} mb={2}>
-                    E-Mail has been resend
-                </Heading>
-            }
-            <Text color={'gray.500'}>
-                Check your inbox to reset your password
-            </Text>
-            <ScaleFade initialScale={0.9} in={emailResent}>
-                <Button onClick={handleResendEmail}>
-                    Resend E-Mail
-                </Button>
-            </ScaleFade>
-        </Box>
-    );
-
-    const emailResendPage = (
-        <Fade in={true}>
-            <Box textAlign="center" py={10} px={6}>
-                <InfoIcon boxSize={'50px'} color={'blue.500'} />
-                <Heading as="h2" size="xl" mt={6} mb={2}>
-                    E-Mail has been resend
-                </Heading>
-                <Text color={'gray.500'}>
-                    Check your inbox to reset your password
-                </Text>
-            </Box>
-        </Fade>
-    );
-
     return (
         <Fade in={true}>
-            {token && changePassword || emailSent && emailSentPage || emailResent && emailResendPage || resetPasswordEmail}
+            {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
         </Fade>
     );
 };

@@ -13,9 +13,9 @@ declare global {
 }
 var email: string;
 var password: string;
-Cypress.Commands.add('dataCy', (value) => {
-    return cy.get(`[data-cy=${value}]`);
-});
+Cypress.Commands.add("dataCy", (value) => {
+    return cy.get(`[data-cy=${value}]`)
+})
 Cypress.Commands.add('interceptAndWait', (page, code) => {
     cy.intercept(`${page}`).as("wait");
     cy.wait("@wait").its("response.statusCode").should("eq", code);
@@ -39,8 +39,7 @@ Cypress.Commands.add("signIn", () => {
 });
 Cypress.Commands.add("requestReset", () => {
     cy.dataCy("emailInput").should("be.visible").type(email);
-    cy.dataCy("requestResetButton").should("be.visible").click().click();
-    cy.dataCy("resendButton").should("be.visible");
+    cy.dataCy("requestResetButton").should("be.visible").click();
 });
 beforeEach(() => {
     cy.clearCookies();

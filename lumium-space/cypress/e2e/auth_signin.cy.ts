@@ -1,5 +1,5 @@
 import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from "@routes/space";
-import { makeid } from "cypress/support";
+import { makeid } from "cypress/support/makeid";
 
 describe("/auth/signin", () => {
     before(() => {

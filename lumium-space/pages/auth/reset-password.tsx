@@ -8,7 +8,6 @@ import { useRef, useState } from "react";
 
 const ResetPassword: React.FC = () => {
     const inputEmail = useRef<HTMLInputElement>(null);
-    const [email, setEmail] = useState<string>();
     const [emailError, setEmailError] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
 
@@ -20,13 +19,12 @@ const ResetPassword: React.FC = () => {
     const [passwordMatchError, setPasswordMatchError] = useState(false);
 
     const [emailSent, setEmailSent] = useState(false);
-    const [emailResent, setEmailResent] = useState(false);
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
 
     const handleResetPassword = () => {
-        setEmail(inputEmail.current?.value);
+        const email = inputEmail.current?.value;
         setEmailError(email == '');
         if (email != '') {
             const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
@@ -68,18 +66,6 @@ const ResetPassword: React.FC = () => {
         };
     };
 
-    const handleResendEmail = () => {
-        api.post(PASSWORD_RESET_TOKEN, {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                }
-            ]
-        });
-        setEmailResent(true);
-    };
-
     const resetPasswordEmail = (
         <AuthBox title="Forgot your password">
             <Stack spacing={4}>
@@ -97,8 +83,8 @@ const ResetPassword: React.FC = () => {
                         data-cy="emailInput"
                     />
                     {
-                        emailError && (<FormErrorMessage>E-Mail is required.</FormErrorMessage>) ||
-                        emailExistsError && (<FormErrorMessage>E-Mail doesn&apos;t exist.</FormErrorMessage>)
+                        emailError && (<FormErrorMessage data-cy="emailError">E-Mail is required.</FormErrorMessage>) ||
+                        emailExistsError && (<FormErrorMessage data-cy="emailExistsError">E-Mail doesn&apos;t exist.</FormErrorMessage>)
                     }
                 </FormControl>
                 <Button
@@ -119,25 +105,12 @@ const ResetPassword: React.FC = () => {
     const emailSentPage = (
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
-            {!emailResent &&
-                <Heading as="h2" size="xl" mt={6} mb={2}>
-                    Check your Email
-                </Heading>
-                ||
-                <Heading as="h2" size="xl" mt={6} mb={2} data-cy="resendHeader">
-                    E-Mail has been resent
-                </Heading>
-            }
+            <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
+                Check your Email
+            </Heading>
             <Text color={'gray.500'}>
                 Check your inbox to reset your password
             </Text>
-            {!emailResent &&
-                <ScaleFade initialScale={0.9} in={emailSent}>
-                    <Button onClick={handleResendEmail} data-cy="resendButton">
-                        Resend E-Mail
-                    </Button>
-                </ScaleFade>
-            }
         </Box>
     );
 

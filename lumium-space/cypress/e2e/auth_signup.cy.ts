@@ -1,5 +1,5 @@
 import { AUTH_SIGNUP, AUTH_SIGNIN } from "@routes/space";
-import { makeid } from "cypress/support";
+import { makeid } from "cypress/support/makeid";
 
 describe("/auth/signup", () => {
     beforeEach(() => {

@@ -36,8 +36,8 @@ const CreateOrJoin: React.FC = () => {
                     }}
                     _focus={{
                         bg: 'green.500',
-
                     }}
+                    data-cy="createButton"
                     onClick={() => Router.push(SPACES_CREATE)}
                 >
                     Start now
@@ -72,6 +72,7 @@ const CreateOrJoin: React.FC = () => {
                         bg: 'green.500',
                     }}
                     onClick={() => Router.push(SPACES_JOIN)}
+                    data-cy="joinButton"
                 >
                     Start now
                 </Button>

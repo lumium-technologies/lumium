@@ -30,6 +30,6 @@ describe("/auth/reset-password", () => {
         const email = makeid(50) + "@example.com";
         cy.dataCy("emailInput").should("be.visible").type(email);
         cy.dataCy("requestResetButton").should("be.visible").click();
-        cy.dataCy("emailExistError").should("be.visible");
+        cy.dataCy("emailExistsError").should("be.visible");
     });
 });

@@ -25,6 +25,7 @@ use serde::{Deserialize, Serialize};
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
+const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -135,7 +136,7 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<JsValue, JsValue> {
+pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
     let sr = SystemRandom::new();
     let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
     sr.fill(&mut master_key).unwrap();
@@ -171,7 +172,7 @@ pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<J
         value_nonce: nonce_master_value.to_vec(),
         value: cipher_master_value,
     });
-    for recovery in recovery_codes {
+    for recovery in &recovery_codes {
         let nonce_recovery_activator = get_random_nonce();
         let cipher_recovery_activator = encrypt_data(
             recovery.as_bytes(),
@@ -213,6 +214,11 @@ pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<J
     let resp: Response = resp_value.dyn_into().unwrap();
 
     let json = JsFuture::from(resp.json()?).await?;
+
+    let file = web_sys::File::new_with_buffer_source_sequence(
+        &JsValue::from(recovery_codes.join("\n")),
+        RECOVERY_CODES_FILE_NAME,
+    )?;
 
     Ok(json)
 }

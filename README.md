@@ -32,7 +32,7 @@ yarn start # to start the production servers
 
 ## tests
 ```bash
-yarn test # run all test suites
+yarn test # run all test suites headless
 (cd lumium-api && yarn test) # run backend unit tests
 (cd lumium-space && yarn run cypress:test) # run cypress integration tests headless
 (cd lumium-space && yarn run cypress:open) # run cypress integration tests headed

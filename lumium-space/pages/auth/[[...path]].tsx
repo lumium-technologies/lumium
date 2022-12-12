@@ -1,19 +1,32 @@
-import Router from 'next/router';
-import { useEffect } from 'react';
-import { Box, Heading } from '@chakra-ui/react';
-import { WarningTwoIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN } from '@routes/space';
+import { Box, Heading, Button, Text } from "@chakra-ui/react";
+import { AUTH_SIGNIN } from "@routes/space";
+import Router from "next/router";
+import { useEffect } from "react";
 
-export default function Auth() {
+const Auth: React.FC = () => {
     useEffect(() => {
         Router.push(AUTH_SIGNIN);
-    }, []);
+    });
+
     return (
         <Box textAlign="center" py={10} px={6}>
-            <WarningTwoIcon boxSize={'50px'} color={'orange.300'} />
-            <Heading as="h2" size="xl" mt={6} mb={2}>
-                You&apos;re getting redirected
+            <Heading
+                display="inline-block"
+                as="h2"
+                size="2xl"
+                bgGradient="linear(to-r, teal.400, teal.600)"
+                backgroundClip="text"
+            >
+                404
             </Heading>
+            <Text fontSize="18px" mt={3} mb={2}>
+                Page Not Found
+            </Text>
+            <Text color={'gray.500'} mb={6}>
+                The page you&apos;re looking for does not seem to exist
+            </Text>
         </Box>
-    )
+    );
 }
+
+export default Auth;

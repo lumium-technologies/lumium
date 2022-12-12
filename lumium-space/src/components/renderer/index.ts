@@ -1,1 +1,0 @@
-export { LumiumRenderer } from './LumiumRenderer';

@@ -9,50 +9,51 @@ import {
     Button,
     Heading,
     useColorModeValue,
-    Alert,
-    AlertIcon,
-    AlertTitle,
-    Spacer,
-    Fade,
+    Text,
+    FormErrorMessage,
+    Image,
+    InputRightElement,
+    InputGroup
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
-import { useApi } from "@hooks/api";
-import Router, { useRouter } from 'next/router';
-import { useLoginStatus } from '@hooks/security';
-import { UserDTO, WorkspaceDTO } from "@types";
-import { SECURE_USER_GET } from '@routes/api/v1';
-import { AUTH_SIGNIN, SPACES_NEW } from '@routes/space';
+import { useApi } from '@hooks/api';
+import Router from 'next/router';
+import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_NEW } from '@routes/space';
+import Session from 'supertokens-auth-react/recipe/session';
+import { useUserInfo } from '@hooks/api';
+import { useRef } from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { AuthBox } from '@components/auth/AuthBox';
 
-export default function SignIn() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const SignIn: React.FC = () => {
+    const inputEmail = useRef<HTMLInputElement>(null);
+    const [emailError, setEmailError] = useState(false);
+    const inputPassword = useRef<HTMLInputElement>(null);
+    const [passwordError, setPasswordError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
-    const [recentWorkspace, setRecentWorkspace] = useState<WorkspaceDTO>();
-    const [loggedIn, setLoggedIn] = useState(false);
-    const router = useRouter()
-    const redirectionURL = router.query.redirectionURL + ""
-    useLoginStatus().then((val) => {
-        setLoggedIn(val);
-    });
+    const userInfo = useUserInfo();
+
     useEffect(() => {
-        if (loggedIn) {
-            api.get<UserDTO>(SECURE_USER_GET).then((res) => {
-                setRecentWorkspace(res.data.recentWorkspace);
-                if (recentWorkspace) {
-                    Router.push('/' + recentWorkspace.id);
+        Session.doesSessionExist().then((loggedIn) => {
+            if (loggedIn) {
+                if (userInfo?.recentWorkspace) {
+                    Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
                     Router.push(SPACES_NEW);
-                }
-            });
-        }
-    }, [loggedIn, api, recentWorkspace]);
-    const handleEnter = event => {
-        if (event.key == 'Enter') {
-            handleSignIn();
-        }
-    }
+                };
+            };
+        });
+    }, [userInfo?.recentWorkspace]);
+
     const handleSignIn = () => {
+        const email = inputEmail.current?.value;
+        const password = inputPassword.current?.value;
+
+        setEmailError(email == '');
+        setPasswordError(password == '');
+        setCredentialsMatchError(false);
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -65,93 +66,80 @@ export default function SignIn() {
                 }
             ]
         }).then((promise) => promise.data).then((status) => {
-            if (status.status == "OK" && !redirectionURL) {
-                api.get<UserDTO>(SECURE_USER_GET).then((res) => {
-                    setRecentWorkspace(res.data.recentWorkspace);
-                    if (recentWorkspace) {
-                        Router.push('/' + recentWorkspace.id);
-                    } else {
-                        Router.push(SPACES_NEW);
-                    }
-                });
+            if (status.status == "OK") {
+                if (userInfo?.recentWorkspace) {
+                    Router.push('/' + userInfo?.recentWorkspace.id);
+                } else {
+                    Router.push(SPACES_NEW);
+                };
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
-                setCredentialsMatchError(true);
-            } else {
-                Router.push(redirectionURL);
-            }
+                if (email != '' && password != '') {
+                    setCredentialsMatchError(true);
+                };
+            };
         });
     };
+
     return (
-        <Flex flexDir="column" minH={'100vh'}>
-            <Flex
-                minH={'93vh'}
-                align={'center'}
-                justify={'center'}
-                bg={useColorModeValue('gray.50', 'gray.800')}>
-                <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                    <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>Sign in to your account</Heading>
-                    </Stack>
-                    <Box
-                        rounded={'lg'}
-                        bg={useColorModeValue('white', 'gray.700')}
-                        boxShadow={'lg'}
-                        p={8}>
-                        <Stack spacing={4}>
-                            <FormControl id="email" isRequired>
-                                <FormLabel>Email address</FormLabel>
-                                <Input
-                                    type="email"
-                                    onChange={event => setEmail(event.currentTarget.value)}
-                                    onKeyPress={handleEnter}
-                                    data-cy="signInEmailInput"
-                                />
-                            </FormControl>
-                            <FormControl id="password" isRequired>
-                                <FormLabel>Password</FormLabel>
-                                <Input
-                                    type="password"
-                                    onChange={event => setPassword(event.currentTarget.value)}
-                                    onKeyPress={handleEnter}
-                                    data-cy="signInPasswordInput"
-                                />
-                            </FormControl>
-                            <Stack spacing={10}>
-                                <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}>
-                                    {/*<Checkbox>Remember me</Checkbox>*/}
-                                    <Spacer />
-                                    <Link color={'blue.400'} onClick={() => Router.push("/auth/reset-password")}>Forgot password?</Link>
-                                </Stack>
-                            </Stack>
-                            <Flex justifyContent="flex-end" mt="0">
-                                <Link color={'blue.400'} onClick={() => Router.push("/auth/signup")}>Create Account</Link>
-                            </Flex>
+        <AuthBox title="Sign in to your account">
+            <Stack spacing={4}>
+                <FormControl id="email" isRequired isInvalid={emailError || credentialsMatchError}>
+                    <FormLabel>Email address</FormLabel>
+                    <Input
+                        type="email"
+                        ref={inputEmail}
+                        onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                        data-cy="emailInput"
+                    />
+                    {emailError && (<FormErrorMessage data-cy="emailError">E-Mail is required.</FormErrorMessage>)}
+                </FormControl>
+                <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            ref={inputPassword}
+                            onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                            data-cy="passwordInput"
+                        />
+                        <InputRightElement h={'full'}>
                             <Button
-                                bg={'blue.400'}
-                                color={'white'}
-                                _hover={{
-                                    bg: 'blue.500',
-                                }}
-                                onClick={handleSignIn}
-                                data-cy="submitSignInButton"
-                            >
-                                Sign in
+                                variant={'ghost'}
+                                onClick={() =>
+                                    setShowPassword((showPassword) => !showPassword)
+                                }>
+                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                             </Button>
-                        </Stack>
-                    </Box>
-                </Stack>
-            </Flex >
-            <Fade in={credentialsMatchError}>
-                <Flex justifyContent="flex-end">
-                    <Alert status='error' width="20%" mr="1%" borderRadius="10px">
-                        <AlertIcon />
-                        <AlertTitle>Email or Password is incorrect</AlertTitle>
-                    </Alert>
+                        </InputRightElement>
+                    </InputGroup>
+                    {
+                        passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>) ||
+                        credentialsMatchError && <FormErrorMessage data-cy="credentialsMatchError">E-Mail or Password incorrect.</FormErrorMessage>
+                    }
+                </FormControl>
+                <Flex justifyContent="space-between" mt="0">
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
                 </Flex>
-            </Fade>
-        </Flex >
-    )
-}
+                <Button
+                    bg={'blue.400'}
+                    color={'white'}
+                    _hover={{
+                        bg: 'blue.500',
+                    }}
+                    onClick={handleSignIn}
+                    data-cy="signInButton"
+                >
+                    Sign in
+                </Button>
+                <Flex flexDir="column" alignItems={"center"}>
+                    <Text mb={"0"}>
+                        Create a new account?
+                    </Text>
+                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
+                </Flex>
+            </Stack>
+        </AuthBox>
+    );
+};
+
+export default SignIn;

@@ -5,6 +5,8 @@ extern crate web_sys;
 
 use js_sys::Uint8Array;
 use ring::aead::UnboundKey;
+use ring::digest;
+use ring::digest::digest;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -215,13 +217,19 @@ pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<J
     Ok(json)
 }
 
-#[wasm_bindgen]
-pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+fn crypt_key(key: &[u8], nonce: Uint8Array) -> (UnboundKey, INonceSequence) {
+    let digest = digest(&digest::SHA256, key);
+    let key = digest.as_ref();
     let mut nonce_buf = [0; NONCE_LEN];
     nonce.copy_to(&mut nonce_buf);
     let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut encryption_key =
-        SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    (UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence)
+}
+
+#[wasm_bindgen]
+pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
+    let (key, nonce) = crypt_key(key, nonce);
+    let mut encryption_key = SealingKey::new(key, nonce);
     encryption_key
         .seal_in_place_append_tag(Aad::empty(), &mut data)
         .unwrap();
@@ -230,11 +238,8 @@ pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8>
 
 #[wasm_bindgen]
 pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut decryption_key =
-        OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    let (key, nonce) = crypt_key(key, nonce);
+    let mut decryption_key = OpeningKey::new(key, nonce);
     let length = data.len() - AES_256_GCM.tag_len();
     decryption_key
         .open_in_place(Aad::empty(), &mut data)

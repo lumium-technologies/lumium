@@ -209,7 +209,7 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
     let origin = format!(
         "{}/{}",
         env!("RENDERER_API_HOST").to_string(),
-        "secure/workspace"
+        "v1/secure/workspace"
     );
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
 
@@ -217,6 +217,9 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     assert!(resp_value.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
+    if resp.status() != 200 {
+        return Err(JsValue::from("failed to create workspace"));
+    }
 
     let json = JsFuture::from(resp.json()?).await?;
 

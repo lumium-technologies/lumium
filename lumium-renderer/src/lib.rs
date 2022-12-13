@@ -5,6 +5,8 @@ extern crate web_sys;
 
 use js_sys::Uint8Array;
 use ring::aead::UnboundKey;
+use ring::digest;
+use ring::digest::digest;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -21,8 +23,14 @@ use ring::rand::{SecureRandom, SystemRandom};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
 
+#[wasm_bindgen(module = "/js/download.js")]
+extern "C" {
+    fn download(file: String, content: String);
+}
+
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
+const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -133,7 +141,7 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<JsValue, JsValue> {
+pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
     let sr = SystemRandom::new();
     let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
     sr.fill(&mut master_key).unwrap();
@@ -169,7 +177,7 @@ pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<J
         value_nonce: nonce_master_value.to_vec(),
         value: cipher_master_value,
     });
-    for recovery in recovery_codes {
+    for recovery in &recovery_codes {
         let nonce_recovery_activator = get_random_nonce();
         let cipher_recovery_activator = encrypt_data(
             recovery.as_bytes(),
@@ -212,16 +220,27 @@ pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<J
 
     let json = JsFuture::from(resp.json()?).await?;
 
+    download(
+        RECOVERY_CODES_FILE_NAME.to_string(),
+        recovery_codes.join("\n"),
+    );
+
     Ok(json)
+}
+
+fn crypt_key(key: &[u8], nonce: Uint8Array) -> (UnboundKey, INonceSequence) {
+    let digest = digest(&digest::SHA256, key);
+    let key = digest.as_ref();
+    let mut nonce_buf = [0; NONCE_LEN];
+    nonce.copy_to(&mut nonce_buf);
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
+    (UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence)
 }
 
 #[wasm_bindgen]
 pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut encryption_key =
-        SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    let (key, nonce) = crypt_key(key, nonce);
+    let mut encryption_key = SealingKey::new(key, nonce);
     encryption_key
         .seal_in_place_append_tag(Aad::empty(), &mut data)
         .unwrap();
@@ -230,11 +249,8 @@ pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8>
 
 #[wasm_bindgen]
 pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut decryption_key =
-        OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
+    let (key, nonce) = crypt_key(key, nonce);
+    let mut decryption_key = OpeningKey::new(key, nonce);
     let length = data.len() - AES_256_GCM.tag_len();
     decryption_key
         .open_in_place(Aad::empty(), &mut data)

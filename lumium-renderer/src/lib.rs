@@ -228,7 +228,7 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
     let window = web_sys::window().unwrap();
     let fetch = window.fetch_with_request(&request);
     let resp_value = JsFuture::from(fetch).await?;
-    assert!(resp_value?.is_instance_of::<Response>());
+    assert!(resp_value.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
     if resp.status() != 200 {
         return Err(JsValue::from("failed to create workspace"));

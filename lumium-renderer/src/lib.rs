@@ -23,6 +23,11 @@ use ring::rand::{SecureRandom, SystemRandom};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
 
+#[wasm_bindgen(module = "/js/download.js")]
+extern "C" {
+    fn download(file: String, content: String);
+}
+
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
 const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
@@ -215,10 +220,10 @@ pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
 
     let json = JsFuture::from(resp.json()?).await?;
 
-    let file = web_sys::File::new_with_buffer_source_sequence(
-        &JsValue::from(recovery_codes.join("\n")),
-        RECOVERY_CODES_FILE_NAME,
-    )?;
+    download(
+        RECOVERY_CODES_FILE_NAME.to_string(),
+        recovery_codes.join("\n"),
+    );
 
     Ok(json)
 }

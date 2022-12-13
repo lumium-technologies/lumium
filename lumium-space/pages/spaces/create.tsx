@@ -16,7 +16,8 @@ import {
 import { useToast } from '@chakra-ui/react';
 import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { create_workspace } from 'lumium-renderer/pkg/lumium_renderer_bg.wasm';
+import { create_workspace } from 'lumium-renderer';
+import { Formik, Field } from 'formik';
 
 const MultistepForm: React.FC = () => {
     const inputSpaceName = useRef<HTMLInputElement>(null);
@@ -72,114 +73,131 @@ const MultistepForm: React.FC = () => {
                     mb="5%"
                     mx="5%"
                     isAnimated />
-                {
-                    step === 1 && (
+                <Formik
+                    initialValues={{
+                        name: "",
+                        password: "",
+                        verifyPassword: "",
+                    }}
+                    onSubmit={(values) => {
+                        alert(JSON.stringify(values, null, 2));
+                    }}
+                >
+                    {({ handleSubmit, errors, touched }) => (
                         <>
-                            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                Space Creation
-                            </Heading>
-                            <FormControl isRequired isInvalid={spaceNameError}>
-                                <FormLabel fontWeight={'normal'}>
-                                    Your Space Name
-                                </FormLabel>
-                                <Input
-                                    type='text'
-                                    ref={inputSpaceName}
-                                    onKeyPress={handleEnter}
-                                />
-                                {spaceNameError && (<FormErrorMessage>Space name is required.</FormErrorMessage>)}
-                            </FormControl>
-                            <FormControl isRequired isInvalid={passwordError || passwordMatchError}>
-                                <FormLabel>Password</FormLabel>
-                                <InputGroup>
-                                    <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        ref={inputPassword}
-                                        onKeyPress={handleEnter}
-                                    />
-                                    <InputRightElement h={'full'}>
+                            <>
+                                {step === 1 && (
+                                    <>
+                                        <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                            Space Creation
+                                        </Heading>
+                                        <FormControl isRequired isInvalid={spaceNameError}>
+                                            <FormLabel fontWeight={'normal'}>
+                                                Your Space Name
+                                            </FormLabel>
+                                            <Input
+                                                type='text'
+                                                ref={inputSpaceName}
+                                                onKeyPress={handleEnter}
+                                            />
+                                            {spaceNameError && (<FormErrorMessage>Space name is required.</FormErrorMessage>)}
+                                        </FormControl>
+                                        <FormControl isRequired isInvalid={passwordError || passwordMatchError}>
+                                            <FormLabel>Password</FormLabel>
+                                            <InputGroup>
+                                                <Input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    ref={inputPassword}
+                                                    onKeyPress={handleEnter}
+                                                />
+                                                <InputRightElement h={'full'}>
+                                                    <Button
+                                                        variant={'ghost'}
+                                                        onClick={() =>
+                                                            setShowPassword((showPassword) => !showPassword)
+                                                        }>
+                                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                    </Button>
+                                                </InputRightElement>
+                                            </InputGroup>
+                                            {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
+                                        </FormControl>
+                                        <FormControl isRequired isInvalid={passwordMatchError}>
+                                            <FormLabel>Repeat Password</FormLabel>
+                                            <Input
+                                                type={'password'}
+                                                ref={inputPasswordVerify}
+                                                onKeyPress={handleEnter}
+                                            />
+                                            {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
+                                        </FormControl>
+                                    </>
+                                ) ||
+                                    step === 2 && (
+                                        <>
+                                            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                                Download Recovery Keys
+                                            </Heading>
+                                            <Text w="100%" textAlign={'center'}>
+                                                Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
+                                            </Text>
+                                            <Flex w="100%" justifyContent="center">
+                                                <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys}>Download Keys</Button>
+                                            </Flex>
+                                        </>
+                                    )
+                                }
+                            </>
+                            <ButtonGroup w="100%" mt="auto">
+                                <Flex w="100%" justifyContent="space-between">
+                                    <Flex>
                                         <Button
-                                            variant={'ghost'}
-                                            onClick={() =>
-                                                setShowPassword((showPassword) => !showPassword)
-                                            }>
-                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                            onClick={() => {
+                                                setStep(step - 1);
+                                                setProgress(progress - 50);
+                                            }}
+                                            isDisabled={step === 1}
+                                            colorScheme="teal"
+                                            variant="solid"
+                                            w="7rem"
+                                            mr="5%">
+                                            Back
                                         </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                                {passwordError && (<FormErrorMessage>Password is required.</FormErrorMessage>)}
-                            </FormControl>
-                            <FormControl isRequired isInvalid={passwordMatchError}>
-                                <FormLabel>Repeat Password</FormLabel>
-                                <Input
-                                    type={'password'}
-                                    ref={inputPasswordVerify}
-                                    onKeyPress={handleEnter}
-                                />
-                                {passwordMatchError && (<FormErrorMessage>Password do not match.</FormErrorMessage>)}
-                            </FormControl>
-                        </>
-                    ) ||
-                    step === 2 && (
-                        <>
-                            <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                Download Recovery Keys
-                            </Heading>
-                            <Text w="100%" textAlign={'center'}>
-                                Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
-                            </Text>
-                            <Flex w="100%" justifyContent="center">
-                                <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys}>Download Keys</Button>
-                            </Flex>
+                                        <Button
+                                            w="7rem"
+                                            isDisabled={step === 2}
+                                            onClick={() => nextStep()}
+                                            colorScheme="teal"
+                                            variant="outline">
+                                            Next
+                                        </Button>
+                                    </Flex>
+                                    {
+                                        downloadedKeys && (
+                                            <Button
+                                                w="7rem"
+                                                colorScheme="red"
+                                                variant="solid"
+                                                onClick={() => {
+                                                    toast({
+                                                        title: 'Space created.',
+                                                        description: "We've created your private space.",
+                                                        status: 'success',
+                                                        duration: 3000,
+                                                        isClosable: true,
+                                                    });
+                                                }}>
+                                                Submit
+                                            </Button>
+                                        )
+                                    }
+                                </Flex>
+                            </ButtonGroup>
                         </>
                     )}
-                <ButtonGroup w="100%" mt="auto">
-                    <Flex w="100%" justifyContent="space-between">
-                        <Flex>
-                            <Button
-                                onClick={() => {
-                                    setStep(step - 1);
-                                    setProgress(progress - 50);
-                                }}
-                                isDisabled={step === 1}
-                                colorScheme="teal"
-                                variant="solid"
-                                w="7rem"
-                                mr="5%">
-                                Back
-                            </Button>
-                            <Button
-                                w="7rem"
-                                isDisabled={step === 2}
-                                onClick={() => nextStep()}
-                                colorScheme="teal"
-                                variant="outline">
-                                Next
-                            </Button>
-                        </Flex>
-                        {
-                            downloadedKeys && (
-                                <Button
-                                    w="7rem"
-                                    colorScheme="red"
-                                    variant="solid"
-                                    onClick={() => {
-                                        toast({
-                                            title: 'Space created.',
-                                            description: "We've created your private space.",
-                                            status: 'success',
-                                            duration: 3000,
-                                            isClosable: true,
-                                        });
-                                    }}>
-                                    Submit
-                                </Button>
-                            )
-                        }
-                    </Flex>
-                </ButtonGroup>
+                </Formik>
             </Flex>
-        </Authenticator>
+        </Authenticator >
     );
 };
 

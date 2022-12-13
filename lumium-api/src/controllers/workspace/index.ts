@@ -94,7 +94,7 @@ export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: expre
         error({ user: { id: (req as unknown as SessionRequest).session!.getUserId() }, detail: 'Attempted to patch workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_PATCH_ATTEMPT });
         res.status(401).send();
     }
-    const updated = await dataSource.getRepository(Workspace).save({...workspace, ...req.body});
+    const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
     res.status(200).send(updated);
 };
 
@@ -116,6 +116,6 @@ export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: expres
         error({ user: { id: (req as unknown as SessionRequest).session!.getUserId() }, detail: 'Attempted to post workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_POST_ATTEMPT });
         res.status(401).send();
     }
-    const updated = await dataSource.getRepository(Workspace).save({...workspace, ...req.body});
+    const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
     res.status(200).send(updated);
 };

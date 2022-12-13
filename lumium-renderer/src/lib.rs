@@ -141,7 +141,7 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
+pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
     let sr = SystemRandom::new();
     let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
     sr.fill(&mut master_key).unwrap();
@@ -149,13 +149,13 @@ pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
     sr.fill(&mut activator_key).unwrap();
     let nonce_master_activator = get_random_nonce();
     let cipher_master_activator = encrypt_data(
-        password.as_string().unwrap().as_bytes(),
+        password.as_bytes(),
         nonce_master_activator.clone(),
         activator_key.to_vec(),
     );
     let nonce_master_value = get_random_nonce();
     let cipher_master_value = encrypt_data(
-        password.as_string().unwrap().as_bytes(),
+        password.as_bytes(),
         nonce_master_value.clone(),
         master_key.to_vec(),
     );
@@ -209,7 +209,7 @@ pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
     let origin = format!(
         "{}/{}",
         env!("RENDERER_API_HOST").to_string(),
-        "secure/workspace"
+        "v1/secure/workspace"
     );
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
 
@@ -217,6 +217,9 @@ pub async fn create_workspace(password: JsValue) -> Result<JsValue, JsValue> {
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     assert!(resp_value.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
+    if resp.status() != 200 {
+        return Err(JsValue::from("failed to create workspace"));
+    }
 
     let json = JsFuture::from(resp.json()?).await?;
 

@@ -46,17 +46,24 @@ fn render_markdown(page: Option<JsValue>) -> String {
 }
 
 #[derive(Serialize)]
-struct KeyVariantCreateDTO {
-    activator: Vec<u8>,
-    activator_nonce: Vec<u8>,
-    value: Vec<u8>,
-    value_nonce: Vec<u8>,
+#[serde(rename_all = "camelCase")]
+pub struct KeyVariantCreateDTO {
+    #[serde(with = "base64")]
+    pub activator: Vec<u8>,
+    #[serde(with = "base64")]
+    pub activator_nonce: Vec<u8>,
+    #[serde(with = "base64")]
+    pub value: Vec<u8>,
+    #[serde(with = "base64")]
+    pub value_nonce: Vec<u8>,
 }
 
 #[derive(Serialize)]
-struct KeyCreateDTO {
-    keys: Vec<KeyVariantCreateDTO>,
-    activator: Vec<u8>,
+#[serde(rename_all = "camelCase")]
+pub struct KeyCreateDTO {
+    pub keys: Vec<KeyVariantCreateDTO>,
+    #[serde(with = "base64")]
+    pub activator: Vec<u8>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -207,7 +214,8 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
     let mut opts = RequestInit::new();
     opts.method("PUT");
     opts.mode(RequestMode::Cors);
-    opts.body(JsValue::from_serde(&key_create_dto).ok().as_ref());
+    let body = serde_json::ser::to_string(&key_create_dto).unwrap();
+    opts.body(Some(&JsValue::from(body)));
 
     let origin = format!(
         "{}/{}",
@@ -215,10 +223,12 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
         "v1/secure/workspace"
     );
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
+    request.headers().set("Content-Type", "application/json")?;
 
     let window = web_sys::window().unwrap();
-    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
-    assert!(resp_value.is_instance_of::<Response>());
+    let fetch = window.fetch_with_request(&request);
+    let resp_value = JsFuture::from(fetch).await?;
+    assert!(resp_value?.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
     if resp.status() != 200 {
         return Err(JsValue::from("failed to create workspace"));
@@ -285,4 +295,20 @@ pub fn get_random_nonce() -> Uint8Array {
     let array = Uint8Array::new_with_length(NONCE_LEN as u32);
     array.copy_from(&raw_nonce);
     array
+}
+
+mod base64 {
+    use serde::{Deserialize, Serialize};
+    use serde::{Deserializer, Serializer};
+
+    pub fn serialize<S: Serializer>(v: &Vec<u8>, s: S) -> Result<S::Ok, S::Error> {
+        let base64 = base64::encode(v);
+        String::serialize(&base64, s)
+    }
+
+    #[allow(unused)]
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
+        let base64 = String::deserialize(d)?;
+        base64::decode(base64.as_bytes()).map_err(|e| serde::de::Error::custom(e))
+    }
 }

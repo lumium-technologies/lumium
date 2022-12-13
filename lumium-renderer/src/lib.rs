@@ -10,6 +10,7 @@ use ring::digest::digest;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
+use web_sys::console;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
@@ -30,6 +31,8 @@ extern "C" {
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
+const RECOVERY_CODE_LENGTH: usize = 24;
+const NUM_RECOVERY_CODES: usize = 16;
 const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
 fn render_markdown(page: Option<JsValue>) -> String {
@@ -160,16 +163,16 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
         master_key.to_vec(),
     );
     let pg = PasswordGenerator {
-        length: 8,
+        length: RECOVERY_CODE_LENGTH,
         numbers: true,
         lowercase_letters: true,
         uppercase_letters: true,
-        symbols: true,
-        spaces: true,
+        symbols: false,
+        spaces: false,
         exclude_similar_characters: false,
         strict: true,
     };
-    let recovery_codes = pg.generate(10).unwrap();
+    let recovery_codes = pg.generate(NUM_RECOVERY_CODES).unwrap();
     let mut variants = Vec::<KeyVariantCreateDTO>::new();
     variants.push(KeyVariantCreateDTO {
         activator_nonce: nonce_master_activator.to_vec(),
@@ -177,6 +180,7 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
         value_nonce: nonce_master_value.to_vec(),
         value: cipher_master_value,
     });
+    console::log_1(&JsValue::from(recovery_codes.join("\n")));
     for recovery in &recovery_codes {
         let nonce_recovery_activator = get_random_nonce();
         let cipher_recovery_activator = encrypt_data(

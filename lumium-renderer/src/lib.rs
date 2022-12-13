@@ -180,7 +180,6 @@ pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
         value_nonce: nonce_master_value.to_vec(),
         value: cipher_master_value,
     });
-    console::log_1(&JsValue::from(recovery_codes.join("\n")));
     for recovery in &recovery_codes {
         let nonce_recovery_activator = get_random_nonce();
         let cipher_recovery_activator = encrypt_data(
@@ -279,7 +278,6 @@ impl NonceSequence for INonceSequence {
     }
 }
 
-#[wasm_bindgen]
 pub fn get_random_nonce() -> Uint8Array {
     let rand_gen = SystemRandom::new();
     let mut raw_nonce = [0u8; NONCE_LEN];

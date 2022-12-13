@@ -15,6 +15,9 @@
             "url": "heroku-community/cli"
         },
         {
+            "url": "https://github.com/chrismytton/heroku-buildpack-jq.git"
+        },
+        {
             "url": "heroku/nodejs"
         },
         {

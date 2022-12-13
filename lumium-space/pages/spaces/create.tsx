@@ -16,10 +16,11 @@ import {
 import { useToast } from '@chakra-ui/react';
 import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { create_workspace } from 'lumium-renderer/pkg/lumium_renderer_bg.wasm';
 
 const MultistepForm: React.FC = () => {
     const inputSpaceName = useRef<HTMLInputElement>(null);
-    const [spaceNameError, setspaceNameError] = useState(false);
+    const [spaceNameError, setSpaceNameError] = useState(false);
     const inputPassword = useRef<HTMLInputElement>(null);
     const [passwordError, setPasswordError] = useState(false);
     const inputPasswordVerify = useRef<HTMLInputElement>(null);
@@ -32,14 +33,25 @@ const MultistepForm: React.FC = () => {
     const handleDownloadKeys = () => {
         setDownloadedKeys(true);
     };
-    const handleEnter = (event) => {
-        if (event.key == "Enter") {
+    const nextStep = () => {
+        const spaceName = inputSpaceName.current?.value;
+        const password = inputPassword.current?.value;
+        const passwordVerify = inputPasswordVerify.current?.value;
+        setSpaceNameError(spaceName == '');
+        setPasswordError(password == '');
+        setPasswordMatchError(password != passwordVerify);
+        if (spaceName != '' && password != '' && password == passwordVerify) {
             setStep(step + 1);
             if (step === 2) {
                 setProgress(100);
             } else {
                 setProgress(progress + 50);
             };
+        }
+    }
+    const handleEnter = (event) => {
+        if (event.key == "Enter") {
+            nextStep();
         };
     };
     return (
@@ -64,19 +76,20 @@ const MultistepForm: React.FC = () => {
                     step === 1 && (
                         <>
                             <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                Private Space Creation
+                                Space Creation
                             </Heading>
                             <FormControl isRequired isInvalid={spaceNameError}>
                                 <FormLabel fontWeight={'normal'}>
-                                    Your Private Space Name
+                                    Your Space Name
                                 </FormLabel>
                                 <Input
                                     type='text'
                                     ref={inputSpaceName}
                                     onKeyPress={handleEnter}
                                 />
+                                {spaceNameError && (<FormErrorMessage>Space name is required.</FormErrorMessage>)}
                             </FormControl>
-                            <FormControl isRequired isInvalid={passwordError}>
+                            <FormControl isRequired isInvalid={passwordError || passwordMatchError}>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
                                     <Input
@@ -138,14 +151,7 @@ const MultistepForm: React.FC = () => {
                             <Button
                                 w="7rem"
                                 isDisabled={step === 2}
-                                onClick={() => {
-                                    setStep(step + 1);
-                                    if (step === 2) {
-                                        setProgress(100);
-                                    } else {
-                                        setProgress(progress + 50);
-                                    }
-                                }}
+                                onClick={() => nextStep()}
                                 colorScheme="teal"
                                 variant="outline">
                                 Next

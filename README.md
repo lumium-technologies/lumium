@@ -14,6 +14,8 @@ next level docs - the end-to-end secure, shared productivity platform
 - clang
 - [rustup](https://rustup.rs/)
 - [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
+- chromium/chrome/chromedriver (optional)
+
 ## local database setup
 setup and start postgres, then create the necessary databases by logging into `psql` as a privileged user:
 
@@ -34,6 +36,7 @@ yarn start # to start the production servers
 ```bash
 yarn test # run all test suites headless
 (cd lumium-api && yarn test) # run backend unit tests
+(cd lumium-renderer && wasm-pack test --chrome --headless) # run wasm browser tests
 (cd lumium-space && yarn run cypress:test) # run cypress integration tests headless
 (cd lumium-space && yarn run cypress:open) # run cypress integration tests headed
 ```

@@ -26,7 +26,7 @@ Cypress.Commands.add("signUp", () => {
     password = makeid(50);
     cy.dataCy("emailInput").should("be.visible").type(email);
     cy.dataCy("passwordInput").should("be.visible").type(password);
-    cy.dataCy("passwordVerifyInput").should("be.visible").type(password);
+    cy.dataCy("passwordConfirmInput").should("be.visible").type(password);
     cy.dataCy("signUpButton").should("be.visible").click();
     cy.url().should('include', SPACES_NEW);
 });

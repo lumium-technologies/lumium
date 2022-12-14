@@ -90,6 +90,7 @@ export { sec } from './secure';
  * @property {array<UserDTO>} visitors - The visitors of this workspace
  * @property {array<PageDTO>} pages - The pages of this workspace
  * @property {array<WorkspacePreferenceDTO>} preferences - The preferences of this workspace
+ * @property {E2EKeyDTO} key - The end-to-end key associated with this workspace
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp
  * @property {string} deletedAt - The object delete timestamp
@@ -134,6 +135,34 @@ export { sec } from './secure';
  * @property {string} deletedAt - The object delete timestamp
  * @property {number} version - The object version number
  */
+
+/**
+ * @typedef {object} E2EKeyDTO
+ * @property {string} id - The uuid
+ * @property {WorkspaceDTO} workspace - The workspace associated with this key
+ * @property {array<E2EKeyVariantDTO>} keys - The key variants to associate with this key
+ * @property {string} activator - A plain-text string to match against decrypted values of key variants in order to be able to figure out which key is decryptable with the user-provided password
+ * @property {string} createdAt - The object creation timestamp
+ * @property {string} updatedAt - The object update timestamp
+ * @property {string} deletedAt - The object delete timestamp
+ * @property {number} version - The object version number
+ *
+ */
+
+/**
+ * @typedef {object} E2EKeyVariantDTO
+ * @property {string} id - The uuid
+ * @property {string} activator - The encrypted activator string of the key
+ * @property {string} activatorNonce - The nonce with which the activator string was encrypted
+ * @property {string} value - The encrypted value string of the key
+ * @property {string} valueNonce - The nonce with which the value string was encrypted
+ * @property {boolean} active - Signifies whether the variant is still active
+ * @property {string} createdAt - The object creation timestamp
+ * @property {string} updatedAt - The object update timestamp
+ * @property {string} deletedAt - The object delete timestamp
+ * @property {number} version - The object version number
+ */
+
 
 /**
  * @typedef {object} E2EKeyCreateDTO

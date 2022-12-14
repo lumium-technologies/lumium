@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
+import { ContentElementDTO } from "../../types";
 import { AbstractEntity } from "./AbstractEntity";
 import { PageContent } from "./PageContent";
 
@@ -21,3 +22,17 @@ export class ContentElement extends AbstractEntity {
     })
     type: ContentType
 }
+
+export const mapToContentElementDTO = (entity: ContentElement) => {
+    let dto: ContentElementDTO = {
+        content: entity.content,
+        pageContents: entity.pageContents?.map(t => t.id),
+        type: entity.type,
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
+    };
+    return dto;
+};

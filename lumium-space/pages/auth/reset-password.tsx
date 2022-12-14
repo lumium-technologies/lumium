@@ -16,27 +16,8 @@ const ResetPassword: React.FC = () => {
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
-    const formikEmail = useFormik({
-        initialValues: {
-            email: "",
-        },
-        onSubmit: () => {
-            handleResetPassword();
-        },
-        validateOnChange: (false),
-    });
-    const formikPassword = useFormik({
-        initialValues: {
-            password: "",
-            passwordConfirm: "",
-        },
-        onSubmit: () => {
-            handleChangePassword();
-        },
-        validateOnChange: (false),
-    });
     const handleResetPassword = () => {
-        const email = formikEmail.values.email;
+        const email = formik.values.email;
         const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
         emailExists.then(value => {
             if (value) {
@@ -51,13 +32,13 @@ const ResetPassword: React.FC = () => {
                 setEmailSent(true);
             } else {
                 setEmailExistsError(true);
-                formikEmail.errors.email = "Email does not exist";
+                formik.errors.email = "Email doesn't exist";
             };
         });
     };
     const handleChangePassword = () => {
-        const password = formikPassword.values.password;
-        const passwordVerify = formikPassword.values.passwordConfirm;
+        const password = formik.values.password;
+        const passwordVerify = formik.values.passwordConfirm;
         if (password == passwordVerify) {
             api.post(PASSWORD_RESET, {
                 "method": "token",
@@ -71,9 +52,36 @@ const ResetPassword: React.FC = () => {
             }).then(() => Router.push(AUTH_SIGNIN));
         } else {
             setPasswordMatchError(true);
-            formikPassword.errors.passwordConfirm = "Passwords don't match."
+            formik.errors.passwordConfirm = "Passwords don't match."
         }
     };
+    const handleResendEmail = () => {
+        const email = formik.values.email;
+        api.post(PASSWORD_RESET_TOKEN, {
+            "formFields": [
+                {
+                    "id": "email",
+                    "value": email
+                }
+            ]
+        });
+        setEmailResent(true);
+    };
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            passwordConfirm: "",
+        },
+        onSubmit: () => {
+            if (!!formik.values.email) {
+                handleResetPassword();
+            } else {
+                handleChangePassword();
+            }
+        },
+        validateOnChange: (false),
+    });
     const resetPasswordEmail = (
         <AuthBox title="Forgot your password">
             <Stack spacing={4}>
@@ -82,17 +90,17 @@ const ResetPassword: React.FC = () => {
                     color={useColorModeValue('gray.800', 'gray.400')}>
                     You&apos;ll receive an email with a reset link
                 </Text>
-                <form onSubmit={formikEmail.handleSubmit}>
+                <form onSubmit={formik.handleSubmit}>
                     <FormControl id="email" isRequired isInvalid={emailExistsError}>
                         <FormLabel>Email address</FormLabel>
                         <Input
                             name={"email"}
                             type={"email"}
-                            onChange={formikEmail.handleChange}
-                            value={formikEmail.values.email}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
                             data-cy="emailInput"
                         />
-                        <FormErrorMessage data-cy="emailError">{formikEmail.errors.email}</FormErrorMessage>
+                        <FormErrorMessage data-cy="emailError">{formik.errors.email}</FormErrorMessage>
                     </FormControl>
                     <Button
                         bg={'blue.400'}
@@ -113,48 +121,36 @@ const ResetPassword: React.FC = () => {
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {!emailResent &&
-                <Heading as="h2" size="xl" mt={6} mb={2}>
-                    Check your Email
-                </Heading>
+                <>
+                    <Heading as="h2" size="xl" mt={6} mb={2}>
+                        Check your Email
+                    </Heading>
+                    <Text color={'gray.500'}>
+                        Check your inbox to reset your password
+                    </Text>
+                    <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
+                        Resend E-Mail
+                    </Button>
+                </>
                 ||
                 <Heading as="h2" size="xl" mt={6} mb={2} data-cy="resendHeader">
                     E-Mail has been resent
                 </Heading>
             }
-            <Text color={'gray.500'}>
-                Check your inbox to reset your password
-            </Text>
-            {!emailResent &&
-                <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
-                    Resend E-Mail
-                </Button>
-            }
         </Box>
     );
-    const handleResendEmail = () => {
-        const email = formikEmail.values.email;
-        api.post(PASSWORD_RESET_TOKEN, {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                }
-            ]
-        });
-        setEmailResent(true);
-    };
     const changePassword = (
         <AuthBox title="Enter new password">
             <Stack spacing={4}>
-                <form onSubmit={formikPassword.handleSubmit}>
+                <form onSubmit={formik.handleSubmit}>
                     <FormControl id="password" isRequired >
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
                             <Input
                                 name={"password"}
                                 type={showPassword ? 'text' : 'password'}
-                                onChange={formikPassword.handleChange}
-                                value={formikPassword.values.password}
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
                                 data-cy="passwordInput"
                             />
                             <InputRightElement h={'full'}>
@@ -173,11 +169,11 @@ const ResetPassword: React.FC = () => {
                         <Input
                             name={"passwordConfirm"}
                             type={'password'}
-                            onChange={formikPassword.handleChange}
-                            value={formikPassword.values.passwordConfirm}
+                            onChange={formik.handleChange}
+                            value={formik.values.passwordConfirm}
                             data-cy="passwordConfirmInput"
                         />
-                        <FormErrorMessage>{formikPassword.errors.passwordConfirm}</FormErrorMessage>
+                        <FormErrorMessage>{formik.errors.passwordConfirm}</FormErrorMessage>
                     </FormControl>
                     <Stack spacing={6}>
                         <Button

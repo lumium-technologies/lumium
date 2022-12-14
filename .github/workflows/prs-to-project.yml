@@ -1,0 +1,16 @@
+name: Add lumium PRs to lumium project
+
+on:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  add-to-project:
+    name: Add PR to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.4.0
+        with:
+          project-url: https://github.com/d3psi/projects/6
+          github-token: ${{ secrets.BOT_TOKEN }}

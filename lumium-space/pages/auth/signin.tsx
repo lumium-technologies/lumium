@@ -24,12 +24,19 @@ import { useUserInfo } from '@hooks/api';
 import { useRef } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox } from '@components/auth/AuthBox';
+import { useFormik } from 'formik';
 
 const SignIn: React.FC = () => {
-    const inputEmail = useRef<HTMLInputElement>(null);
-    const [emailError, setEmailError] = useState(false);
-    const inputPassword = useRef<HTMLInputElement>(null);
-    const [passwordError, setPasswordError] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+        },
+        onSubmit: () => {
+            handleSignIn();
+        },
+        validateOnChange: (false),
+    });
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
@@ -48,12 +55,8 @@ const SignIn: React.FC = () => {
     }, [userInfo?.recentWorkspace]);
 
     const handleSignIn = () => {
-        const email = inputEmail.current?.value;
-        const password = inputPassword.current?.value;
-
-        setEmailError(email == '');
-        setPasswordError(password == '');
-        setCredentialsMatchError(false);
+        const email = formik.values.email;
+        const password = formik.values.password;
         api.post(AUTH_SIGNIN, {
             "formFields": [
                 {
@@ -73,72 +76,73 @@ const SignIn: React.FC = () => {
                     Router.push(SPACES_NEW);
                 };
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
-                if (email != '' && password != '') {
-                    setCredentialsMatchError(true);
-                };
+                setCredentialsMatchError(true);
+                formik.errors.password = "Wrong credentials."
             };
         });
     };
 
     return (
         <AuthBox title="Sign in to your account">
-            <Stack spacing={4}>
-                <FormControl id="email" isRequired isInvalid={emailError || credentialsMatchError}>
-                    <FormLabel>Email address</FormLabel>
-                    <Input
-                        type="email"
-                        ref={inputEmail}
-                        onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                        data-cy="emailInput"
-                    />
-                    {emailError && (<FormErrorMessage data-cy="emailError">E-Mail is required.</FormErrorMessage>)}
-                </FormControl>
-                <FormControl id="password" isRequired isInvalid={passwordError || credentialsMatchError}>
-                    <FormLabel>Password</FormLabel>
-                    <InputGroup>
+            <form onSubmit={formik.handleSubmit}>
+                <Stack spacing={4}>
+                    <FormControl id="email" isRequired isInvalid={credentialsMatchError}>
+                        <FormLabel>Email address</FormLabel>
                         <Input
-                            type={showPassword ? 'text' : 'password'}
-                            ref={inputPassword}
+                            name={"email"}
+                            type={"email"}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
                             onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
-                            data-cy="passwordInput"
+                            data-cy="emailInput"
                         />
-                        <InputRightElement h={'full'}>
-                            <Button
-                                variant={'ghost'}
-                                onClick={() =>
-                                    setShowPassword((showPassword) => !showPassword)
-                                }>
-                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                            </Button>
-                        </InputRightElement>
-                    </InputGroup>
-                    {
-                        passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>) ||
-                        credentialsMatchError && <FormErrorMessage data-cy="credentialsMatchError">E-Mail or Password incorrect.</FormErrorMessage>
-                    }
-                </FormControl>
-                <Flex justifyContent="space-between" mt="0">
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
-                </Flex>
-                <Button
-                    bg={'blue.400'}
-                    color={'white'}
-                    _hover={{
-                        bg: 'blue.500',
-                    }}
-                    onClick={handleSignIn}
-                    data-cy="signInButton"
-                >
-                    Sign in
-                </Button>
-                <Flex flexDir="column" alignItems={"center"}>
-                    <Text mb={"0"}>
-                        Create a new account?
-                    </Text>
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
-                </Flex>
-            </Stack>
-        </AuthBox>
+                    </FormControl>
+                    <FormControl id="password" isRequired isInvalid={credentialsMatchError}>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
+                                onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
+                                data-cy="passwordInput"
+                            />
+                            <InputRightElement h={'full'}>
+                                <Button
+                                    variant={'ghost'}
+                                    onClick={() =>
+                                        setShowPassword((showPassword) => !showPassword)
+                                    }>
+                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                        <FormErrorMessage data-cy="passwordError">{formik.errors.password}</FormErrorMessage>
+                    </FormControl>
+                    <Flex justifyContent="space-between" mt="0">
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
+                    </Flex>
+                    <Button
+                        bg={'blue.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'blue.500',
+                        }}
+                        type="submit"
+                        data-cy="signInButton"
+                    >
+                        Sign in
+                    </Button>
+
+                    <Flex flexDir="column" alignItems={"center"}>
+                        <Text mb={"0"}>
+                            Create a new account?
+                        </Text>
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
+                    </Flex>
+                </Stack>
+            </form>
+        </AuthBox >
     );
 };
 

@@ -9,3 +9,16 @@ body {
 body::-webkit-scrollbar {
   display: none;
 }
+
+
+/* TODO: Use Tailwind */
+#tsparticles {
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+}

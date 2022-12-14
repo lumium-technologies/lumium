@@ -1,14 +1,14 @@
 import { SessionRequest } from "supertokens-node/framework/express";
 import express from 'express';
 import { dataSource, error } from "../../data-source";
-import { Workspace } from "../../entity/Workspace";
+import { mapToWorkspaceDTO, Workspace } from "../../entity/Workspace";
 import { E2EKey } from "../../entity/E2EKey";
-import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceUpdateDTO } from '../../../types';
+import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceDTO, WorkspaceUpdateDTO } from '../../../types';
 import { E2EKeyVariant } from "../../entity/E2EKeyVariant";
 import { User } from "../../entity/User";
 import { AuditEntryEvent } from "../../entity/Audit";
 
-export const info = async (req: SessionRequest, res: express.Response<Workspace>) => {
+export const info = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
         where: {
             id: req.params.workspaceId
@@ -30,14 +30,16 @@ export const info = async (req: SessionRequest, res: express.Response<Workspace>
     if (workspace.owner.id != userId && !workspace.admins.map((t) => t.id).includes(userId) && !workspace.members.map((t) => t.id).includes(userId) && !workspace.visitors.map((t) => t.id).includes(userId)) {
         res.status(401).send();
     }
-    res.status(200).send(workspace);
+    res.status(200).send(mapToWorkspaceDTO(workspace));
 };
 
-export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express.Response<Workspace>) => {
+export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express.Response<WorkspaceDTO>) => {
     const workspace = new Workspace();
     const user = await dataSource.getRepository(User).findOne({ where: { id: (req as unknown as SessionRequest).session!.getUserId() } });
     workspace.owner = user;
     const newWorkspace = await dataSource.getRepository(Workspace).save(workspace);
+    user.recentWorkspace = newWorkspace;
+    await dataSource.getRepository(User).save(user);
     const key = new E2EKey();
     key.activator = req.body.activator;
     key.workspace = newWorkspace;
@@ -52,10 +54,10 @@ export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express
         return variant;
     });
     await dataSource.getRepository(E2EKeyVariant).save(keys);
-    res.status(200).send(savedKey.workspace);
+    res.status(200).send(mapToWorkspaceDTO(savedKey.workspace));
 };
 
-export const remove = async (req: SessionRequest, res: express.Response) => {
+export const remove = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
         relations: {
             owner: true
@@ -72,10 +74,10 @@ export const remove = async (req: SessionRequest, res: express.Response) => {
         res.status(401).send();
     }
     await dataSource.getRepository(Workspace).delete({ id: req.params.workspaceId });
-    res.status(200).send(workspace);
+    res.status(200).send(mapToWorkspaceDTO(workspace));
 };
 
-export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response) => {
+export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response<WorkspaceDTO>) => {
     // TODO: make this a true patch implementation
     const workspace = await dataSource.getRepository(Workspace).findOne({
         relations: {
@@ -95,10 +97,10 @@ export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: expre
         res.status(401).send();
     }
     const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
-    res.status(200).send(updated);
+    res.status(200).send(mapToWorkspaceDTO(updated));
 };
 
-export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response) => {
+export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
         relations: {
             owner: true,
@@ -117,5 +119,5 @@ export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: expres
         res.status(401).send();
     }
     const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
-    res.status(200).send(updated);
+    res.status(200).send(mapToWorkspaceDTO(updated));
 };

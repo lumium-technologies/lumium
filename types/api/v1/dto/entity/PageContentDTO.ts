@@ -3,6 +3,6 @@ import { ContentElementDTO } from "./ContentElementDTO";
 
 export interface PageContentDTO extends AbstractEntityDTO {
     pageId: string;
-    position: 0;
+    position: number;
     contentElement: ContentElementDTO;
 }

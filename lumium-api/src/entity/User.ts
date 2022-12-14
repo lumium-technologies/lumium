@@ -12,16 +12,16 @@ export class User extends AbstractEntity {
     @PrimaryColumn("uuid")
     id?: string
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     firstName?: string
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     lastName?: string
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     nickName?: string
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     birthday?: Date
 
     @OneToMany(() => Email, (email) => email.user)
@@ -57,6 +57,6 @@ export class User extends AbstractEntity {
     @OneToMany(() => UserPreference, (userPreferences) => userPreferences.user)
     preferences?: UserPreference[]
 
-    @ManyToOne(() => Workspace, {nullable: true})
+    @ManyToOne(() => Workspace, { nullable: true, onDelete: "SET NULL" })
     recentWorkspace?: Workspace
 }

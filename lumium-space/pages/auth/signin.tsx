@@ -93,7 +93,6 @@ const SignIn: React.FC = () => {
                             type={"email"}
                             onChange={formik.handleChange}
                             value={formik.values.email}
-                            onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
                             data-cy="emailInput"
                         />
                     </FormControl>
@@ -101,10 +100,10 @@ const SignIn: React.FC = () => {
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
                             <Input
+                                name={"password"}
                                 type={showPassword ? 'text' : 'password'}
                                 onChange={formik.handleChange}
                                 value={formik.values.password}
-                                onKeyPress={event => { if (event.key == 'Enter') handleSignIn() }}
                                 data-cy="passwordInput"
                             />
                             <InputRightElement h={'full'}>

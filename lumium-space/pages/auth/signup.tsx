@@ -23,13 +23,25 @@ import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, ROOT, SPACES_NEW } from '@route
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { AuthBox } from '@components/auth/AuthBox';
+import { useFormik } from 'formik';
 
 const SignUp: React.FC = () => {
-    const inputEmail = useRef<HTMLInputElement>(null);
-    const [emailError, setEmailError] = useState(false);
-    const inputPassword = useRef<HTMLInputElement>(null);
-    const [passwordError, setPasswordError] = useState(false);
-    const inputPasswordVerify = useRef<HTMLInputElement>(null);
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            passwordConfirm: "",
+        },
+        onSubmit: () => {
+            if (formik.values.password == formik.values.passwordConfirm) {
+                handleSignUp();
+            } else {
+                setPasswordMatchError(true);
+                formik.errors.passwordConfirm = "Passwords don't match."
+            }
+        },
+        validateOnChange: (false),
+    });
     const [api] = useApi();
     const userInfo = useUserInfo();
     const [showPassword, setShowPassword] = useState(false);
@@ -49,109 +61,98 @@ const SignUp: React.FC = () => {
     }, [userInfo?.recentWorkspace]);
 
     const handleSignUp = () => {
-        const email = inputEmail.current?.value;
-        const password = inputPassword.current?.value;
-        const passwordVerify = inputPasswordVerify.current?.value;
-
-        setEmailError(email == '');
-        setPasswordError(password == '');
-        setPasswordMatchError(password != passwordVerify);
-        if (email != '' && password != '' && passwordVerify != '') {
-            if (password == passwordVerify) {
-                api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
-                    if (!value) {
-                        api.post(AUTH_SIGNUP, {
-                            "formFields": [
-                                {
-                                    "id": "email",
-                                    "value": email
-                                },
-                                {
-                                    "id": "password",
-                                    "value": password
-                                }
-                            ]
-                        }).then(() => Router.push(SPACES_NEW));
-                    } else {
-                        setEmailExistsError(true);
-                        setEmailError(true);
-                    };
-                });
+        const email = formik.values.email
+        const password = formik.values.password
+        api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
+            if (!value) {
+                api.post(AUTH_SIGNUP, {
+                    "formFields": [
+                        {
+                            "id": "email",
+                            "value": email
+                        },
+                        {
+                            "id": "password",
+                            "value": password
+                        }
+                    ]
+                }).then(() => Router.push(SPACES_NEW));
             } else {
-                setPasswordMatchError(true)
+                setEmailExistsError(true);
             };
-        };
+        });
     };
 
     return (
         <AuthBox title="Create your account">
-            <Stack spacing={4}>
-                <FormControl id="email" isRequired isInvalid={emailError || emailExistsError}>
-                    <FormLabel>Email address</FormLabel>
-                    <Input
-                        type="email"
-                        ref={inputEmail}
-                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                        data-cy="emailInput"
-                    />
-                    {
-                        emailError && (<FormErrorMessage data-cy="emailError">Email is required.</FormErrorMessage>) ||
-                        emailExistsError && (<FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>)
-                    }
-                </FormControl>
-                <FormControl id="password" isRequired isInvalid={passwordError || passwordMatchError}>
-                    <FormLabel>Password</FormLabel>
-                    <InputGroup>
+            <form onSubmit={formik.handleSubmit}>
+                <Stack spacing={4}>
+                    <FormControl id="email" isRequired isInvalid={emailExistsError}>
+                        <FormLabel>Email address</FormLabel>
                         <Input
-                            type={showPassword ? 'text' : 'password'}
-                            ref={inputPassword}
-                            onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                            data-cy="passwordInput"
+                            name={"email"}
+                            type={"email"}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
+                            data-cy="emailInput"
                         />
-                        <InputRightElement h={'full'}>
-                            <Button
-                                variant={'ghost'}
-                                onClick={() =>
-                                    setShowPassword((showPassword) => !showPassword)
-                                }>
-                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                            </Button>
-                        </InputRightElement>
-                    </InputGroup>
-                    {passwordError && (<FormErrorMessage data-cy="passwordError">Password is required.</FormErrorMessage>)}
-                </FormControl>
-                <FormControl id="password-verify" isRequired isInvalid={passwordMatchError}>
-                    <FormLabel>Repeat Password</FormLabel>
-                    <Input
-                        type={'password'}
-                        ref={inputPasswordVerify}
-                        onKeyPress={event => { if (event.key == 'Enter') handleSignUp() }}
-                        data-cy="passwordVerifyInput"
-                    />
-                    {passwordMatchError && (<FormErrorMessage data-cy="passwordMatchError">Password do not match.</FormErrorMessage>)}
-                </FormControl>
-                <Stack spacing={10} pt={2}>
-                    <Button
-                        loadingText="Submitting"
-                        size="lg"
-                        bg={'blue.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'blue.500',
-                        }}
-                        onClick={handleSignUp}
-                        data-cy="signUpButton"
-                    >
-                        Sign up
-                    </Button>
+                        {emailExistsError && (<FormErrorMessage data-cy="emailExistsError">{formik.errors.email}</FormErrorMessage>)}
+                    </FormControl>
+                    <FormControl id="password" isRequired isInvalid={passwordMatchError}>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
+                            <Input
+                                name={"password"}
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
+                                data-cy="passwordInput"
+                            />
+                            <InputRightElement h={'full'}>
+                                <Button
+                                    variant={'ghost'}
+                                    onClick={() =>
+                                        setShowPassword((showPassword) => !showPassword)
+                                    }>
+                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                    </FormControl>
+                    <FormControl id="passwordConfirmInput" isRequired isInvalid={passwordMatchError}>
+                        <FormLabel>Repeat Password</FormLabel>
+                        <Input
+                            name={"passwordConfirm"}
+                            type={'password'}
+                            onChange={formik.handleChange}
+                            value={formik.values.passwordConfirm}
+                            data-cy="passwordConfirmInput"
+                        />
+                        <FormErrorMessage data-cy="passwordMatchError">{formik.errors.passwordConfirm}</FormErrorMessage>
+                    </FormControl>
+                    <Stack spacing={10} pt={2}>
+                        <Button
+                            loadingText="Submitting"
+                            size="lg"
+                            bg={'blue.400'}
+                            color={'white'}
+                            _hover={{
+                                bg: 'blue.500',
+                            }}
+                            data-cy="signUpButton"
+                            type="submit"
+                        >
+                            Sign up
+                        </Button>
+                    </Stack>
+                    <Flex flexDir="column" alignItems={"center"}>
+                        <Text mb={"0"}>
+                            Already an account?
+                        </Text>
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
+                    </Flex>
                 </Stack>
-                <Flex flexDir="column" alignItems={"center"}>
-                    <Text mb={"0"}>
-                        Already an account?
-                    </Text>
-                    <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
-                </Flex>
-            </Stack>
+            </form>
         </AuthBox>
     );
 };

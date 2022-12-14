@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { ReactNode } from 'react';
+import packageInfo from 'package.json';
 
 const Logo = (props: any) => {
     return (
@@ -64,7 +65,8 @@ export function Footer() {
     return (
         <Box
             bg={useColorModeValue('gray.50', 'gray.900')}
-            color={useColorModeValue('gray.700', 'gray.200')}>
+            color={useColorModeValue('gray.700', 'gray.200')}
+        >
             <Container
                 as={Stack}
                 maxW={'6xl'}
@@ -86,6 +88,7 @@ export function Footer() {
                         <FaInstagram />
                     </SocialButton>
                 </Stack>
+                <Text>{packageInfo.version}</Text>
             </Container>
         </Box>
     );

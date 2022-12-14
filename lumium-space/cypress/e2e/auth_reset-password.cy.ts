@@ -15,21 +15,12 @@ describe("/auth/reset-password", () => {
     it("email error required", () => {
         cy.dataCy("emailInput").should("be.visible");
         cy.dataCy("requestResetButton").should("be.visible").click();
-        cy.dataCy("emailError").should("be.visible");
-    });
-    it("email error required remove after typing email", () => {
-        const email = makeid(50) + "@example.com";
-        cy.dataCy("emailInput").should("be.visible");
-        cy.dataCy("requestResetButton").should("be.visible").click();
-        cy.dataCy("emailError").should("be.visible");
-        cy.dataCy("emailInput").should("be.visible").type(email);
-        cy.dataCy("requestResetButton").should("be.visible").click();
-        cy.dataCy("emailError").should("not.exist");
+        cy.dataCy("form").then(($form) => expect($form[0].checkValidity()).to.be.false,)
     });
     it("email doesn't exist error", () => {
         const email = makeid(50) + "@example.com";
         cy.dataCy("emailInput").should("be.visible").type(email);
         cy.dataCy("requestResetButton").should("be.visible").click();
-        cy.dataCy("emailExistsError").should("be.visible");
+        cy.dataCy("emailError").should("be.visible");
     });
 });

@@ -9,4 +9,5 @@ export interface WorkspaceDTO extends AbstractEntityDTO {
     visitors: string[];
     pages: PageDTO[];
     preferences: WorkspacePreferenceDTO[];
+    name: string;
 }

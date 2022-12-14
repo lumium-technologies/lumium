@@ -13,21 +13,21 @@ export class Workspace extends AbstractEntity {
 
     @ManyToMany(() => User, (user) => user.administratedWorkspaces)
     @JoinTable()
-    admins?: User[]
+    admins: User[]
 
     @ManyToMany(() => User, (user) => user.memberWorkspaces)
     @JoinTable()
-    members?: User[]
+    members: User[]
 
     @ManyToMany(() => User, (user) => user.visitorWorkspaces)
     @JoinTable()
-    visitors?: User[]
+    visitors: User[]
 
     @OneToMany(() => Page, (page) => page.workspace)
-    pages?: Page[]
+    pages: Page[]
 
     @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
-    preferences?: WorkspacePreference[]
+    preferences: WorkspacePreference[]
 
     @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
@@ -35,8 +35,9 @@ export class Workspace extends AbstractEntity {
 }
 
 export const mapToWorkspaceDTO = (entity: Workspace) => {
+    console.log(entity);
     let dto: WorkspaceDTO = {
-        ownerId: entity.owner.id,
+        ownerId: entity.owner?.id,
         admins: entity.admins?.map(t => t.id),
         visitors: entity.visitors?.map(t => t.id),
         members: entity.members?.map(t => t.id),

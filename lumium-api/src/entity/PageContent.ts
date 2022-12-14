@@ -18,7 +18,7 @@ export class PageContent extends AbstractEntity {
 
 export const mapToPageContentDTO = (entity: PageContent) => {
     let dto: PageContentDTO = {
-        pageId: entity.page.id,
+        pageId: entity.page?.id,
         position: entity.position,
         contentElement: mapToContentElementDTO(entity.contentElement),
         id: entity.id,

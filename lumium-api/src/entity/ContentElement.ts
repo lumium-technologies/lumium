@@ -13,7 +13,7 @@ export class ContentElement extends AbstractEntity {
     content: string
 
     @OneToMany(() => PageContent, (pageContent) => pageContent.contentElement)
-    pageContents?: PageContent[]
+    pageContents: PageContent[]
 
     @Column({
         type: "enum",
@@ -26,7 +26,7 @@ export class ContentElement extends AbstractEntity {
 export const mapToContentElementDTO = (entity: ContentElement) => {
     let dto: ContentElementDTO = {
         content: entity.content,
-        pageContents: entity.pageContents.map(t => t.id),
+        pageContents: entity.pageContents?.map(t => t.id),
         type: entity.type,
         id: entity.id,
         createdAt: entity.createdAt?.toString(),

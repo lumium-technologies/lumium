@@ -107,5 +107,5 @@ cloudflare-record.json
 
 .idea/
 
-# VSC config file
+# VSCode configuration
 *.code-workspace

@@ -26,6 +26,7 @@
         "concurrently": "^7.2.1",
         "dotenv": "^16.0.2",
         "dotenv-expand": "^9.0.0",
+        "formik": "^2.2.9",
         "framer-motion": "^7.6.7",
         "next": "^13.0.4",
         "next-compose-plugins": "^2.2.1",

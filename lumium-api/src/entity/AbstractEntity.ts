@@ -4,15 +4,15 @@ export abstract class AbstractEntity {
     @PrimaryGeneratedColumn("uuid")
     id?: string
 
-    @CreateDateColumn({type: 'timestamptz'})
+    @CreateDateColumn({ type: 'timestamptz' })
     createdAt?: Timestamp
 
-    @UpdateDateColumn({type: 'timestamptz'})
+    @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt?: Timestamp
 
-    @DeleteDateColumn({type: 'timestamptz'})
+    @DeleteDateColumn({ type: 'timestamptz' })
     deletedAt?: Timestamp
 
-    @VersionColumn({default: 0})
+    @VersionColumn({ default: 0 })
     version?: number
 }

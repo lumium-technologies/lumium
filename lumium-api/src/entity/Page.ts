@@ -15,33 +15,33 @@ export class Page extends AbstractEntity {
 
     @ManyToMany(() => User, (user) => user.administratedPages)
     @JoinTable()
-    admins: User[]
+    admins?: User[]
 
     @ManyToMany(() => User, (user) => user.memberPages)
     @JoinTable()
-    members: User[]
+    members?: User[]
 
     @ManyToMany(() => User, (user) => user.visitorPages)
     @JoinTable()
-    visitors: User[]
+    visitors?: User[]
 
     @OneToMany(() => PageContent, (pageContent) => pageContent.page)
-    contents: PageContent[]
+    contents?: PageContent[]
 }
 
 export const mapToPageDTO = (entity: Page) => {
     let dto: PageDTO = {
-        workspaceId: entity.workspace.id!,
-        ownerId: entity.owner.id!,
-        admins: entity.admins.map(t => t.id!),
-        members: entity.members.map(t => t.id!),
-        visitors: entity.visitors.map(t => t.id!),
-        contents: entity.contents.map(mapToPageContentDTO),
-        id: entity.id!,
-        createdAt: entity.createdAt!.toString(),
-        updatedAt: entity.updatedAt!.toString(),
-        deletedAt: entity.deletedAt!.toString(),
-        version: entity.version!
+        workspaceId: entity.workspace.id,
+        ownerId: entity.owner.id,
+        admins: entity.admins?.map(t => t.id),
+        members: entity.members?.map(t => t.id),
+        visitors: entity.visitors?.map(t => t.id),
+        contents: entity.contents?.map(mapToPageContentDTO),
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
     };
     return dto;
 };

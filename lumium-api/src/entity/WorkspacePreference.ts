@@ -23,14 +23,14 @@ export class WorkspacePreference extends AbstractEntity {
 
 export const mapToWorkspacePreferenceDTO = (entity: WorkspacePreference) => {
     let dto: WorkspacePreferenceDTO = {
-        workspaceId: entity.workspace.id!,
+        workspaceId: entity.workspace.id,
         option: entity.option.toString(),
         value: entity.value,
-        id: entity.id!,
-        createdAt: entity.createdAt!.toString(),
-        updatedAt: entity.updatedAt!.toString(),
-        deletedAt: entity.deletedAt!.toString(),
-        version: entity.version!
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
     };
     return dto;
 };

@@ -38,7 +38,6 @@ export class Workspace extends AbstractEntity {
 }
 
 export const mapToWorkspaceDTO = (entity: Workspace) => {
-    console.log(entity);
     let dto: WorkspaceDTO = {
         ownerId: entity.owner?.id,
         admins: entity.admins?.map(t => t.id),

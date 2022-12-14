@@ -64,7 +64,6 @@ const SignUp: React.FC = () => {
                 handleSignUp();
             } else {
                 setPasswordMatchError(true);
-                formik.errors.passwordConfirm = "Passwords don't match."
             }
         },
         validateOnChange: (false),
@@ -72,7 +71,7 @@ const SignUp: React.FC = () => {
     return (
         <AuthenticatorAuth>
             <AuthBox title="Create your account">
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={emailExistsError}>
                             <FormLabel>Email address</FormLabel>
@@ -83,7 +82,7 @@ const SignUp: React.FC = () => {
                                 value={formik.values.email}
                                 data-cy="emailInput"
                             />
-                            {emailExistsError && (<FormErrorMessage data-cy="emailExistsError">{formik.errors.email}</FormErrorMessage>)}
+                            <FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>
                         </FormControl>
                         <FormControl id="password" isRequired isInvalid={passwordMatchError}>
                             <FormLabel>Password</FormLabel>
@@ -115,7 +114,7 @@ const SignUp: React.FC = () => {
                                 value={formik.values.passwordConfirm}
                                 data-cy="passwordConfirmInput"
                             />
-                            <FormErrorMessage data-cy="passwordMatchError">{formik.errors.passwordConfirm}</FormErrorMessage>
+                            <FormErrorMessage data-cy="passwordMatchError">Password doen&apos;t match.</FormErrorMessage>
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button

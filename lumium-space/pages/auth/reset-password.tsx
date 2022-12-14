@@ -90,7 +90,7 @@ const ResetPassword: React.FC = () => {
                     color={useColorModeValue('gray.800', 'gray.400')}>
                     You&apos;ll receive an email with a reset link
                 </Text>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <FormControl id="email" isRequired isInvalid={emailExistsError}>
                         <FormLabel>Email address</FormLabel>
                         <Input
@@ -122,7 +122,7 @@ const ResetPassword: React.FC = () => {
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {!emailResent &&
                 <>
-                    <Heading as="h2" size="xl" mt={6} mb={2}>
+                    <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
                         Check your Email
                     </Heading>
                     <Text color={'gray.500'}>

@@ -66,7 +66,8 @@ const JoinSpace: React.FC = () => {
                             color={'white'}
                             _hover={{
                                 bg: 'blue.500',
-                            }}>
+                            }}
+                            data-cy={"button"}>
                             Request Reset
                         </Button>
                     </Stack>

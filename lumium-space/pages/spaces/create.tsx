@@ -19,39 +19,22 @@ import { create_workspace } from 'lumium-renderer';
 import { useFormik } from 'formik';
 
 const MultistepForm: React.FC = () => {
-    type Values = {
-        name?: string,
-        password?: string,
-        passwordVerify?: string
-    }
-    const formik = useFormik({
-        initialValues: {
-            name: "",
-            password: "",
-            passwordVerify: ""
-        },
-        onSubmit: () => {
-            nextStep();
-        },
-        validate: values => {
-            let errors: Values = {};
-            if (values.password != values.passwordVerify) {
-                errors.passwordVerify = "Passwords don't match"
-            }
-            return errors
-        }
-    });
     const [showPassword, setShowPassword] = useState(false);
     const [downloadedKeys, setDownloadedKeys] = useState(false);
+    const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
     const nextStep = () => {
-        setStep(step + 1);
-        if (step === 2) {
-            setProgress(100);
+        if (formik.values.password == formik.values.passwordConfirm) {
+            setStep(step + 1);
+            if (step === 2) {
+                setProgress(100);
+            } else {
+                setProgress(progress + 50);
+            };
         } else {
-            setProgress(progress + 50);
-        };
+            setCredentialsMatchError(true);
+        }
     };
     const handleEnter = (event) => {
         if (event.key == "Enter") {
@@ -62,6 +45,17 @@ const MultistepForm: React.FC = () => {
         create_workspace(formik.values.password);
         setDownloadedKeys(true);
     };
+    const formik = useFormik({
+        initialValues: {
+            name: "",
+            password: "",
+            passwordConfirm: ""
+        },
+        onSubmit: () => {
+            nextStep();
+        },
+        validateOnChange: (false),
+    });
     return (
         <Authenticator>
             <Flex
@@ -80,7 +74,7 @@ const MultistepForm: React.FC = () => {
                     mb="5%"
                     mx="5%"
                     isAnimated />
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     {
                         step === 1 && (
                             <>
@@ -96,6 +90,7 @@ const MultistepForm: React.FC = () => {
                                         type='text'
                                         onChange={formik.handleChange}
                                         value={formik.values.name}
+                                        data-cy={"nameInput"}
                                     />
                                 </FormControl>
                                 <FormControl isRequired>
@@ -107,6 +102,7 @@ const MultistepForm: React.FC = () => {
                                             onChange={formik.handleChange}
                                             value={formik.values.password}
                                             onKeyPress={handleEnter}
+                                            data-cy={"passwordInput"}
                                         />
                                         <InputRightElement h={'full'}>
                                             <Button
@@ -119,16 +115,17 @@ const MultistepForm: React.FC = () => {
                                         </InputRightElement>
                                     </InputGroup>
                                 </FormControl>
-                                <FormControl isRequired isInvalid={!!formik.errors.passwordVerify}>
+                                <FormControl isRequired isInvalid={credentialsMatchError}>
                                     <FormLabel>Repeat Password</FormLabel>
                                     <Input
-                                        name={"passwordVerify"}
+                                        name={"passwordConfirm"}
                                         type={'password'}
                                         onChange={formik.handleChange}
-                                        value={formik.values.passwordVerify}
+                                        value={formik.values.passwordConfirm}
                                         onKeyPress={handleEnter}
+                                        data-cy={"passwordConfirmInput"}
                                     />
-                                    <FormErrorMessage>{formik.errors.passwordVerify}</FormErrorMessage>
+                                    <FormErrorMessage data-cy={"passwordMatchError"}>Password doesn&apos;t match</FormErrorMessage>
                                 </FormControl>
                             </>
                         ) ||
@@ -141,7 +138,7 @@ const MultistepForm: React.FC = () => {
                                     Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
                                 </Text>
                                 <Flex w="100%" justifyContent="center">
-                                    <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys}>Download Keys and Create Space</Button>
+                                    <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>Download Keys and Create Space</Button>
                                 </Flex>
                             </>
                         )}
@@ -158,6 +155,7 @@ const MultistepForm: React.FC = () => {
                                     variant="solid"
                                     w="7rem"
                                     mr="5%"
+                                    data-cy={"backButton"}
                                 >
                                     Back
                                 </Button>
@@ -165,6 +163,7 @@ const MultistepForm: React.FC = () => {
                                     w="7rem"
                                     type="submit"
                                     isDisabled={step == 2}
+                                    data-cy={"nextButton"}
                                 >
                                     Next
                                 </Button>
@@ -175,6 +174,7 @@ const MultistepForm: React.FC = () => {
                                         w="7rem"
                                         colorScheme="red"
                                         variant="solid"
+                                        data-cy={"submitButton"}
                                     >
                                         Submit
                                     </Button>

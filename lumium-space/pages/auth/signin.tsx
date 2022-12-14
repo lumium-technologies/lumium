@@ -53,7 +53,6 @@ const SignIn: React.FC = () => {
                 };
             } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
                 setCredentialsMatchError(true);
-                formik.errors.password = "Wrong credentials."
             };
         });
     };
@@ -70,7 +69,7 @@ const SignIn: React.FC = () => {
     return (
         <AuthenticatorAuth>
             <AuthBox title="Sign in to your account">
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={credentialsMatchError}>
                             <FormLabel>Email address</FormLabel>
@@ -102,7 +101,7 @@ const SignIn: React.FC = () => {
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
-                            <FormErrorMessage data-cy="passwordError">{formik.errors.password}</FormErrorMessage>
+                            <FormErrorMessage data-cy="passwordError">Wrong credentials.</FormErrorMessage>
                         </FormControl>
                         <Flex justifyContent="space-between" mt="0">
                             <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>

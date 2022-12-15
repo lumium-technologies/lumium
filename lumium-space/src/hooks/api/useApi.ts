@@ -6,17 +6,20 @@ import Session from "supertokens-auth-react/recipe/session";
 
 const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST + V1 : "" });
 Session.addAxiosInterceptors(instance);
-instance.interceptors.response.use((response) => {
-    return response;
-}, (error) => {
-    if (error.response.status == 401) {
-        if (!Router.asPath.startsWith(AUTH)) {
-            Router.push(AUTH_SIGNIN);
+instance.interceptors.response.use(
+    (r) => r,
+    (error) => {
+        if (!error.response) {
+            return Promise.resolve(error);
         }
-        return Promise.resolve(error);
-    };
-    return Promise.reject(error);
-});
+        if (error.response.status === 401) {
+            if (!Router.asPath.startsWith(AUTH)) {
+                Router.push(AUTH_SIGNIN);
+            }
+            return Promise.resolve(error);
+        };
+        return Promise.reject(error);
+    });
 
 export function useApi(): [AxiosInstance, string] {
     const apiHost: string = process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST : "";

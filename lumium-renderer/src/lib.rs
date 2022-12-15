@@ -1,28 +1,19 @@
-mod utils;
+pub mod crypto;
+pub mod utils;
 
 extern crate katex_renderer;
 extern crate web_sys;
 
-use js_sys::Uint8Array;
-use ring::aead::UnboundKey;
+use crypto::generate_key_variants;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use katex_renderer::render_katex;
-use passwords::PasswordGenerator;
 use pulldown_cmark::{html, Options, Parser};
-use ring::aead::{
-    self, Aad, BoundKey, Nonce, NonceSequence, OpeningKey, SealingKey, AES_256_GCM, NONCE_LEN,
-};
-use ring::error;
-use ring::rand::{SecureRandom, SystemRandom};
 use seed::{self, prelude::*, *};
 use serde::{Deserialize, Serialize};
-
-const MASTER_KEY_BYTE_LENGTH: usize = 32;
-const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
 
 fn render_markdown(page: Option<JsValue>) -> String {
     let markdown = "".to_string();
@@ -32,20 +23,6 @@ fn render_markdown(page: Option<JsValue>) -> String {
     let mut html_out = String::new();
     html::push_html(&mut html_out, parser);
     html_out
-}
-
-#[derive(Serialize)]
-struct KeyVariantCreateDTO {
-    activator: Vec<u8>,
-    activator_nonce: Vec<u8>,
-    value: Vec<u8>,
-    value_nonce: Vec<u8>,
-}
-
-#[derive(Serialize)]
-struct KeyCreateDTO {
-    keys: Vec<KeyVariantCreateDTO>,
-    activator: Vec<u8>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -133,135 +110,33 @@ pub fn render_page() {
 }
 
 #[wasm_bindgen]
-pub async fn generate_workspace_key_with_recovery(password: JsValue) -> Result<JsValue, JsValue> {
-    let sr = SystemRandom::new();
-    let mut master_key: [u8; MASTER_KEY_BYTE_LENGTH] = [0; MASTER_KEY_BYTE_LENGTH];
-    sr.fill(&mut master_key).unwrap();
-    let mut activator_key: [u8; ACTIVATOR_KEY_BYTE_LENGTH] = [0; ACTIVATOR_KEY_BYTE_LENGTH];
-    sr.fill(&mut activator_key).unwrap();
-    let nonce_master_activator = get_random_nonce();
-    let cipher_master_activator = encrypt_data(
-        password.as_string().unwrap().as_bytes(),
-        nonce_master_activator.clone(),
-        activator_key.to_vec(),
-    );
-    let nonce_master_value = get_random_nonce();
-    let cipher_master_value = encrypt_data(
-        password.as_string().unwrap().as_bytes(),
-        nonce_master_value.clone(),
-        master_key.to_vec(),
-    );
-    let pg = PasswordGenerator {
-        length: 8,
-        numbers: true,
-        lowercase_letters: true,
-        uppercase_letters: true,
-        symbols: true,
-        spaces: true,
-        exclude_similar_characters: false,
-        strict: true,
-    };
-    let recovery_codes = pg.generate(10).unwrap();
-    let mut variants = Vec::<KeyVariantCreateDTO>::new();
-    variants.push(KeyVariantCreateDTO {
-        activator_nonce: nonce_master_activator.to_vec(),
-        activator: cipher_master_activator,
-        value_nonce: nonce_master_value.to_vec(),
-        value: cipher_master_value,
-    });
-    for recovery in recovery_codes {
-        let nonce_recovery_activator = get_random_nonce();
-        let cipher_recovery_activator = encrypt_data(
-            recovery.as_bytes(),
-            nonce_recovery_activator.clone(),
-            activator_key.to_vec(),
-        );
-        let nonce_recovery_value = get_random_nonce();
-        let cipher_recovery_value = encrypt_data(
-            recovery.as_bytes(),
-            nonce_recovery_value.clone(),
-            master_key.to_vec(),
-        );
-        variants.push(KeyVariantCreateDTO {
-            activator_nonce: nonce_recovery_activator.to_vec(),
-            activator: cipher_recovery_activator,
-            value_nonce: nonce_recovery_value.to_vec(),
-            value: cipher_recovery_value,
-        });
-    }
-    let key_create_dto = KeyCreateDTO {
-        keys: variants,
-        activator: activator_key.to_vec(),
-    };
+pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
+    let key_create_dto = generate_key_variants(password)?;
+
     let mut opts = RequestInit::new();
     opts.method("PUT");
     opts.mode(RequestMode::Cors);
-    opts.body(JsValue::from_serde(&key_create_dto).ok().as_ref());
+    let body = serde_json::ser::to_string(&key_create_dto).unwrap();
+    opts.body(Some(&JsValue::from(body)));
 
     let origin = format!(
         "{}/{}",
         env!("RENDERER_API_HOST").to_string(),
-        "secure/workspace"
+        "v1/secure/workspace"
     );
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
+    request.headers().set("Content-Type", "application/json")?;
 
     let window = web_sys::window().unwrap();
-    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
+    let fetch = window.fetch_with_request(&request);
+    let resp_value = JsFuture::from(fetch).await?;
     assert!(resp_value.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
+    if resp.status() != 200 {
+        return Err(JsValue::from("failed to create workspace"));
+    }
 
     let json = JsFuture::from(resp.json()?).await?;
 
     Ok(json)
-}
-
-#[wasm_bindgen]
-pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut encryption_key =
-        SealingKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
-    encryption_key
-        .seal_in_place_append_tag(Aad::empty(), &mut data)
-        .unwrap();
-    data
-}
-
-#[wasm_bindgen]
-pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    let mut decryption_key =
-        OpeningKey::new(UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence);
-    let length = data.len() - AES_256_GCM.tag_len();
-    decryption_key
-        .open_in_place(Aad::empty(), &mut data)
-        .unwrap();
-    data[..length].to_vec()
-}
-
-struct INonceSequence(Option<Nonce>);
-
-impl INonceSequence {
-    fn new(nonce: Nonce) -> Self {
-        Self(Some(nonce))
-    }
-}
-
-impl NonceSequence for INonceSequence {
-    fn advance(&mut self) -> Result<Nonce, error::Unspecified> {
-        self.0.take().ok_or(error::Unspecified)
-    }
-}
-
-#[wasm_bindgen]
-pub fn get_random_nonce() -> Uint8Array {
-    let rand_gen = SystemRandom::new();
-    let mut raw_nonce = [0u8; NONCE_LEN];
-    rand_gen.fill(&mut raw_nonce).unwrap();
-    let array = Uint8Array::new_with_length(NONCE_LEN as u32);
-    array.copy_from(&raw_nonce);
-    array
 }

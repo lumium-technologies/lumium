@@ -1,3 +1,10 @@
+## **0.3.1** <sub><sup>2022-12-15 ([0c4d38a...e3324b4](https://github.com/lumium-technologies/lumium/compare/0c4d38a...e3324b4?diff=split))</sup></sub>
+
+### Merged Branches
+*  pull request \#191 from lumium\-technologies/d/migrate/github\-org ([9ebb062](https://github.com/lumium-technologies/lumium/commit/9ebb062))
+*  pull request \#192 from lumium\-technologies/develop ([e3324b4](https://github.com/lumium-technologies/lumium/commit/e3324b4))
+
+
 ## **0.3.0** <sub><sup>2022-12-15 ([89dae76...258f75e](https://github.com/d3psi/lumium/compare/89dae76...258f75e?diff=split))</sup></sub>
 
 ### Features

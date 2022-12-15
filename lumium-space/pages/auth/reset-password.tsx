@@ -6,6 +6,7 @@ import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN, ROOT }
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 import { useFormik } from 'formik';
+import { AuthenticatorAuth } from "@components/security/AuthenticatorAuth";
 
 const ResetPassword: React.FC = () => {
     const [passwordMatchError, setPasswordMatchError] = useState(false);
@@ -193,9 +194,11 @@ const ResetPassword: React.FC = () => {
     );
 
     return (
-        <Fade in={true}>
-            {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
-        </Fade>
+        <AuthenticatorAuth>
+            <Fade in={true}>
+                {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
+            </Fade>
+        </AuthenticatorAuth>
     );
 };
 

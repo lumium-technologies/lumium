@@ -182,6 +182,12 @@ export { sec } from './secure';
  */
 
 /**
+ * @typedef {object} WorkspaceCreateDTO
+ * @property {E2EKeyCreateDTO} key - The e2e key associated with this workspace
+ * @property {string} name - The name of the workspace
+ */
+
+/**
  * @typedef {object} WorkspaceUpdateDTO
  * @property {string} ownerId - The new owner uuid
  * @property {array<string>} admins - The new admin uuids

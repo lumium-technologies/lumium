@@ -7,8 +7,11 @@ export type {
     UserDTO,
     UserPreferenceDTO,
     WorkspaceDTO,
+    WorkspaceCreateDTO,
     WorkspaceUpdateDTO,
     WorkspacePreferenceDTO,
+    E2EKeyDTO,
     E2EKeyCreateDTO,
+    E2EKeyVariantDTO,
     E2EKeyVariantCreateDTO
 } from './v1';

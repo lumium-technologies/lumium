@@ -21,7 +21,7 @@ router.get(WORKSPACEID_GET, info);
  * @summary Create a new workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @param {E2EKeyCreateDTO} request.body.required - end-to-end key variants encrypted with passwords of user's choice - application/json
+ * @param {WorkspaceCreateDTO} request.body.required - Workspace creation information - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */

@@ -3,9 +3,9 @@ import supertest from 'supertest';
 import { E2EKeyCreateDTO, E2EKeyVariantCreateDTO } from "../../../../../types";
 import cryptojs from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
+import { WorkspaceCreateDTO } from "../../../../../types/api/v1/dto/request/WorkspaceCreateDTO";
 
 describe('workspaces', () => {
-    jest.setTimeout(60000);
     test('crud for workspaces with keys', async () => {
         const cookies = await auth();
         let keyString = uuidv4();
@@ -26,13 +26,26 @@ describe('workspaces', () => {
             });
         }
         let key: E2EKeyCreateDTO = { activator: activatorPlaintext, keys };
-        let resp = await supertest(app).put('/v1/secure/workspace').set('cookie', cookies).send(key);
+        let workspace: WorkspaceCreateDTO = {
+            name: "test",
+            key: key
+        };
+        let resp = await supertest(app).put('/v1/secure/workspace').set('cookie', cookies).send(workspace);
+        expect(resp.body).toHaveProperty('id');
+        expect(resp.body).toHaveProperty('name', "test");
+        expect(resp.body).toHaveProperty('key');
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).get('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
+        expect(resp.body).toHaveProperty('id');
+        expect(resp.body).toHaveProperty('name', "test");
+        expect(resp.body).toHaveProperty('key');
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).patch('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send({ preferences: [{ option: 'something', value: 'something' }] });
-        // TODO: implement patch test correctly
+        expect(resp.body).toHaveProperty('id');
+        expect(resp.body).toHaveProperty('name', "test");
+        expect(resp.body).toHaveProperty('preferences');
         expect(resp.statusCode).toBe(200);
+        // TODO: implement patch test correctly
         resp = await supertest(app).delete('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);
         resp = await supertest(app).delete("/v1/secure/user").set('cookie', cookies).send();

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { WorkspaceDTO } from "../../types";
 import { AbstractEntity } from "./AbstractEntity";
-import { E2EKey } from "./E2EKey";
+import { E2EKey, mapToE2EKeyDTO } from "./E2EKey";
 import { mapToPageDTO, Page } from "./Page";
 import { User } from "./User";
 import { mapToWorkspacePreferenceDTO, WorkspacePreference } from "./WorkspacePreference";
@@ -46,6 +46,7 @@ export const mapToWorkspaceDTO = (entity: Workspace) => {
         pages: entity.pages?.map(mapToPageDTO),
         preferences: entity.preferences?.map(mapToWorkspacePreferenceDTO),
         name: entity.name,
+        key: entity.key && mapToE2EKeyDTO(entity.key),
         id: entity.id,
         createdAt: entity.createdAt?.toString(),
         updatedAt: entity.updatedAt?.toString(),

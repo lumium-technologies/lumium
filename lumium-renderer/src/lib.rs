@@ -2,21 +2,32 @@ pub mod crypto;
 pub mod render;
 
 use crypto::generate_key_variants;
-use wasm_bindgen::prelude::*;
+use crypto::E2EKeyCreateDTO;
+use seed::{self, prelude::*, *};
+use serde::Serialize;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
-use seed::{self, prelude::*, *};
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkspaceCreateDTO {
+    pub key: E2EKeyCreateDTO,
+    pub name: String,
+}
 
 #[wasm_bindgen]
-pub async fn create_workspace(password: String) -> Result<JsValue, JsValue> {
+pub async fn create_workspace(password: String, name: String) -> Result<JsValue, JsValue> {
     let key_create_dto = generate_key_variants(password)?;
+    let workspace_create_dto = WorkspaceCreateDTO {
+        key: key_create_dto,
+        name,
+    };
 
     let mut opts = RequestInit::new();
     opts.method("PUT");
     opts.mode(RequestMode::Cors);
-    let body = serde_json::ser::to_string(&key_create_dto).unwrap();
+    let body = serde_json::ser::to_string(&workspace_create_dto).unwrap();
     opts.body(Some(&JsValue::from(body)));
 
     let origin = format!(

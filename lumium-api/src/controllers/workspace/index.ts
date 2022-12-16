@@ -7,7 +7,6 @@ import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceDTO, WorkspaceUp
 import { E2EKeyVariant } from "../../entity/E2EKeyVariant";
 import { User } from "../../entity/User";
 import { AuditEntryEvent } from "../../entity/Audit";
-import { WorkspacePreference } from "../../entity/WorkspacePreference";
 
 export const info = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({

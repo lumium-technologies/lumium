@@ -91,6 +91,7 @@ export { sec } from './secure';
  * @property {array<PageDTO>} pages - The pages of this workspace
  * @property {array<WorkspacePreferenceDTO>} preferences - The preferences of this workspace
  * @property {E2EKeyDTO} key - The end-to-end key associated with this workspace
+ * @property {string} name - The name of the workspace
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp
  * @property {string} deletedAt - The object delete timestamp
@@ -130,6 +131,7 @@ export { sec } from './secure';
  * @property {array<UserDTO>} members - The members of this page
  * @property {array<UserDTO>} visitors - The visitors of this page
  * @property {array<PageContentDTO>} contents - The contents of this page
+ * @property {string} name - The name of the page
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp
  * @property {string} deletedAt - The object delete timestamp
@@ -187,4 +189,5 @@ export { sec } from './secure';
  * @property {array<string>} visitors - The new visitor uuids
  * @property {array<PageDTO>} pages - The new pages
  * @property {array<WorkspacePreferenceDTO>} preferences - The new preferences
+ * @property {string} name - The new name of the workspace
  */

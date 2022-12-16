@@ -8,4 +8,5 @@ export interface WorkspaceUpdateDTO {
     visitors: string[];
     pages: PageDTO[];
     preferences: WorkspacePreferenceDTO[];
+    name: string;
 }

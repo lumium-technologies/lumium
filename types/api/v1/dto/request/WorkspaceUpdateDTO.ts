@@ -1,12 +1,8 @@
-import { PageDTO } from "../entity/PageDTO";
-import { WorkspacePreferenceDTO } from "../entity/WorkspacePreferenceDTO";
-
 export interface WorkspaceUpdateDTO {
+    id: string;
     ownerId: string;
     admins: string[];
     members: string[];
     visitors: string[];
-    pages: PageDTO[];
-    preferences: WorkspacePreferenceDTO[];
     name: string;
 }

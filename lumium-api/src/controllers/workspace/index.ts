@@ -7,6 +7,7 @@ import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceDTO, WorkspaceUp
 import { E2EKeyVariant } from "../../entity/E2EKeyVariant";
 import { User } from "../../entity/User";
 import { AuditEntryEvent } from "../../entity/Audit";
+import { WorkspaceCreateDTO } from "../../../types/api/v1/dto/request/WorkspaceCreateDTO";
 
 export const info = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
@@ -33,7 +34,7 @@ export const info = async (req: SessionRequest, res: express.Response<WorkspaceD
     res.status(200).send(mapToWorkspaceDTO(workspace));
 };
 
-export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express.Response<WorkspaceDTO>) => {
+export const create = async (req: express.Request<WorkspaceCreateDTO>, res: express.Response<WorkspaceDTO>) => {
     const workspace = new Workspace();
     const user = await dataSource.getRepository(User).findOne({ where: { id: (req as unknown as SessionRequest).session!.getUserId() } });
     workspace.owner = user;

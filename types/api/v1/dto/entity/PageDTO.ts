@@ -8,4 +8,5 @@ export interface PageDTO extends AbstractEntityDTO {
     members: string[];
     visitors: string[];
     contents: PageContentDTO[];
+    name: string;
 }

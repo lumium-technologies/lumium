@@ -1,4 +1,4 @@
-import { Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { PageDTO } from "../../types";
 import { AbstractEntity } from "./AbstractEntity";
 import { mapToPageContentDTO, PageContent } from "./PageContent";
@@ -27,6 +27,9 @@ export class Page extends AbstractEntity {
 
     @OneToMany(() => PageContent, (pageContent) => pageContent.page)
     contents: PageContent[]
+
+    @Column({ unique: true })
+    name: string
 }
 
 export const mapToPageDTO = (entity: Page) => {
@@ -37,6 +40,7 @@ export const mapToPageDTO = (entity: Page) => {
         members: entity.members?.map(t => t.id),
         visitors: entity.visitors?.map(t => t.id),
         contents: entity.contents?.map(mapToPageContentDTO),
+        name: entity.name,
         id: entity.id,
         createdAt: entity.createdAt?.toString(),
         updatedAt: entity.updatedAt?.toString(),

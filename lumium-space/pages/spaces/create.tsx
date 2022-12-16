@@ -42,7 +42,7 @@ const MultistepForm: React.FC = () => {
         };
     };
     const handleDownloadKeys = () => {
-        create_workspace(formik.values.password);
+        create_workspace(formik.values.password, formik.values.name);
         setDownloadedKeys(true);
     };
     const formik = useFormik({
@@ -129,18 +129,18 @@ const MultistepForm: React.FC = () => {
                                 </FormControl>
                             </>
                         ) ||
-                        step === 2 && (
-                            <>
-                                <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                    Download Recovery Keys
-                                </Heading>
-                                <Text w="100%" textAlign={'center'}>
-                                    Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
-                                </Text>
-                                <Flex w="100%" justifyContent="center">
-                                    <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>Download Keys and Create Space</Button>
-                                </Flex>
-                            </>
+                            step === 2 && (
+                                <>
+                                    <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                        Download Recovery Keys
+                                    </Heading>
+                                    <Text w="100%" textAlign={'center'}>
+                                        Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
+                                    </Text>
+                                    <Flex w="100%" justifyContent="center">
+                                        <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>Download Keys and Create Space</Button>
+                                    </Flex>
+                                </>
                         )}
                     <ButtonGroup w="100%" mt="auto">
                         <Flex w="100%" justifyContent="space-between">

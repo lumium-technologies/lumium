@@ -2,12 +2,10 @@ import { SessionRequest } from "supertokens-node/framework/express";
 import express from 'express';
 import { dataSource, error } from "../../data-source";
 import { mapToWorkspaceDTO, Workspace } from "../../entity/Workspace";
-import { E2EKey } from "../../entity/E2EKey";
-import type { E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceDTO, WorkspaceUpdateDTO } from '../../../types';
-import { E2EKeyVariant } from "../../entity/E2EKeyVariant";
+import type { WorkspaceDTO, WorkspaceUpdateDTO } from '../../../types';
 import { User } from "../../entity/User";
 import { AuditEntryEvent } from "../../entity/Audit";
-import { WorkspacePreference } from "../../entity/WorkspacePreference";
+import { WorkspaceCreateDTO } from "../../../types/api/v1/dto/request/WorkspaceCreateDTO";
 
 export const info = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
@@ -34,28 +32,16 @@ export const info = async (req: SessionRequest, res: express.Response<WorkspaceD
     res.status(200).send(mapToWorkspaceDTO(workspace));
 };
 
-export const create = async (req: express.Request<E2EKeyCreateDTO>, res: express.Response<WorkspaceDTO>) => {
+export const create = async (req: express.Request<WorkspaceCreateDTO>, res: express.Response<WorkspaceDTO>) => {
     const workspace = new Workspace();
     const user = await dataSource.getRepository(User).findOne({ where: { id: (req as unknown as SessionRequest).session!.getUserId() } });
     workspace.owner = user;
+    workspace.name = req.body.name;
+    workspace.key = req.body.key;
     const newWorkspace = await dataSource.getRepository(Workspace).save(workspace);
     user.recentWorkspace = newWorkspace;
     await dataSource.getRepository(User).save(user);
-    const key = new E2EKey();
-    key.activator = req.body.activator;
-    key.workspace = newWorkspace;
-    let savedKey = await dataSource.getRepository(E2EKey).save(key);
-    const keys: E2EKeyVariant = req.body.keys.map((k: E2EKeyVariantCreateDTO) => {
-        const variant = new E2EKeyVariant();
-        variant.key = savedKey;
-        variant.activator = k.activator;
-        variant.activatorNonce = k.activatorNonce;
-        variant.value = k.value;
-        variant.valueNonce = k.valueNonce;
-        return variant;
-    });
-    await dataSource.getRepository(E2EKeyVariant).save(keys);
-    res.status(200).send(mapToWorkspaceDTO(savedKey.workspace));
+    res.status(200).send(mapToWorkspaceDTO(newWorkspace));
 };
 
 export const remove = async (req: SessionRequest, res: express.Response<WorkspaceDTO>) => {

@@ -20,7 +20,7 @@ export const mapToPageContentDTO = (entity: PageContent) => {
     let dto: PageContentDTO = {
         pageId: entity.page?.id,
         position: entity.position,
-        contentElement: mapToContentElementDTO(entity.contentElement),
+        contentElement: entity.contentElement && mapToContentElementDTO(entity.contentElement),
         id: entity.id,
         createdAt: entity.createdAt?.toString(),
         updatedAt: entity.updatedAt?.toString(),

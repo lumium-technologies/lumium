@@ -35,8 +35,8 @@
             "merge": "Merged Branches",
             "breakingChange": "BREAKING CHANGES"
         },
-        "commitUrl": "https://github.com/d3psi/lumium/commit/%commit%",
-        "commitRangeUrl": "https://github.com/d3psi/lumium/compare/%from%...%to%?diff=split",
-        "issueUrl": "https://github.com/d3psi/lumium/issues/%issue%"
+        "commitUrl": "https://github.com/lumium-technologies/lumium/commit/%commit%",
+        "commitRangeUrl": "https://github.com/lumium-technologies/lumium/compare/%from%...%to%?diff=split",
+        "issueUrl": "https://github.com/lumium-technologies/lumium/issues/%issue%"
     }
 }

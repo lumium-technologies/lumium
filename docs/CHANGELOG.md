@@ -1,3 +1,88 @@
+## **0.3.1** <sub><sup>2022-12-15 ([0c4d38a...e3324b4](https://github.com/lumium-technologies/lumium/compare/0c4d38a...e3324b4?diff=split))</sup></sub>
+
+### Merged Branches
+*  pull request \#191 from lumium\-technologies/d/migrate/github\-org ([9ebb062](https://github.com/lumium-technologies/lumium/commit/9ebb062))
+*  pull request \#192 from lumium\-technologies/develop ([e3324b4](https://github.com/lumium-technologies/lumium/commit/e3324b4))
+
+
+## **0.3.0** <sub><sup>2022-12-15 ([89dae76...258f75e](https://github.com/d3psi/lumium/compare/89dae76...258f75e?diff=split))</sup></sub>
+
+### Features
+*  automatically download recovery codes as \.txt ([24c1632](https://github.com/d3psi/lumium/commit/24c1632))
+*  add input errors ([86a424f](https://github.com/d3psi/lumium/commit/86a424f))
+*  add formik to create ([720255f](https://github.com/d3psi/lumium/commit/720255f))
+*  add formik to signin page ([60ee2d8](https://github.com/d3psi/lumium/commit/60ee2d8))
+*  add formik to signup ([4851bdc](https://github.com/d3psi/lumium/commit/4851bdc))
+*  add formik to reset\-password page, add resend button back ([a6303f1](https://github.com/d3psi/lumium/commit/a6303f1))
+*  add version to footer ([514e65c](https://github.com/d3psi/lumium/commit/514e65c))
+
+##### `api`
+*  map entities to dtos ([df9deea](https://github.com/d3psi/lumium/commit/df9deea))
+
+##### `renderer`
+*  hash password to 256 bits as key ([eb2ec48](https://github.com/d3psi/lumium/commit/eb2ec48))
+
+##### `workspace`
+*  client\-side workspace setup ([25d9df6](https://github.com/d3psi/lumium/commit/25d9df6))
+
+
+### Bug Fixes
+*  request button sends email on first click ([05da5a2](https://github.com/d3psi/lumium/commit/05da5a2))
+*  misspelling of datacy ([1973d54](https://github.com/d3psi/lumium/commit/1973d54))
+*  webpack config for wasm, bugs in wasm ([723963c](https://github.com/d3psi/lumium/commit/723963c))
+*  remove useless console log, useless binding ([b59b8d1](https://github.com/d3psi/lumium/commit/b59b8d1))
+*  useApi hook ([ebb79f1](https://github.com/d3psi/lumium/commit/ebb79f1))
+
+##### `api`
+*  remove useless \`\!\` ([e47648b](https://github.com/d3psi/lumium/commit/e47648b))
+*  relations, mapping to dtos ([fe20d80](https://github.com/d3psi/lumium/commit/fe20d80))
+
+##### `renderer`
+*  binding parameter type ([84740a3](https://github.com/d3psi/lumium/commit/84740a3))
+*  request payload serialization for workspace creation ([76ff9db](https://github.com/d3psi/lumium/commit/76ff9db))
+*  accidental double\-handlich of \`Result\` ([c37a1b5](https://github.com/d3psi/lumium/commit/c37a1b5))
+
+
+### Merged Branches
+*  develop ([77bc19a](https://github.com/d3psi/lumium/commit/77bc19a))
+*  develop ([ee0753b](https://github.com/d3psi/lumium/commit/ee0753b))
+*  pull request \#156 from D3PSI/dependabot/npm\_and\_yarn/decode\-uri\-component\-0\.2\.2 ([fb8ea72](https://github.com/d3psi/lumium/commit/fb8ea72))
+*  develop ([bb983fa](https://github.com/d3psi/lumium/commit/bb983fa))
+*  develop ([4a56663](https://github.com/d3psi/lumium/commit/4a56663))
+*  develop ([55a421a](https://github.com/d3psi/lumium/commit/55a421a))
+*  develop ([6143553](https://github.com/d3psi/lumium/commit/6143553))
+*  develop ([2e1bec2](https://github.com/d3psi/lumium/commit/2e1bec2))
+*  pull request \#168 from D3PSI/d3psi/sha256 ([0dc62db](https://github.com/d3psi/lumium/commit/0dc62db))
+*  branch 'develop' into cypress/test ([79ddd9e](https://github.com/d3psi/lumium/commit/79ddd9e))
+*  branch 'develop' into spaces/create ([1f79335](https://github.com/d3psi/lumium/commit/1f79335))
+*  develop ([b68d67a](https://github.com/d3psi/lumium/commit/b68d67a))
+*  develop ([68f6367](https://github.com/d3psi/lumium/commit/68f6367))
+*  develop ([d16c4e7](https://github.com/d3psi/lumium/commit/d16c4e7))
+*  pull request \#174 from D3PSI/d/cloudflare ([945079a](https://github.com/d3psi/lumium/commit/945079a))
+*  develop ([ccd5a4a](https://github.com/d3psi/lumium/commit/ccd5a4a))
+*  pull request \#172 from D3PSI/spaces/create ([607f764](https://github.com/d3psi/lumium/commit/607f764))
+*  develop ([7a9589e](https://github.com/d3psi/lumium/commit/7a9589e))
+*  branch 'formik/auth' into cypress/test ([dc02710](https://github.com/d3psi/lumium/commit/dc02710))
+*  pull request \#177 from D3PSI/d/refactor/renderer ([c91e578](https://github.com/d3psi/lumium/commit/c91e578))
+*  develop ([b541a6b](https://github.com/d3psi/lumium/commit/b541a6b))
+*  pull request \#178 from D3PSI/d/api/map\-entities ([aa3ef63](https://github.com/d3psi/lumium/commit/aa3ef63))
+*  develop ([a29f64b](https://github.com/d3psi/lumium/commit/a29f64b))
+*  develop ([5781ee5](https://github.com/d3psi/lumium/commit/5781ee5))
+*  pull request \#165 from D3PSI/cypress/test ([60c1897](https://github.com/d3psi/lumium/commit/60c1897))
+*  develop ([b664263](https://github.com/d3psi/lumium/commit/b664263))
+*  pull request \#182 from D3PSI/d/ops/auto\-add ([b233726](https://github.com/d3psi/lumium/commit/b233726))
+*  develop ([b3a6a62](https://github.com/d3psi/lumium/commit/b3a6a62))
+*  pull request \#186 from D3PSI/d/ops/release ([e360073](https://github.com/d3psi/lumium/commit/e360073))
+*  develop ([d762081](https://github.com/d3psi/lumium/commit/d762081))
+*  pull request \#184 from D3PSI/feat/version ([95a2b11](https://github.com/d3psi/lumium/commit/95a2b11))
+*  pull request \#188 from D3PSI/develop ([258f75e](https://github.com/d3psi/lumium/commit/258f75e))
+
+
+### Performance Improvements
+##### `renderer`
+*  don't optimize for small code size ([f655e80](https://github.com/d3psi/lumium/commit/f655e80))
+
+
 ## **0.2.0** <sub><sup>2022-12-06 ([f9c39e9...7ffba76](https://github.com/d3psi/lumium/compare/f9c39e9...7ffba76?diff=split))</sup></sub>
 
 ### Features

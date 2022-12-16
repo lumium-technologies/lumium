@@ -5,7 +5,7 @@ authors = ["Cedric Schwyter <cedricschwyter@bluewin.ch>"]
 edition = "2018"
 description = "next level docs"
 repository = "https://github.com/lumium-technologies/lumium.git"
-license = "GPL-3"
+license = "GPL-3.0-or-later"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

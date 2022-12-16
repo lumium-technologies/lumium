@@ -1,3 +1,29 @@
+## **0.4.0** <sub><sup>2022-12-16 ([efbedbb...29f9ca6](https://github.com/lumium-technologies/lumium/compare/efbedbb...29f9ca6?diff=split))</sup></sub>
+
+### Features
+##### `api`
+*  add \`name\` attr to pages and workspaces ([efbedbb](https://github.com/lumium-technologies/lumium/commit/efbedbb))
+
+##### `workspace`
+*  create and implement \`WorkspaceCreateDTO\` ([2c1a6aa](https://github.com/lumium-technologies/lumium/commit/2c1a6aa))
+
+
+### Merged Branches
+*  develop ([b6cbb90](https://github.com/lumium-technologies/lumium/commit/b6cbb90))
+*  develop ([0b1dd36](https://github.com/lumium-technologies/lumium/commit/0b1dd36))
+*  develop ([72dd047](https://github.com/lumium-technologies/lumium/commit/72dd047))
+*  develop ([872a983](https://github.com/lumium-technologies/lumium/commit/872a983))
+*  develop ([b7e5156](https://github.com/lumium-technologies/lumium/commit/b7e5156))
+*  develop ([7a602a7](https://github.com/lumium-technologies/lumium/commit/7a602a7))
+*  pull request \#194 from lumium\-technologies/cypress/test ([c8a4565](https://github.com/lumium-technologies/lumium/commit/c8a4565))
+*  d/api/name\-attr ([926c815](https://github.com/lumium-technologies/lumium/commit/926c815))
+*  develop ([918a730](https://github.com/lumium-technologies/lumium/commit/918a730))
+*  d/api/name\-attr ([5a8d787](https://github.com/lumium-technologies/lumium/commit/5a8d787))
+*  pull request \#195 from lumium\-technologies/d/docs/renderer ([2c39409](https://github.com/lumium-technologies/lumium/commit/2c39409))
+*  pull request \#180 from lumium\-technologies/d/api/name\-attr ([102d55c](https://github.com/lumium-technologies/lumium/commit/102d55c))
+*  pull request \#198 from lumium\-technologies/develop ([29f9ca6](https://github.com/lumium-technologies/lumium/commit/29f9ca6))
+
+
 ## **0.3.1** <sub><sup>2022-12-15 ([0c4d38a...e3324b4](https://github.com/lumium-technologies/lumium/compare/0c4d38a...e3324b4?diff=split))</sup></sub>
 
 ### Merged Branches

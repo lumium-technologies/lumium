@@ -1,6 +1,8 @@
 export type {
     AddressDTO,
     ContentElementDTO,
+    E2EKeyDTO,
+    E2EKeyVariantDTO,
     EmailDTO,
     PageDTO,
     PageContentDTO,
@@ -10,6 +12,9 @@ export type {
     WorkspacePreferenceDTO
 } from './entity';
 
-export type { E2EKeyCreateDTO } from './request';
-export type { E2EKeyVariantCreateDTO } from './request';
-export type { WorkspaceUpdateDTO } from './request';
+export type {
+    E2EKeyCreateDTO,
+    E2EKeyVariantCreateDTO,
+    WorkspaceCreateDTO,
+    WorkspaceUpdateDTO
+} from './request';

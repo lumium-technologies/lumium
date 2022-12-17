@@ -5,6 +5,7 @@ import { Footer } from "@sections/landing/Footer";
 import { Pricing } from "@sections/landing/Pricing";
 import { Statistics } from "@sections/landing/Statistics";
 import { NavBar } from "@sections/landing/NavBar";
+
 const LandingPage = () => {
     return (
         <>

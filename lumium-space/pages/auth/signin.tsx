@@ -7,13 +7,11 @@ import {
     Stack,
     Link,
     Button,
-    Heading,
-    useColorModeValue,
     Text,
     FormErrorMessage,
-    Image,
     InputRightElement,
-    InputGroup
+    InputGroup,
+    useColorModeValue
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useApi } from '@hooks/api';
@@ -66,9 +64,13 @@ const SignIn: React.FC = () => {
         },
         validateOnChange: (false),
     });
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
+
     return (
         <AuthenticatorAuth>
-            <AuthBox title="Sign in to your account">
+            <AuthBox title="Sign in to your account" logo={logo}>
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={credentialsMatchError}>

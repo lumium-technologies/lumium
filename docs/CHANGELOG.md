@@ -1,3 +1,31 @@
+## **0.5.0** <sub><sup>2022-12-17 ([22735b8...8d5a6c7](https://github.com/lumium-technologies/lumium/compare/22735b8...8d5a6c7?diff=split))</sup></sub>
+
+### Features
+##### `landing-page`
+*  move navbar ([79db203](https://github.com/lumium-technologies/lumium/commit/79db203))
+*  change menu items ([c59d787](https://github.com/lumium-technologies/lumium/commit/c59d787))
+*  remove spacer ([281d87e](https://github.com/lumium-technologies/lumium/commit/281d87e))
+*  add new icons ([2f667c6](https://github.com/lumium-technologies/lumium/commit/2f667c6))
+
+##### `logo`
+*  new logo ([bd19be0](https://github.com/lumium-technologies/lumium/commit/bd19be0))
+*  add icon ([83a76f7](https://github.com/lumium-technologies/lumium/commit/83a76f7))
+*  add dark and light mode logos to auth box ([9d34005](https://github.com/lumium-technologies/lumium/commit/9d34005))
+
+##### `theme`
+*  change dark mode color ([60b1c7c](https://github.com/lumium-technologies/lumium/commit/60b1c7c))
+
+
+### Bug Fixes
+##### `theme`
+*  fix color mode values for background colors ([d4ab29a](https://github.com/lumium-technologies/lumium/commit/d4ab29a))
+
+
+### Merged Branches
+*  develop ([2f50dbf](https://github.com/lumium-technologies/lumium/commit/2f50dbf))
+*  develop ([e172217](https://github.com/lumium-technologies/lumium/commit/e172217))
+
+
 ## **0.4.0** <sub><sup>2022-12-16 ([efbedbb...29f9ca6](https://github.com/lumium-technologies/lumium/compare/efbedbb...29f9ca6?diff=split))</sup></sub>
 
 ### Features

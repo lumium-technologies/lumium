@@ -28,6 +28,7 @@ import {
 } from '@chakra-ui/icons';
 import Router from 'next/router';
 import { AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
+import packageInfo from 'package.json';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
@@ -266,7 +267,7 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
     {
-        label: 'Inspiration',
+        label: 'Features',
         children: [
             {
                 label: 'Explore Design Work',
@@ -281,26 +282,19 @@ const NAV_ITEMS: Array<NavItem> = [
         ],
     },
     {
-        label: 'Find Work',
-        children: [
-            {
-                label: 'Job Board',
-                subLabel: 'Find your dream design job',
-                href: '#',
-            },
-            {
-                label: 'Freelance Projects',
-                subLabel: 'An exclusive list for contract work',
-                href: '#',
-            },
-        ],
+        label: 'Security',
+        href: '/security',
     },
     {
-        label: 'Learn Design',
-        href: '#',
+        label: 'Source Code',
+        href: `${packageInfo.repository.url}/`,
     },
     {
-        label: 'Hire Designers',
-        href: '#',
+        label: 'Changelog',
+        href: `${packageInfo.repository.url}/releases/latest`,
+    },
+    {
+        label: 'Pricing',
+        href: '/pricing',
     },
 ];

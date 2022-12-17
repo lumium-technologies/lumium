@@ -52,6 +52,7 @@ const SignUp: React.FC = () => {
             };
         });
     };
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -67,8 +68,13 @@ const SignUp: React.FC = () => {
         },
         validateOnChange: (false),
     });
+
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
+
     return (
-        <AuthBox title="Create your account">
+        <AuthBox title="Create your account" logo={logo}>
             <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                 <Stack spacing={4}>
                     <FormControl id="email" isRequired isInvalid={emailExistsError}>

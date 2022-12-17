@@ -1,3 +1,10 @@
+## **0.5.1** <sub><sup>2022-12-17 ([89436fc...ded26c0](https://github.com/lumium-technologies/lumium/compare/89436fc...ded26c0?diff=split))</sup></sub>
+
+### Bug Fixes
+##### `branding`
+*  logo on auth pages ([9caff76](https://github.com/lumium-technologies/lumium/commit/9caff76))
+
+
 ## **0.5.0** <sub><sup>2022-12-17 ([22735b8...8d5a6c7](https://github.com/lumium-technologies/lumium/compare/22735b8...8d5a6c7?diff=split))</sup></sub>
 
 ### Features

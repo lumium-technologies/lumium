@@ -1,12 +1,12 @@
 {
     "name": "lumium-api",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/lumium-technologies/lumium"
     },
-    "author": "Cedric Schwyter <cedricschwyter@bluewin.ch>",
-    "license": "GPL-3.0-or-later",
+    "author": "",
+    "license": "ISC",
     "bugs": {
         "url": "https://github.com/lumium-technologies/lumium/issues"
     },
@@ -21,8 +21,6 @@
         "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
         "db:migrate": "yarn run typeorm cache:clear && yarn run typeorm migration:run"
     },
-    "author": "",
-    "license": "ISC",
     "dependencies": {
         "@types/cors": "2.8.12",
         "@types/jest": "^29.0.3",

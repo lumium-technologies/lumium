@@ -53,6 +53,7 @@ const SignIn: React.FC = () => {
             };
         });
     };
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -63,6 +64,7 @@ const SignIn: React.FC = () => {
         },
         validateOnChange: (false),
     });
+
     const darkLogo = '/logo/svg/Black logo - no background.svg';
     const lightLogo = '/logo/svg/White logo - no background.svg';
     let logo = useColorModeValue(darkLogo, lightLogo);

@@ -1,13 +1,17 @@
 import { ThemeOverride } from "@chakra-ui/react";
+import { mode } from '@chakra-ui/theme-tools';
 
 type GlobalStyles = Pick<ThemeOverride, "styles">;
 
 export default {
-  styles: {
-    global: {
-      h1: {
-        fontWeight: 500,
-      },
+    styles: {
+        global: props => ({
+            body: {
+                bg: mode('dark', '#1a1a1a')(props)
+            },
+            h1: {
+                fontWeight: 500,
+            },
+        }),
     },
-  },
 } as GlobalStyles;

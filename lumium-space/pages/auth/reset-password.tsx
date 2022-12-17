@@ -6,7 +6,6 @@ import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN, ROOT }
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 import { useFormik } from 'formik';
-import { AuthenticatorAuth } from "@components/security/AuthenticatorAuth";
 
 const ResetPassword: React.FC = () => {
     const [passwordMatchError, setPasswordMatchError] = useState(false);
@@ -122,17 +121,17 @@ const ResetPassword: React.FC = () => {
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {!emailResent &&
-                <>
-                    <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
-                        Check your Email
-                    </Heading>
-                    <Text color={'gray.500'}>
-                        Check your inbox to reset your password
-                    </Text>
-                    <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
-                        Resend E-Mail
-                    </Button>
-                </>
+            <>
+                <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
+                    Check your Email
+                </Heading>
+                <Text color={'gray.500'}>
+                    Check your inbox to reset your password
+                </Text>
+                <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
+                    Resend E-Mail
+                </Button>
+            </>
                 ||
                 <Heading as="h2" size="xl" mt={6} mb={2} data-cy="resendHeader">
                     E-Mail has been resent
@@ -194,11 +193,9 @@ const ResetPassword: React.FC = () => {
     );
 
     return (
-        <AuthenticatorAuth>
-            <Fade in={true}>
-                {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
-            </Fade>
-        </AuthenticatorAuth>
+        <Fade in={true}>
+            {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
+        </Fade>
     );
 };
 

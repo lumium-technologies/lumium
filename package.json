@@ -1,6 +1,16 @@
 {
     "name": "lumium",
     "version": "0.4.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lumium-technologies/lumium"
+    },
+    "author": "Cedric Schwyter <cedricschwyter@bluewin.ch>",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+        "url": "https://github.com/lumium-technologies/lumium/issues"
+    },
+    "homepage": "https://lumium.space",
     "description": "next level docs",
     "private": true,
     "scripts": {
@@ -13,16 +23,6 @@
         "heroku-prebuild": "cd lumium-space && yarn run lumium-renderer:package",
         "prepare": "husky install"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/D3PSI/lumium.git"
-    },
-    "author": "Cedric Schwyter <cedricschwyter@bluewin.ch>",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/D3PSI/lumium/issues"
-    },
-    "homepage": "https://github.com/D3PSI/lumium#readme",
     "workspaces": [
         "lumium-space",
         "lumium-api"

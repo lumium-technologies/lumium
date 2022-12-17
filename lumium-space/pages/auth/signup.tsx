@@ -24,7 +24,6 @@ import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
-import { AuthenticatorAuth } from '@components/security/AuthenticatorAuth';
 
 const SignUp: React.FC = () => {
     const [api] = useApi();
@@ -69,78 +68,76 @@ const SignUp: React.FC = () => {
         validateOnChange: (false),
     });
     return (
-        <AuthenticatorAuth>
-            <AuthBox title="Create your account">
-                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                    <Stack spacing={4}>
-                        <FormControl id="email" isRequired isInvalid={emailExistsError}>
-                            <FormLabel>Email address</FormLabel>
+        <AuthBox title="Create your account">
+            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                <Stack spacing={4}>
+                    <FormControl id="email" isRequired isInvalid={emailExistsError}>
+                        <FormLabel>Email address</FormLabel>
+                        <Input
+                            name={"email"}
+                            type={"email"}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
+                            data-cy="emailInput"
+                        />
+                        <FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>
+                    </FormControl>
+                    <FormControl id="password" isRequired isInvalid={passwordMatchError}>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
                             <Input
-                                name={"email"}
-                                type={"email"}
+                                name={"password"}
+                                type={showPassword ? 'text' : 'password'}
                                 onChange={formik.handleChange}
-                                value={formik.values.email}
-                                data-cy="emailInput"
+                                value={formik.values.password}
+                                data-cy="passwordInput"
                             />
-                            <FormErrorMessage data-cy="emailExistsError">Email already exists.</FormErrorMessage>
-                        </FormControl>
-                        <FormControl id="password" isRequired isInvalid={passwordMatchError}>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    name={"password"}
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    value={formik.values.password}
-                                    data-cy="passwordInput"
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowPassword((showPassword) => !showPassword)
-                                        }>
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                        </FormControl>
-                        <FormControl id="passwordConfirmInput" isRequired isInvalid={passwordMatchError}>
-                            <FormLabel>Repeat Password</FormLabel>
-                            <Input
-                                name={"passwordConfirm"}
-                                type={'password'}
-                                onChange={formik.handleChange}
-                                value={formik.values.passwordConfirm}
-                                data-cy="passwordConfirmInput"
-                            />
-                            <FormErrorMessage data-cy="passwordMatchError">Password doen&apos;t match.</FormErrorMessage>
-                        </FormControl>
-                        <Stack spacing={10} pt={2}>
-                            <Button
-                                loadingText="Submitting"
-                                size="lg"
-                                bg={'blue.400'}
-                                color={'white'}
-                                _hover={{
-                                    bg: 'blue.500',
-                                }}
-                                data-cy="signUpButton"
-                                type="submit"
-                            >
-                                Sign up
-                            </Button>
-                        </Stack>
-                        <Flex flexDir="column" alignItems={"center"}>
-                            <Text mb={"0"}>
-                                Already an account?
-                            </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
-                        </Flex>
+                            <InputRightElement h={'full'}>
+                                <Button
+                                    variant={'ghost'}
+                                    onClick={() =>
+                                        setShowPassword((showPassword) => !showPassword)
+                                    }>
+                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                    </FormControl>
+                    <FormControl id="passwordConfirmInput" isRequired isInvalid={passwordMatchError}>
+                        <FormLabel>Repeat Password</FormLabel>
+                        <Input
+                            name={"passwordConfirm"}
+                            type={'password'}
+                            onChange={formik.handleChange}
+                            value={formik.values.passwordConfirm}
+                            data-cy="passwordConfirmInput"
+                        />
+                        <FormErrorMessage data-cy="passwordMatchError">Password doen&apos;t match.</FormErrorMessage>
+                    </FormControl>
+                    <Stack spacing={10} pt={2}>
+                        <Button
+                            loadingText="Submitting"
+                            size="lg"
+                            bg={'blue.400'}
+                            color={'white'}
+                            _hover={{
+                                bg: 'blue.500',
+                            }}
+                            data-cy="signUpButton"
+                            type="submit"
+                        >
+                            Sign up
+                        </Button>
                     </Stack>
-                </form>
-            </AuthBox>
-        </AuthenticatorAuth>
+                    <Flex flexDir="column" alignItems={"center"}>
+                        <Text mb={"0"}>
+                            Already an account?
+                        </Text>
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
+                    </Flex>
+                </Stack>
+            </form>
+        </AuthBox>
     );
 };
 

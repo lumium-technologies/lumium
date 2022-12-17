@@ -1,6 +1,10 @@
-<div align="center">
-    <image src="https://raw.githubusercontent.com/D3PSI/lumium/develop/lumium-space/public/logo/parts/fg/icon.svg"></image>
-</div>
+<p align="center">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lumium-technologies/lumium/develop/lumium-space/public/logo/png/White%20logo%20-%20no%20background.png">
+<source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/lumium-technologies/lumium/develop/lumium-space/public/logo/png/Black%20logo%20-%20no%20background.png">
+<img alt="Shows a black logo in light color mode and a white one in dark color mode." src="https://raw.githubusercontent.com/lumium-technologies/lumium/develop/lumium-space/public/logo/png/Black%20logo%20-%20no%20background.png">
+</picture>
+</p>
 
 # lumium
 next level docs - the end-to-end secure, shared productivity platform

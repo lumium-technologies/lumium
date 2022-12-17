@@ -34,7 +34,6 @@ export const NavBar = () => {
     return (
         <Box>
             <Flex
-                bg={useColorModeValue('white', 'gray.800')}
                 color={useColorModeValue('gray.600', 'white')}
                 minH={'60px'}
                 py={{ base: 2 }}
@@ -114,7 +113,6 @@ export const NavBar = () => {
 const DesktopNav = () => {
     const linkColor = useColorModeValue('gray.600', 'gray.200');
     const linkHoverColor = useColorModeValue('gray.800', 'white');
-    const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
     return (
         <Stack direction={'row'} spacing={4}>
@@ -140,7 +138,6 @@ const DesktopNav = () => {
                             <PopoverContent
                                 border={0}
                                 boxShadow={'xl'}
-                                bg={popoverContentBgColor}
                                 p={4}
                                 rounded={'xl'}
                                 minW={'sm'}>
@@ -195,7 +192,6 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 const MobileNav = () => {
     return (
         <Stack
-            bg={useColorModeValue('white', 'gray.800')}
             p={4}
             display={{ md: 'none' }}>
             {NAV_ITEMS.map((navItem) => (
@@ -248,7 +244,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                             <Link key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Link>
-                        ))}
+                    ))}
                 </Stack>
             </Collapse>
         </Stack>

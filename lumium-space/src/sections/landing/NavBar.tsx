@@ -12,9 +12,11 @@ import {
     PopoverTrigger,
     PopoverContent,
     useColorModeValue,
-    useBreakpointValue,
     useDisclosure,
     useColorMode,
+    Image,
+    HStack,
+    Spacer,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
@@ -26,10 +28,15 @@ import {
 } from '@chakra-ui/icons';
 import Router from 'next/router';
 import { AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
+import packageInfo from 'package.json';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
+
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    const logo = useColorModeValue(darkLogo, lightLogo);
 
     return (
         <Box>
@@ -38,9 +45,6 @@ export const NavBar = () => {
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
-                borderBottom={1}
-                borderStyle={'solid'}
-                borderColor={useColorModeValue('gray.200', 'gray.900')}
                 align={'center'}>
                 <Flex
                     flex={{ base: 1, md: 'auto' }}
@@ -56,17 +60,17 @@ export const NavBar = () => {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-                    <Text
-                        textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-                        fontFamily={'heading'}
-                        color={useColorModeValue('gray.800', 'white')}>
-                        Logo
-                    </Text>
-
-                    <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-                        <DesktopNav />
-                    </Flex>
+                    <HStack>
+                        <Link href="https://lumium.space/" maxW={"15%"} maxH={"50%"}>
+                            <Image src={logo} alt="lumium logo" />
+                        </Link>
+                        <Spacer />
+                        <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+                            <DesktopNav />
+                        </Flex>
+                    </HStack>
                 </Flex>
+                <Spacer maxW={'5%'} />
 
                 <Stack
                     flex={{ base: 1, md: 0 }}
@@ -123,7 +127,7 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={'sm'}
+                                fontSize={'lg'}
                                 fontWeight={500}
                                 color={linkColor}
                                 _hover={{
@@ -260,7 +264,7 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
     {
-        label: 'Inspiration',
+        label: 'Features',
         children: [
             {
                 label: 'Explore Design Work',
@@ -275,26 +279,19 @@ const NAV_ITEMS: Array<NavItem> = [
         ],
     },
     {
-        label: 'Find Work',
-        children: [
-            {
-                label: 'Job Board',
-                subLabel: 'Find your dream design job',
-                href: '#',
-            },
-            {
-                label: 'Freelance Projects',
-                subLabel: 'An exclusive list for contract work',
-                href: '#',
-            },
-        ],
+        label: 'Security',
+        href: '/security',
     },
     {
-        label: 'Learn Design',
-        href: '#',
+        label: 'Source Code',
+        href: `${packageInfo.repository.url}/`,
     },
     {
-        label: 'Hire Designers',
-        href: '#',
+        label: 'Changelog',
+        href: `${packageInfo.repository.url}/releases/latest`,
+    },
+    {
+        label: 'Pricing',
+        href: '/pricing',
     },
 ];

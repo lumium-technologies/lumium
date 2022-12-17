@@ -12,9 +12,10 @@ import {
     PopoverTrigger,
     PopoverContent,
     useColorModeValue,
-    useBreakpointValue,
     useDisclosure,
     useColorMode,
+    Image,
+    HStack,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
@@ -30,6 +31,10 @@ import { AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
+
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
 
     return (
         <Box>
@@ -56,16 +61,12 @@ export const NavBar = () => {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-                    <Text
-                        textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-                        fontFamily={'heading'}
-                        color={useColorModeValue('gray.800', 'white')}>
-                        Logo
-                    </Text>
-
-                    <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-                        <DesktopNav />
-                    </Flex>
+                    <HStack>
+                        <Image src={logo} maxH={"50%"} maxW={"15%"} alt="lumium logo" />
+                        <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+                            <DesktopNav />
+                        </Flex>
+                    </HStack>
                 </Flex>
 
                 <Stack

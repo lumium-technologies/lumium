@@ -21,7 +21,6 @@ import { useUserInfo } from '@hooks/api';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
-import { AuthenticatorAuth } from '@components/security/AuthenticatorAuth';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -69,67 +68,65 @@ const SignIn: React.FC = () => {
     let logo = useColorModeValue(darkLogo, lightLogo);
 
     return (
-        <AuthenticatorAuth>
-            <AuthBox title="Sign in to your account" logo={logo}>
-                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                    <Stack spacing={4}>
-                        <FormControl id="email" isRequired isInvalid={credentialsMatchError}>
-                            <FormLabel>Email address</FormLabel>
+        <AuthBox title="Sign in to your account" logo={logo}>
+            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                <Stack spacing={4}>
+                    <FormControl id="email" isRequired isInvalid={credentialsMatchError}>
+                        <FormLabel>Email address</FormLabel>
+                        <Input
+                            name={"email"}
+                            type={"email"}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
+                            data-cy="emailInput"
+                        />
+                    </FormControl>
+                    <FormControl id="password" isRequired isInvalid={credentialsMatchError}>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
                             <Input
-                                name={"email"}
-                                type={"email"}
+                                name={"password"}
+                                type={showPassword ? 'text' : 'password'}
                                 onChange={formik.handleChange}
-                                value={formik.values.email}
-                                data-cy="emailInput"
+                                value={formik.values.password}
+                                data-cy="passwordInput"
                             />
-                        </FormControl>
-                        <FormControl id="password" isRequired isInvalid={credentialsMatchError}>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    name={"password"}
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    value={formik.values.password}
-                                    data-cy="passwordInput"
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowPassword((showPassword) => !showPassword)
-                                        }>
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                            <FormErrorMessage data-cy="passwordError">Wrong credentials.</FormErrorMessage>
-                        </FormControl>
-                        <Flex justifyContent="space-between" mt="0">
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
-                        </Flex>
-                        <Button
-                            bg={'blue.400'}
-                            color={'white'}
-                            _hover={{
-                                bg: 'blue.500',
-                            }}
-                            type="submit"
-                            data-cy="signInButton"
-                        >
-                            Sign in
-                        </Button>
+                            <InputRightElement h={'full'}>
+                                <Button
+                                    variant={'ghost'}
+                                    onClick={() =>
+                                        setShowPassword((showPassword) => !showPassword)
+                                    }>
+                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                        <FormErrorMessage data-cy="passwordError">Wrong credentials.</FormErrorMessage>
+                    </FormControl>
+                    <Flex justifyContent="space-between" mt="0">
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
+                    </Flex>
+                    <Button
+                        bg={'blue.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'blue.500',
+                        }}
+                        type="submit"
+                        data-cy="signInButton"
+                    >
+                        Sign in
+                    </Button>
 
-                        <Flex flexDir="column" alignItems={"center"}>
-                            <Text mb={"0"}>
-                                Create a new account?
-                            </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
-                        </Flex>
-                    </Stack>
-                </form>
-            </AuthBox>
-        </AuthenticatorAuth>
+                    <Flex flexDir="column" alignItems={"center"}>
+                        <Text mb={"0"}>
+                            Create a new account?
+                        </Text>
+                        <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
+                    </Flex>
+                </Stack>
+            </form>
+        </AuthBox>
     );
 };
 

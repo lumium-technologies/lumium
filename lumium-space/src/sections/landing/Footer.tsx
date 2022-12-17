@@ -64,7 +64,6 @@ const SocialButton = ({
 export function Footer() {
     return (
         <Box
-            bg={useColorModeValue('gray.50', 'gray.900')}
             color={useColorModeValue('gray.700', 'gray.200')}
         >
             <Container
@@ -88,7 +87,9 @@ export function Footer() {
                         <FaInstagram />
                     </SocialButton>
                 </Stack>
-                <Text>{packageInfo.version}</Text>
+                <a href={`${packageInfo.repository.url}/releases/${packageInfo.version}`} target="_blank">
+                    <Text>{packageInfo.version}</Text>
+                </a>
             </Container>
         </Box>
     );

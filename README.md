@@ -1,5 +1,5 @@
 <div align="center">
-    <image src="https://raw.githubusercontent.com/D3PSI/lumium/develop/lumium-space/public/logo/parts/fg/icon.svg"></image>
+<image src="https://raw.githubusercontent.com/D3PSI/lumium/develop/lumium-space/public/logo/svg/Color logo with background.svg"></image>
 </div>
 
 # lumium

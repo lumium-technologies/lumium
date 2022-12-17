@@ -16,6 +16,7 @@ const ResetPassword: React.FC = () => {
     const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
+
     const handleResetPassword = () => {
         const email = formik.values.email;
         const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
@@ -36,6 +37,7 @@ const ResetPassword: React.FC = () => {
             };
         });
     };
+
     const handleChangePassword = () => {
         const password = formik.values.password;
         const passwordVerify = formik.values.passwordConfirm;
@@ -55,6 +57,7 @@ const ResetPassword: React.FC = () => {
             formik.errors.passwordConfirm = "Passwords don't match."
         }
     };
+
     const handleResendEmail = () => {
         const email = formik.values.email;
         api.post(PASSWORD_RESET_TOKEN, {
@@ -67,6 +70,7 @@ const ResetPassword: React.FC = () => {
         });
         setEmailResent(true);
     };
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -82,8 +86,13 @@ const ResetPassword: React.FC = () => {
         },
         validateOnChange: (false),
     });
+
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
+
     const resetPasswordEmail = (
-        <AuthBox title="Forgot your password">
+        <AuthBox title="Forgot your password" logo={logo}>
             <Stack spacing={4}>
                 <Text
                     fontSize={{ base: 'sm', sm: 'md' }}
@@ -117,6 +126,7 @@ const ResetPassword: React.FC = () => {
             </Stack>
         </AuthBox>
     );
+
     const emailSentPage = (
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
@@ -139,6 +149,7 @@ const ResetPassword: React.FC = () => {
             }
         </Box>
     );
+
     const changePassword = (
         <AuthBox title="Enter new password">
             <Stack spacing={4}>

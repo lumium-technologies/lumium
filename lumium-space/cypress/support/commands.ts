@@ -25,6 +25,7 @@ Cypress.Commands.add('interceptAndWait', (page, code) => {
 });
 
 Cypress.Commands.add("signUp", () => {
+    cy.clearCookies();
     cy.visit(AUTH_SIGNUP);
     let email = makeid() + "@example.com";
     let password = makeid();
@@ -33,15 +34,17 @@ Cypress.Commands.add("signUp", () => {
     cy.dataCy("passwordConfirmInput").should("be.visible").type(password);
     cy.dataCy("signUpButton").should("be.visible").click();
     cy.url().should('include', SPACES_NEW);
-    cy.wait(1000);
+    cy.getCookie('sAccessToken').should("exist");
     return cy.wrap([email, password]);
 });
 
 Cypress.Commands.add("signIn", (email: string, password: string) => {
+    cy.clearCookies();
     cy.visit(AUTH_SIGNIN);
     cy.dataCy("emailInput").should("be.visible").type(email);
     cy.dataCy("passwordInput").should("be.visible").type(password);
     cy.dataCy("signInButton").should("be.visible").click();
+    cy.getCookie('sAccessToken').should("exist");
     cy.url().should('include', SPACES_NEW);
 });
 

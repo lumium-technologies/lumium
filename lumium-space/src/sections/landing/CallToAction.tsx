@@ -121,7 +121,7 @@ export function CallToAction() {
                     collaboration made{' '}
                     <Text as={'span'} color={'red.400'}>
                         secure
-                    </Text>
+                    </Text>,
                     <br />pretty and fast
                 </Heading>
                 <Text color={'gray.500'} maxW={'3xl'}>

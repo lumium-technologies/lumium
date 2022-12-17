@@ -1,19 +1,20 @@
 import { SPACES_CREATE, SPACES_JOIN, SPACES_NEW } from "@routes/space";
 
 describe("/spaces/new", () => {
-    before(() => {
-        cy.signUp();
-    });
-    beforeEach(() => {
-        cy.signIn();
-        cy.visit(SPACES_NEW);
-    });
     it("create button redirection", () => {
-        cy.dataCy("createButton").should("be.visible").click();
-        cy.url().should('include', SPACES_CREATE);
+        cy.signUp().then(() => {
+            cy.visit(SPACES_NEW);
+            cy.dataCy("createButton").should("be.visible").click();
+            cy.url().should('include', SPACES_CREATE);
+            cy.deleteAccount();
+        });
     });
     it("join button redirection", () => {
-        cy.dataCy("joinButton").should("be.visible").click();
-        cy.url().should('include', SPACES_JOIN);
+        cy.signUp().then(() => {
+            cy.visit(SPACES_NEW);
+            cy.dataCy("joinButton").should("be.visible").click();
+            cy.url().should('include', SPACES_JOIN);
+            cy.deleteAccount();
+        });
     });
 });

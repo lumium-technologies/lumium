@@ -16,10 +16,10 @@ const AccountPage: React.FC = () => {
     };
     return (
         <Authenticator>
-            <Button backgroundColor={"grey"} onClick={handleLogout}>
+            <Button backgroundColor={"grey"} onClick={handleLogout} data-cy={"signOut"}>
                 Logout
             </Button>
-            <Button backgroundColor={"darkred"} onClick={handleDelete}>
+            <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy={"deleteAccount"}>
                 Delete Account
             </Button>
         </Authenticator>

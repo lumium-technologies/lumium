@@ -16,6 +16,7 @@ import {
     useColorMode,
     Image,
     HStack,
+    Spacer,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
@@ -34,7 +35,7 @@ export const NavBar = () => {
 
     const darkLogo = '/logo/svg/Black logo - no background.svg';
     const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
+    const logo = useColorModeValue(darkLogo, lightLogo);
 
     return (
         <Box>
@@ -62,12 +63,16 @@ export const NavBar = () => {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <HStack>
-                        <Image src={logo} maxH={"50%"} maxW={"15%"} alt="lumium logo" />
+                        <Link href="https://lumium.space/" maxW={"15%"} maxH={"50%"}>
+                            <Image src={logo} alt="lumium logo" />
+                        </Link>
+                        <Spacer />
                         <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                             <DesktopNav />
                         </Flex>
                     </HStack>
                 </Flex>
+                <Spacer maxW={'5%'} />
 
                 <Stack
                     flex={{ base: 1, md: 0 }}
@@ -124,7 +129,7 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={'sm'}
+                                fontSize={'lg'}
                                 fontWeight={500}
                                 color={linkColor}
                                 _hover={{

@@ -21,10 +21,11 @@ export function CallToAction() {
                     fontWeight={600}
                     fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
                     lineHeight={'110%'}>
-                    shared, secured productivity{' '}
+                    collaboration made{' '}
                     <Text as={'span'} color={'red.400'}>
-                        made easy
+                        secure
                     </Text>
+                    <br />pretty and fast
                 </Heading>
                 <Text color={'gray.500'} maxW={'3xl'}>
                     Never miss a meeting. Never be late for one too. Keep track of your

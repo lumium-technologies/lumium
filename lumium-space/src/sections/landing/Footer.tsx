@@ -87,7 +87,7 @@ export function Footer() {
                         <FaInstagram />
                     </SocialButton>
                 </Stack>
-                <a href={`${packageInfo.repository.url}/releases/${packageInfo.version}`} target="_blank">
+                <a href={`${packageInfo.repository.url}/releases/${packageInfo.version}`} target="_blank" rel="noreferrer">
                     <Text>{packageInfo.version}</Text>
                 </a>
             </Container>

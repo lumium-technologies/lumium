@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import { ping } from '../../../controllers';
 import { PUBLIC_PING, PUBLIC_AUTH } from '../../../../routes/api/v1';
-import { user as auth } from './auth';
+import { auth } from './auth';
 
 /**
  * GET /ping

@@ -8,5 +8,5 @@ export class AuthenticationInformation extends AbstractEntity {
     user: User
 
     @Column()
-    variant: string
+    key: string
 }

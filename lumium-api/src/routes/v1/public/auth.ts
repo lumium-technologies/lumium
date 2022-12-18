@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { AUTH_SIGNIN_POST, AUTH_SIGNUP_POST } from '../../../../../routes/api/v1/public';
+import { SIGNIN_POST, SIGNUP_POST } from '../../../../../routes/api/v1/public';
 import { signIn, signUp } from '../../../controllers/auth';
 
 /**
@@ -12,7 +12,7 @@ import { signIn, signUp } from '../../../controllers/auth';
  * @return 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.post(AUTH_SIGNIN_POST, signIn);
+router.post(SIGNIN_POST, signIn);
 
 /**
  * POST /auth/signup
@@ -23,6 +23,6 @@ router.post(AUTH_SIGNIN_POST, signIn);
  * @return 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  */
-router.post(AUTH_SIGNUP_POST, signUp);
+router.post(SIGNUP_POST, signUp);
 
-export { router as user };
+export { router as auth };

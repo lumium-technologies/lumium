@@ -4,6 +4,7 @@ export const AUTH = ROOT + 'auth';
 export const AUTH_SIGNIN = AUTH + '/signin';
 export const AUTH_SIGNUP = AUTH + '/signup';
 export const AUTH_PASSWORD_RESET = AUTH + '/reset-password';
+export const AUTH_VERIFY_EMAIL = AUTH + '/verify-email';
 export const SPACES = ROOT + 'spaces';
 export const SPACES_NEW = SPACES + '/new';
 export const SPACES_CREATE = SPACES + '/create';

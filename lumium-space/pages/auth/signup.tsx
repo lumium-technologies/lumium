@@ -15,11 +15,11 @@ import {
     FormErrorMessage,
     Image
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, ROOT, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, AUTH_VERIFY_EMAIL, EMAIL_EXISTS } from '@routes/space';
 import Session from 'supertokens-auth-react/recipe/session';
 import { useUserInfo } from '@hooks/api';
 import { AuthBox } from '@components/auth/AuthBox';
@@ -46,7 +46,7 @@ const SignUp: React.FC = () => {
                             "value": password
                         }
                     ]
-                }).then(() => Router.push(SPACES_NEW));
+                }).then(() => Router.push(AUTH_VERIFY_EMAIL));
             } else {
                 setEmailExistsError(true);
             };

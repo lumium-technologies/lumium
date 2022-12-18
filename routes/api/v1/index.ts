@@ -1,10 +1,16 @@
+import { AUTH, AUTH_SIGNIN_POST, AUTH_SIGNUP_POST, PING } from './public';
 import { PONG, USER_DELETE, USER_GET, WORKSPACE_PUT, WORKSPACE_WORKSPACEID_GET, WORKSPACE_WORKSPACEID_DELETE, WORKSPACE_WORKSPACEID_PATCH, WORKSPACE_WORKSPACEID_POST } from './secure';
 import { PAGEID_GET } from './secure/page';
 
 export const V1 = '/v1';
-export const PING = '/ping';
-export const SECURE = '/secure';
 
+export const PUBLIC = '';
+export const PUBLIC_PING = PUBLIC + PING;
+export const PUBLIC_AUTH = PUBLIC + AUTH;
+export const PUBLIC_AUTH_SIGNIN_POST = PUBLIC + AUTH_SIGNIN_POST;
+export const PUBLIC_AUTH_SIGNUP_POST = PUBLIC + AUTH_SIGNUP_POST;
+
+export const SECURE = '/secure';
 export const SECURE_PONG = SECURE + PONG;
 export const SECURE_USER_GET = SECURE + USER_GET;
 export const SECURE_USER_DELETE = SECURE + USER_DELETE;

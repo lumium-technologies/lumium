@@ -1,7 +1,7 @@
 import express from 'express';
 import { PAGEID_GET } from '../../../../../routes/api/v1/secure/page';
 const router = express.Router();
-import { info } from '../../../../controllers/page';
+import { info } from '../../../controllers/page';
 
 /**
  * GET /secure/page/{pageId}

@@ -15,8 +15,8 @@
     "scripts": {
         "test": "NODE_TEST=true NODE_JEST=true jest --passWithNoTests --coverage -c test/jest.config.js",
         "build": "tsc",
-        "start": "ts-node src/index.ts",
-        "start:dev": "nodemon src/index.ts",
+        "start": "TOKEN_SECRET=$(node ./bin/generate-secret.js) ts-node src/index.ts",
+        "start:dev": "TOKEN_SECRET=$(node ./bin/generate-secret.js) nodemon src/index.ts",
         "dev": "yarn run typeorm migration:run && yarn run start:dev",
         "typeorm": "typeorm-ts-node-esm -d ./src/data-source.ts",
         "db:migrate": "yarn run typeorm cache:clear && yarn run typeorm migration:run"
@@ -39,7 +39,7 @@
         "redis": "^4.3.1",
         "reflect-metadata": "0.1.13",
         "supertest": "^6.2.4",
-        "supertokens-node": "9.2.3",
+        "supertokens-node": "^12.1.3",
         "ts-jest": "^29.0.2",
         "ts-node": "10.8.1",
         "typeorm": "0.3.6",

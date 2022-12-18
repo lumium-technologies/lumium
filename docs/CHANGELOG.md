@@ -1,3 +1,10 @@
+## **0.5.2** <sub><sup>2022-12-18 ([04d68ef...0738463](https://github.com/lumium-technologies/lumium/compare/04d68ef...0738463?diff=split))</sup></sub>
+
+### Bug Fixes
+##### `landing-page`
+*  mobile navigation, responsiveness ([08d0669](https://github.com/lumium-technologies/lumium/commit/08d0669))
+
+
 ## **0.5.1** <sub><sup>2022-12-17 ([89436fc...ded26c0](https://github.com/lumium-technologies/lumium/compare/89436fc...ded26c0?diff=split))</sup></sub>
 
 ### Bug Fixes

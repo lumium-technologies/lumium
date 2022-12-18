@@ -9,29 +9,28 @@ declare module "express-serve-static-core" {
     }
 }
 
-export const generateAccessToken = async (data: any) => {
+export const generateAccessToken = (data: any) => {
     return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 };
 
-export const authenticateAccessToken = async (req, res, next) => {
+export const authenticateAccessToken = (req, res, next) => {
     const token = req.cookies['accessToken'];
 
     if (token == null) {
         return res.status(401).send();
     }
 
-    let decoded;
-    try {
-        decoded = jwt.verify(token, process.env.TOKEN_SECRET as string);
-    } catch (e) {
-        console.log(e);
-        return res.status(401).send();
-    }
-    let blacklisted = await dataSource.getRepository(BlacklistedToken).findOne({ where: { user: decoded.userId, token: token } });
-    if (blacklisted) {
-        return res.status(401).send();
-    }
-    req.user = decoded.userId;
-    req.token = token;
-    next();
+    jwt.verify(token, process.env.TOKEN_SECRET as string, async (err: any, decoded: any) => {
+        if (err) {
+            console.error(err);
+            return res.status(401).send()
+        }
+        let blacklisted = await dataSource.getRepository(BlacklistedToken).count({ where: { user: { id: decoded.userId }, token: token } });
+        if (blacklisted != 0) {
+            return res.status(401).send();
+        }
+        req.user = decoded.userId;
+        req.token = token;
+        next();
+    });
 };

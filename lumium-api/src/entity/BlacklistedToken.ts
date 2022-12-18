@@ -10,6 +10,6 @@ export class BlacklistedToken extends AbstractEntity {
     @Column()
     token: string
 
-    @Column()
+    @Column({ type: "bigint" })
     expires: number
 }

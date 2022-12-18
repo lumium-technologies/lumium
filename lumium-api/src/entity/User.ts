@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, OneToOne, ManyToOne } from "typeorm"
+import { Entity, Column, OneToMany, ManyToMany, OneToOne, ManyToOne, JoinColumn } from "typeorm"
 import { AbstractEntity } from "./AbstractEntity"
 import { Address } from "./Address"
 import { AuthenticationInformation } from "./AuthenticationInformation"
@@ -9,8 +9,9 @@ import { Workspace } from "./Workspace"
 
 @Entity("users")
 export class User extends AbstractEntity {
-    @OneToMany(() => AuthenticationInformation, (auth) => auth.user)
-    auth?: AuthenticationInformation[]
+    @OneToOne(() => AuthenticationInformation, (auth) => auth.user, { cascade: true, onDelete: 'CASCADE' })
+    @JoinColumn()
+    auth?: AuthenticationInformation
 
     @Column({ nullable: true })
     firstName?: string

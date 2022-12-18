@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { connection } from './data-source';
@@ -108,7 +109,7 @@ const options = {
             type: 'apiKey',
             scheme: 'cookie',
             name: 'test',
-            in: 'sAccessToken'
+            in: 'accessToken'
         },
     },
     filesPattern: './routes/**/*.ts',
@@ -127,6 +128,7 @@ app.use(
         extended: true,
     })
 );
+app.use(cookieParser());
 
 const spaceHosts: (string)[] = [process.env.SPACE_HOST, process.env.SPACE_HOST_HEROKU];
 const apiHosts: (string)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];

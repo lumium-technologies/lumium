@@ -6,14 +6,12 @@ declare module "express-serve-static-core" {
     }
 }
 
-export const generateAccessToken = (username: string) => {
-    return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: "3600s" });
+export const generateAccessToken = (userId: string) => {
+    return jwt.sign(userId, process.env.TOKEN_SECRET, { expiresIn: "3600s" });
 };
 
 export const authenticateAccessToken = (req, res, next) => {
-    const header = req.headers['authorization'];
-    const parts = header && header.split(' ');
-    const token = parts[1];
+    const token = req.cookies['accessToken'];
 
     if (token == null) {
         return res.status(401).send();

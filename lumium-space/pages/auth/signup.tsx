@@ -15,7 +15,7 @@ import {
     FormErrorMessage,
     Image
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -36,16 +36,8 @@ const SignUp: React.FC = () => {
         api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {
                 api.post(AUTH_SIGNUP, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        },
-                        {
-                            "id": "password",
-                            "value": password
-                        }
-                    ]
+                    "email": email,
+                    "password": password
                 }).then(() => Router.push(SPACES_NEW));
             } else {
                 setEmailExistsError(true);

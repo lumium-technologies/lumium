@@ -31,16 +31,8 @@ const SignIn: React.FC = () => {
         const email = formik.values.email;
         const password = formik.values.password;
         api.post(AUTH_SIGNIN, {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                },
-                {
-                    "id": "password",
-                    "value": password
-                }
-            ]
+            "email": email,
+            "password": password
         }).then((promise) => promise.data).then((status) => {
             if (status.status == "OK") {
                 if (userInfo?.recentWorkspace) {

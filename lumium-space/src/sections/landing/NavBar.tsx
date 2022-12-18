@@ -47,9 +47,9 @@ export const NavBar = () => {
                 px={{ base: 4 }}
                 align={'center'}>
                 <Flex
-                    flex={{ base: 1, md: 'auto' }}
+                    flex={{ base: 1, lg: 'auto' }}
                     ml={{ base: -2 }}
-                    display={{ base: 'flex', md: 'none' }}>
+                    display={{ base: 'flex', lg: 'none' }}>
                     <IconButton
                         onClick={onToggle}
                         icon={
@@ -61,20 +61,19 @@ export const NavBar = () => {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <HStack>
-                        <Link href="https://lumium.space/" maxW={"15%"} maxH={"50%"}>
+                        <Link display={{ base: 'none', lg: 'flex' }} href="https://lumium.space/" width={"10rem"}>
                             <Image src={logo} alt="lumium logo" />
                         </Link>
                         <Spacer />
-                        <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+                        <Flex display={{ base: 'none', lg: 'flex' }} ml={10}>
                             <DesktopNav />
                         </Flex>
                     </HStack>
                 </Flex>
-                <Spacer maxW={'5%'} />
 
                 <Stack
                     flex={{ base: 1, md: 0 }}
-                    justify={'flex-end'}
+                    justify={'end'}
                     direction={'row'}
                     spacing={6}>
                     <Button onClick={toggleColorMode} data-cy="switchThemeButton">
@@ -91,7 +90,6 @@ export const NavBar = () => {
                         Sign In
                     </Button>
                     <Button
-                        display={{ base: 'none', md: 'inline-flex' }}
                         fontSize={'sm'}
                         fontWeight={600}
                         color={'white'}
@@ -127,7 +125,7 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={'lg'}
+                                fontSize={{base: 'md', 'xx-large': 'lg'}}
                                 fontWeight={500}
                                 color={linkColor}
                                 _hover={{
@@ -197,7 +195,7 @@ const MobileNav = () => {
     return (
         <Stack
             p={4}
-            display={{ md: 'none' }}>
+            display={{ lg: 'none' }}>
             {NAV_ITEMS.map((navItem) => (
                 <MobileNavItem key={navItem.label} {...navItem} />
             ))}

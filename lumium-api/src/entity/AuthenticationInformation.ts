@@ -9,4 +9,7 @@ export class AuthenticationInformation extends AbstractEntity {
 
     @Column()
     key: string
+
+    @Column()
+    salt: string
 }

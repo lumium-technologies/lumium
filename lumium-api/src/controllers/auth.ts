@@ -11,9 +11,6 @@ import jwt from 'jsonwebtoken';
 import { LessThan } from 'typeorm';
 import { ReasonDTO } from '../../types';
 
-const peppers =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
     const user = await dataSource.getRepository(User).findOne({
         where: {
@@ -35,19 +32,17 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         }
     });
     await dataSource.getRepository(BlacklistedToken).remove(expiredTokens);
-    let keys = Buffer.from(user.auth!.key, 'base64');
-    Array.from(peppers).forEach((pepper) => {
-        const derivedKey = crypto.pbkdf2Sync(
-            Buffer.from(req.body.password + pepper, 'utf8'),
-            Buffer.from(process.env.SALT, 'base64'),
-            100000,
-            64,
-            'sha512'
-        );
-        if (keys.includes(derivedKey)) {
-            return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
-        }
-    });
+    let key = Buffer.from(user.auth!.key, 'base64');
+    const derivedKey = crypto.pbkdf2Sync(
+        Buffer.from(req.body.password, 'utf8'),
+        Buffer.from(user.auth!.salt, 'base64'),
+        100000,
+        64,
+        'sha512'
+    );
+    if (key.toString('binary') == derivedKey.toString('binary')) {
+        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+    }
     return res.status(401).send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
 };
 
@@ -56,10 +51,10 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
     if (exists) {
         return res.status(401).send({ status: "EMAIL_ALREADY_EXISTS", reason: "this email already exists" });
     }
-    const pepper = peppers[Math.floor(Math.random() * 52)];
+    let salt = crypto.randomBytes(64);
     const derivedKey = crypto.pbkdf2Sync(
-        Buffer.from(req.body.password + pepper, 'utf8'),
-        Buffer.from(process.env.SALT, 'base64'),
+        Buffer.from(req.body.password, 'utf8'),
+        salt,
         100000,
         64,
         'sha512'
@@ -68,6 +63,7 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
     await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email });
     let auth = new AuthenticationInformation();
     auth.key = derivedKey.toString('base64');
+    auth.salt = salt.toString('base64');
     user.auth = auth;
     await dataSource.getRepository(User).save(user);
     return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
@@ -80,5 +76,5 @@ export const signOut = async (req: express.Request, res: express.Response) => {
     const expTime = exp * 1000;
     let token: BlacklistedToken = { user: { id: req.user! }, token: req.token!, expires: expTime };
     await dataSource.getRepository(BlacklistedToken).save(token);
-    return res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
+    return res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }).send(); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
 };

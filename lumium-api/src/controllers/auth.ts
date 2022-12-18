@@ -78,6 +78,7 @@ export const signOut = async (req: express.Request, res: express.Response) => {
         exp: number;
     };
     const expTime = exp * 1000;
-    await dataSource.getRepository(BlacklistedToken).save({ user: { id: req.user! }, token: req.token!, expiresAfter: expTime });
+    let token: BlacklistedToken = { user: { id: req.user! }, token: req.token!, expires: expTime };
+    await dataSource.getRepository(BlacklistedToken).save(token);
     return res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
 };

@@ -13,7 +13,7 @@
     "homepage": "https://lumium.space",
     "description": "next level docs",
     "scripts": {
-        "test": "NODE_TEST=true NODE_JEST=true jest --passWithNoTests --coverage -c test/jest.config.js",
+        "test": "TOKEN_SECRET=$(node ./bin/generate-secret.js) NODE_TEST=true NODE_JEST=true jest --passWithNoTests --coverage -c test/jest.config.js",
         "build": "tsc",
         "start": "TOKEN_SECRET=$(node ./bin/generate-secret.js) ts-node src/index.ts",
         "start:dev": "TOKEN_SECRET=$(node ./bin/generate-secret.js) nodemon src/index.ts",

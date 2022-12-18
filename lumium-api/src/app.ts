@@ -10,7 +10,7 @@ import { v1sec } from './routes';
 
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 import { SECURE, V1 } from '../routes/api/v1';
-import { authenticateAccessToken } from './cypto';
+import { authenticateAccessToken } from './crypto';
 
 const initDataSource = async () => {
     try {

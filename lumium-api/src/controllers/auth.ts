@@ -3,7 +3,7 @@ import { UserAuthDTO } from "../../types/api/v1/dto/request";
 import { dataSource } from '../data-source';
 import { User } from '../entity/User';
 import crypto from 'crypto';
-import { generateAccessToken } from '../cypto';
+import { generateAccessToken } from '../crypto';
 import { Email } from '../entity/Email';
 import { AuthenticationInformation } from '../entity/AuthenticationInformation';
 import { BlacklistedToken } from '../entity/BlacklistedToken';

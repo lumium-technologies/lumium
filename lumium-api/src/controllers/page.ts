@@ -17,7 +17,7 @@ export const info = async (req: express.Request, res: express.Response<Page>) =>
         },
     });
     if (!page) {
-        res.status(404).send();
+        return res.status(404).send();
     }
-    res.status(200).send(page);
+    return res.status(200).send(page);
 }

@@ -23,12 +23,12 @@ export const info = async (req: express.Request, res: express.Response<User>) =>
             id: req.user!
         },
     });
-    res.status(200).send(user);
+    return res.status(200).send(user);
 }
 
 export const deleteAccount = async (req: express.Request, res: express.Response) => {
     await dataSource.getRepository(User).remove({ id: req.user! });
     await i({ detail: req.user! + " has deleted his account", type: AuditEntryEvent.USER_DELETED });
 
-    res.status(200).send();
+    return res.status(200).send();
 }

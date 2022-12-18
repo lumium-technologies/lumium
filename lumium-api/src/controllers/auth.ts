@@ -9,11 +9,12 @@ import { AuthenticationInformation } from '../entity/AuthenticationInformation';
 import { BlacklistedToken } from '../entity/BlacklistedToken';
 import jwt from 'jsonwebtoken';
 import { LessThan } from 'typeorm';
+import { ReasonDTO } from '../../types';
 
 const peppers =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Response) => {
+export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
     const user = await dataSource.getRepository(User).findOne({
         where: {
             emails: {
@@ -25,7 +26,7 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         }
     });
     if (!user) {
-        res.status(401).send();
+        return res.status(401).send({ status: 'EMAIL_DOES_NOT_EXIST', reason: 'email does not exist' });
     }
     let expiredTokens = await dataSource.getRepository(BlacklistedToken).find({
         where: {
@@ -44,13 +45,17 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
             'sha512'
         );
         if (keys.includes(derivedKey)) {
-            res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+            return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
         }
     });
-    res.status(401).send();
+    return res.status(401).send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
 };
 
-export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Response) => {
+export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
+    let exists = await dataSource.getRepository(Email).count({ where: { email: req.body.email } }) != 0;
+    if (exists) {
+        return res.status(401).send({ status: "EMAIL_ALREADY_EXISTS", reason: "this email already exists" });
+    }
     const pepper = peppers[Math.floor(Math.random() * 52)];
     const derivedKey = crypto.pbkdf2Sync(
         Buffer.from(req.body.password + pepper, 'utf8'),
@@ -60,12 +65,12 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
         'sha512'
     );
     let user = await dataSource.getRepository(User).save({});
-    await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email! });
+    await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email });
     let auth = new AuthenticationInformation();
     auth.key = derivedKey.toString('base64');
     user.auth = auth;
     await dataSource.getRepository(User).save(user);
-    res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+    return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
 };
 
 export const signOut = async (req: express.Request, res: express.Response) => {
@@ -74,5 +79,5 @@ export const signOut = async (req: express.Request, res: express.Response) => {
     };
     const expTime = exp * 1000;
     await dataSource.getRepository(BlacklistedToken).save({ user: { id: req.user! }, token: req.token!, expiresAfter: expTime });
-    res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
+    return res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
 };

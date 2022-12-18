@@ -203,3 +203,9 @@ export { sec } from './secure';
  * @property {string} email - The user's email
  * @property {string} password - The user's plaintext password
  */
+
+/**
+ * @typedef {object} ReasonDTO
+ * @property {string} status - The short status code
+ * @property {string} reason - A more detailed reason
+ */

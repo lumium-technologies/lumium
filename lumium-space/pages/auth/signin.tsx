@@ -27,6 +27,7 @@ const SignIn: React.FC = () => {
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [api] = useApi();
     const userInfo = useUserInfo();
+
     const handleSignIn = () => {
         const email = formik.values.email;
         const password = formik.values.password;

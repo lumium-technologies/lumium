@@ -31,15 +31,15 @@ const SignUp: React.FC = () => {
     const handleSignUp = () => {
         const email = formik.values.email
         const password = formik.values.password
-        api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
-            if (!value) {
-                api.post(AUTH_SIGNUP, {
-                    "email": email,
-                    "password": password
-                }).then(() => Router.push(SPACES_NEW));
-            } else {
+        api.post(AUTH_SIGNUP, {
+            "email": email,
+            "password": password
+        }).then((res) => {
+            if (res.status != 200) {
                 setEmailExistsError(true);
-            };
+            } else {
+                Router.push(SPACES_NEW);
+            }
         });
     };
 

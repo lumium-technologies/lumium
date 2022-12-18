@@ -13,5 +13,6 @@ export type {
     E2EKeyDTO,
     E2EKeyCreateDTO,
     E2EKeyVariantDTO,
-    E2EKeyVariantCreateDTO
+    E2EKeyVariantCreateDTO,
+    ReasonDTO
 } from './v1';

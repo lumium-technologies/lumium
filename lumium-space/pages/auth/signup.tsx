@@ -15,13 +15,11 @@ import {
     FormErrorMessage,
     Image
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, ROOT, SPACES_NEW } from '@routes/space';
-import Session from 'supertokens-auth-react/recipe/session';
-import { useUserInfo } from '@hooks/api';
+import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, SPACES_NEW } from '@routes/space';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
 
@@ -36,16 +34,8 @@ const SignUp: React.FC = () => {
         api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists).then(value => {
             if (!value) {
                 api.post(AUTH_SIGNUP, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        },
-                        {
-                            "id": "password",
-                            "value": password
-                        }
-                    ]
+                    "email": email,
+                    "password": password
                 }).then(() => Router.push(SPACES_NEW));
             } else {
                 setEmailExistsError(true);

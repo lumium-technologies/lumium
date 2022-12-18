@@ -31,26 +31,18 @@ const SignIn: React.FC = () => {
         const email = formik.values.email;
         const password = formik.values.password;
         api.post(AUTH_SIGNIN, {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                },
-                {
-                    "id": "password",
-                    "value": password
-                }
-            ]
-        }).then((promise) => promise.data).then((status) => {
-            if (status.status == "OK") {
+            "email": email,
+            "password": password
+        }).then((res) => {
+            if (res.status == 200) {
                 if (userInfo?.recentWorkspace) {
                     Router.push('/' + userInfo?.recentWorkspace.id);
                 } else {
                     Router.push(SPACES_NEW);
                 };
-            } else if (status.status == "FIELD_ERROR" || status.status == "WRONG_CREDENTIALS_ERROR") {
+            } else if (res.status == 401) {
                 setCredentialsMatchError(true);
-            };
+            }
         });
     };
 
@@ -103,7 +95,7 @@ const SignIn: React.FC = () => {
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
-                        <FormErrorMessage data-cy="passwordError">Wrong credentials.</FormErrorMessage>
+                        <FormErrorMessage data-cy="passwordError">Invalid credentials.</FormErrorMessage>
                     </FormControl>
                     <Flex justifyContent="space-between" mt="0">
                         <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>

@@ -6,6 +6,9 @@ import crypto from 'crypto';
 import { generateAccessToken } from '../cypto';
 import { Email } from '../entity/Email';
 import { AuthenticationInformation } from '../entity/AuthenticationInformation';
+import { BlacklistedToken } from '../entity/BlacklistedToken';
+import jwt from 'jsonwebtoken';
+import { LessThan } from 'typeorm';
 
 const peppers =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -24,6 +27,13 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
     if (!user) {
         res.status(401).send();
     }
+    let expiredTokens = await dataSource.getRepository(BlacklistedToken).find({
+        where: {
+            user: { id: user.id },
+            expires: LessThan(Date.now())
+        }
+    });
+    await dataSource.getRepository(BlacklistedToken).remove(expiredTokens);
     let keys = Buffer.from(user.auth!.key, 'base64');
     Array.from(peppers).forEach((pepper) => {
         const derivedKey = crypto.pbkdf2Sync(
@@ -50,10 +60,19 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
         'sha512'
     );
     let user = await dataSource.getRepository(User).save({});
-    let email = await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email! });
+    await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email! });
     let auth = new AuthenticationInformation();
     auth.key = derivedKey.toString('base64');
     user.auth = auth;
     await dataSource.getRepository(User).save(user);
     res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+};
+
+export const signOut = async (req: express.Request, res: express.Response) => {
+    const { exp } = jwt.decode(req.token) as {
+        exp: number;
+    };
+    const expTime = exp * 1000;
+    await dataSource.getRepository(BlacklistedToken).save({ user: { id: req.user! }, token: req.token!, expiresAfter: expTime });
+    res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
 };

@@ -1,10 +1,11 @@
 import express from 'express';
-import { PAGE, PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
+import { AUTH, PAGE, PONG, USER, WORKSPACE } from '../../../../routes/api/v1/secure';
 const router = express.Router();
 import { pong } from '../../../controllers';
 import { page } from './page';
 import { user } from './user';
 import { workspace } from './workspace';
+import { auth } from './auth';
 
 /**
  * GET /secure/pong
@@ -19,5 +20,6 @@ router.get(PONG, pong);
 router.use(USER, user);
 router.use(WORKSPACE, workspace);
 router.use(PAGE, page);
+router.use(AUTH, auth);
 
 export { router as sec };

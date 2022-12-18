@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany, ManyToMany, OneToOne, ManyToOne, JoinColumn 
 import { AbstractEntity } from "./AbstractEntity"
 import { Address } from "./Address"
 import { AuthenticationInformation } from "./AuthenticationInformation"
+import { BlacklistedToken } from "./BlacklistedToken"
 import { Email } from "./Email"
 import { Page } from "./Page"
 import { UserPreference } from "./UserPreference"
@@ -12,6 +13,9 @@ export class User extends AbstractEntity {
     @OneToOne(() => AuthenticationInformation, (auth) => auth.user, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
     auth?: AuthenticationInformation
+
+    @OneToMany(() => BlacklistedToken, (token) => token.user)
+    blacklistedTokens?: BlacklistedToken[]
 
     @Column({ nullable: true })
     firstName?: string

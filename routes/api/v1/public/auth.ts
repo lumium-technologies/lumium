@@ -1,2 +1,2 @@
-export const postSignIn = '/signin';
-export const postSignUp = '/signup';
+export const SIGNIN_POST = '/signin';
+export const SIGNUP_POST = '/signup';

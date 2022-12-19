@@ -7,15 +7,18 @@ import { useEffect } from "react";
 
 const Spaces: React.FC = () => {
     const [api] = useApi();
-    const userInfo = useUserInfo();
+    const { refetchUserInfo } = useUserInfo();
+
     useEffect(() => {
         api.get(SECURE_PONG).then((res) => {
             if (res.status == 200) {
-                if (userInfo?.recentWorkspace) {
-                    Router.push(ROOT + userInfo?.recentWorkspace.id);
-                } else {
-                    Router.push(SPACES_NEW);
-                };
+                refetchUserInfo().then((info) => {
+                    if (info?.recentWorkspace) {
+                        Router.push(ROOT + info?.recentWorkspace.id);
+                    } else {
+                        Router.push(SPACES_NEW);
+                    };
+                });
             } else {
                 Router.push(AUTH_SIGNIN);
             }

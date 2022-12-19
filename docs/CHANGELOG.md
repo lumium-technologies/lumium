@@ -1,3 +1,35 @@
+## **0.6.0** <sub><sup>2022-12-19 ([c4fb769...3cba404](https://github.com/lumium-technologies/lumium/compare/c4fb769...3cba404?diff=split))</sup></sub>
+
+### Features
+##### `auth`
+*  generate and verify own JWTs ([de7031f](https://github.com/lumium-technologies/lumium/commit/de7031f))
+*  add key derivation function ([8587148](https://github.com/lumium-technologies/lumium/commit/8587148))
+*  implement sign in and sign up ([066bcb4](https://github.com/lumium-technologies/lumium/commit/066bcb4))
+*  remove supertokens ([e9aee50](https://github.com/lumium-technologies/lumium/commit/e9aee50))
+*  completely remove supertokens ([8f13367](https://github.com/lumium-technologies/lumium/commit/8f13367))
+*  add sign out endpoint with token expiry and blacklist ([490c570](https://github.com/lumium-technologies/lumium/commit/490c570))
+*  make key derivation and auth endpoints prod\-ready ([aa6019f](https://github.com/lumium-technologies/lumium/commit/aa6019f))
+
+
+### Bug Fixes
+*  regenerate lockfile ([3feaa3d](https://github.com/lumium-technologies/lumium/commit/3feaa3d))
+
+##### `auth`
+*  remove supertokens ([79f4cd8](https://github.com/lumium-technologies/lumium/commit/79f4cd8))
+*  fix token blacklisting ([795980d](https://github.com/lumium-technologies/lumium/commit/795980d))
+*  rename crypto\.ts ([c1ca831](https://github.com/lumium-technologies/lumium/commit/c1ca831))
+*  use entity ([6de91d6](https://github.com/lumium-technologies/lumium/commit/6de91d6))
+*  cors requests with credentials, form errors, end to end tests ([fa47021](https://github.com/lumium-technologies/lumium/commit/fa47021))
+
+##### `db`
+*  recreate initial migration ([124eefd](https://github.com/lumium-technologies/lumium/commit/124eefd))
+
+
+### Merged Branches
+*  d/feat/auth ([100e968](https://github.com/lumium-technologies/lumium/commit/100e968))
+*  d/feat/auth ([d77692e](https://github.com/lumium-technologies/lumium/commit/d77692e))
+
+
 ## **0.5.2** <sub><sup>2022-12-18 ([04d68ef...0738463](https://github.com/lumium-technologies/lumium/compare/04d68ef...0738463?diff=split))</sup></sub>
 
 ### Bug Fixes

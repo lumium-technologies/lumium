@@ -1,3 +1,10 @@
+## **0.6.1** <sub><sup>2022-12-19 ([d1d0e89...c872be5](https://github.com/lumium-technologies/lumium/compare/d1d0e89...c872be5?diff=split))</sup></sub>
+
+### Bug Fixes
+##### `auth`
+*  cookie expiry ([bd2445e](https://github.com/lumium-technologies/lumium/commit/bd2445e))
+
+
 ## **0.6.0** <sub><sup>2022-12-19 ([c4fb769...3cba404](https://github.com/lumium-technologies/lumium/compare/c4fb769...3cba404?diff=split))</sup></sub>
 
 ### Features

@@ -2,7 +2,7 @@ import express from 'express';
 import { PUT as PUT, WORKSPACEID_PATCH, WORKSPACEID_POST } from '../../../../../routes/api/v1/secure/workspace';
 import { WORKSPACEID_GET, WORKSPACEID_DELETE } from '../../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
-import { info, create, remove, patch, post } from '../../../../controllers/workspace';
+import { info, create, remove, patch, post } from '../../../controllers/workspace';
 
 /**
  * GET /secure/workspace/{workspaceId}

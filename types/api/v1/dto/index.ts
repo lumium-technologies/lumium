@@ -18,3 +18,7 @@ export type {
     WorkspaceCreateDTO,
     WorkspaceUpdateDTO
 } from './request';
+
+export type {
+    ReasonDTO
+} from './response';

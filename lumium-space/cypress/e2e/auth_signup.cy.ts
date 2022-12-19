@@ -58,7 +58,7 @@ describe("/auth/signup", () => {
         cy.dataCy("passwordInput").should("be.visible").type(password);
         cy.dataCy("passwordConfirmInput").should("be.visible").type(passwordConfirm);
         cy.dataCy("signUpButton").should("be.visible").click();
-        cy.dataCy("passwordMatchError").should("be.visible");
+        cy.dataCy("signUpError").should("be.visible");
         cy.url().should('include', AUTH_SIGNUP);
     });
 });

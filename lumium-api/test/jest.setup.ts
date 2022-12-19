@@ -13,16 +13,9 @@ afterAll(async () => {
 
 global.auth = async () => {
     const response = await supertest(app).post("/v1/auth/signup").send({
-        formFields: [
-            {
-                id: "email",
-                value: randomUUID() + '@example.com'
-            },
-            {
-                id: "password",
-                value: randomUUID()
-            }
-        ]
+        email: randomUUID() + '@example.com',
+        password: randomUUID()
     });
+
     return response.headers['set-cookie'];
 }

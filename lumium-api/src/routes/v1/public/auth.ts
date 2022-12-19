@@ -9,7 +9,7 @@ import { signIn, signUp } from '../../../controllers/auth';
  * @tags auth
  * @param {UserAuthDTO} request.body.required - Auth information
  * @return 200 - Success - application/json
- * @return {ReasonDTO} 500 - Unauthorized, status can be: "INVALID_CREDENTIALS", "EMAIL_DOES_NOT_EXIST" - application/json
+ * @return {ReasonDTO} 500 - Error, status can be: "INVALID_CREDENTIALS", "EMAIL_DOES_NOT_EXIST" - application/json
  */
 router.post(SIGNIN_POST, signIn);
 
@@ -19,7 +19,7 @@ router.post(SIGNIN_POST, signIn);
  * @tags auth
  * @param {UserAuthDTO} request.body.required - Auth information
  * @return 200 - Success - application/json
- * @return {ReasonDTO} 500 - Unauthorized, status can be: "EMAIL_ALREADY_EXISTS" - application/json
+ * @return {ReasonDTO} 500 - Error, status can be: "EMAIL_ALREADY_EXISTS" - application/json
  */
 router.post(SIGNUP_POST, signUp);
 

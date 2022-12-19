@@ -20,4 +20,13 @@ export const info = async (req: express.Request, res: express.Response<Page>) =>
         return res.status(404).send();
     }
     return res.status(200).send(page);
-}
+};
+
+export const create = async (req: express.Request, res: express.Response) => {
+};
+
+export const update = async (req: express.Request, res: express.Response) => {
+};
+
+export const delete = async (req: express.Request, res: express.Response) => {
+};

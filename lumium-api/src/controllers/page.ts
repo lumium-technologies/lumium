@@ -28,5 +28,5 @@ export const create = async (req: express.Request, res: express.Response) => {
 export const update = async (req: express.Request, res: express.Response) => {
 };
 
-export const delete = async (req: express.Request, res: express.Response) => {
+export const remove = async (req: express.Request, res: express.Response) => {
 };

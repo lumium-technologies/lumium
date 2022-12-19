@@ -38,7 +38,7 @@ const SignIn: React.FC = () => {
         }, { withCredentials: true }).then((res) => {
             if (res.status == 200) {
                 if (userInfo?.recentWorkspace) {
-                    Router.push('/' + userInfo?.recentWorkspace.id);
+                    Router.push(ROOT + userInfo?.recentWorkspace.id);
                 } else {
                     Router.push(SPACES_NEW);
                 };

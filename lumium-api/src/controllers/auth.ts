@@ -23,7 +23,7 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         }
     });
     if (!user) {
-        return res.status(401).send({ status: 'EMAIL_DOES_NOT_EXIST', reason: 'email does not exist' });
+        return res.status(500).contentType("application/json").send({ status: 'EMAIL_DOES_NOT_EXIST', reason: 'email does not exist' });
     }
     let expiredTokens = await dataSource.getRepository(BlacklistedToken).find({
         where: {
@@ -41,15 +41,15 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         'sha512'
     );
     if (key.toString('binary') == derivedKey.toString('binary')) {
-        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { maxAge: 86400, httpOnly: true }).send();
     }
-    return res.status(401).send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
+    return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
 };
 
 export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
     let exists = await dataSource.getRepository(Email).count({ where: { email: req.body.email } }) != 0;
     if (exists) {
-        return res.status(401).send({ status: "EMAIL_ALREADY_EXISTS", reason: "this email already exists" });
+        return res.status(500).contentType("application/json").send({ status: "EMAIL_ALREADY_EXISTS", reason: "this email already exists" });
     }
     let salt = crypto.randomBytes(64);
     const derivedKey = crypto.pbkdf2Sync(

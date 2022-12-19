@@ -62,7 +62,7 @@ describe("/auth/signin", () => {
         cy.dataCy("emailInput").should("be.visible").type(email);
         cy.dataCy("passwordInput").should("be.visible").type(password);
         cy.dataCy("signInButton").should("be.visible").click();
-        cy.dataCy("passwordError").should("be.visible");
+        cy.dataCy("signInError").should("be.visible");
         cy.url().should('include', AUTH_SIGNIN);
     });
 });

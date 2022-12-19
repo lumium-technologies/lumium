@@ -3,10 +3,10 @@ import { AUTH, AUTH_SIGNIN } from "@routes/space";
 import axios, { AxiosInstance } from "axios";
 import Router from "next/router";
 
-const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST + V1 : "" });
+const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST + V1 : "", withCredentials:true });
 instance.interceptors.response.use(
     (r) => r,
-    (error) => {
+        (error) => {
         if (!error.response) {
             return Promise.resolve(error);
         }

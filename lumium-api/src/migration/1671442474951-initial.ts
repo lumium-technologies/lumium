@@ -1,24 +1,27 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class endToEndImplementation1664748956630 implements MigrationInterface {
-    name = 'endToEndImplementation1664748956630'
+export class initial1671442474951 implements MigrationInterface {
+    name = 'initial1671442474951'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."adresses_kind_enum" AS ENUM('residential', 'billing')`);
         await queryRunner.query(`CREATE TABLE "adresses" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "kind" "public"."adresses_kind_enum" NOT NULL DEFAULT 'billing', "fullName" character varying NOT NULL, "lineOne" character varying NOT NULL, "lineTwo" character varying NOT NULL, "city" character varying NOT NULL, "state" character varying NOT NULL, "postalCode" character varying NOT NULL, "country" character varying NOT NULL, "userId" uuid, CONSTRAINT "UQ_673f72074d42704de6025c658db" UNIQUE ("userId", "kind"), CONSTRAINT "PK_2787c84f7433e390ff8961d552d" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "authentication_information" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "key" character varying NOT NULL, "salt" character varying NOT NULL, CONSTRAINT "PK_591fa49b4252c7efee4b65077a1" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "blacklisted_tokens" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "token" character varying NOT NULL, "expires" bigint NOT NULL, "userId" uuid, CONSTRAINT "PK_8fb1bc7333c3b9f249f9feaa55d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "emails" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "email" character varying NOT NULL, "primary" boolean, "verified" boolean NOT NULL DEFAULT false, "userId" uuid, CONSTRAINT "UQ_3cbf51004f0706ac67ff8c22dbf" UNIQUE ("email"), CONSTRAINT "UQ_f7013aada4546c39a773b8782ee" UNIQUE ("userId", "primary"), CONSTRAINT "PK_a54dcebef8d05dca7e839749571" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."content_elements_type_enum" AS ENUM('markdown')`);
         await queryRunner.query(`CREATE TABLE "content_elements" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "content" character varying NOT NULL, "type" "public"."content_elements_type_enum" NOT NULL DEFAULT 'markdown', CONSTRAINT "PK_32da08602bea4214faba27b35e2" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "page_contents" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "position" integer NOT NULL, "pageId" uuid, "contentElementId" uuid, CONSTRAINT "PK_5af36dd9a2c7c52f74541473dd4" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "end_to_end_key_variants" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "activator" character varying NOT NULL, "value" character varying NOT NULL, "active" boolean NOT NULL DEFAULT true, "keyId" uuid, CONSTRAINT "PK_11544f8ba1336eab964375f1e7d" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "end_to_end_key_variants" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "activator" character varying NOT NULL, "activatorNonce" character varying NOT NULL, "value" character varying NOT NULL, "valueNonce" character varying NOT NULL, "active" boolean NOT NULL DEFAULT true, "keyId" uuid, CONSTRAINT "PK_11544f8ba1336eab964375f1e7d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "end_to_end_keys" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "activator" character varying NOT NULL, CONSTRAINT "PK_0440fc1b8f41bf675ad14720252" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."workspace_preferences_option_enum" AS ENUM()`);
         await queryRunner.query(`CREATE TABLE "workspace_preferences" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "option" "public"."workspace_preferences_option_enum" NOT NULL, "value" character varying NOT NULL, "workspaceId" uuid, CONSTRAINT "PK_29144da44bda0b41f3d421979ba" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "workspaces" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "ownerId" uuid, "keyId" uuid, CONSTRAINT "REL_4c0073fedaf9eb9e91851fe4ad" UNIQUE ("keyId"), CONSTRAINT "PK_098656ae401f3e1a4586f47fd8e" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "pages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "workspaceId" uuid, "ownerId" uuid, CONSTRAINT "PK_8f21ed625aa34c8391d636b7d3b" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "workspaces" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "name" character varying NOT NULL, "ownerId" uuid, "keyId" uuid, CONSTRAINT "UQ_de659ece27e93d8fe29339d0a42" UNIQUE ("name"), CONSTRAINT "REL_4c0073fedaf9eb9e91851fe4ad" UNIQUE ("keyId"), CONSTRAINT "PK_098656ae401f3e1a4586f47fd8e" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "pages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "name" character varying NOT NULL, "workspaceId" uuid, "ownerId" uuid, CONSTRAINT "UQ_fd04e631bf857b757e33711e5be" UNIQUE ("name"), CONSTRAINT "PK_8f21ed625aa34c8391d636b7d3b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."user_preferences_option_enum" AS ENUM('color_mode')`);
         await queryRunner.query(`CREATE TABLE "user_preferences" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "option" "public"."user_preferences_option_enum" NOT NULL, "value" character varying NOT NULL, "userId" uuid, CONSTRAINT "PK_e8cfb5b31af61cd363a6b6d7c25" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "public"."audit_log_type_enum" AS ENUM('user_signup_init_development_patch', 'user_signup_init', 'user_signup_complete', 'user_signup_failed', 'user_signin', 'user_inconsistent_signup', 'user_email_verified', 'user_email_verification_failed', 'user_deleted')`);
+        await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "firstName" character varying, "lastName" character varying, "nickName" character varying, "birthday" TIMESTAMP, "authId" uuid, "recentWorkspaceId" uuid, CONSTRAINT "REL_f8ecddfc60e9d1c2719ab17fe6" UNIQUE ("authId"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."audit_log_type_enum" AS ENUM('user_signup_init_development_patch', 'user_signup_init', 'user_signup_complete', 'user_signup_failed', 'user_signin', 'user_inconsistent_signup', 'user_email_verified', 'user_email_verification_failed', 'user_deleted', 'unauthorized_workspace_delete_attempt', 'unauthorized_workspace_patch_attempt', 'unauthorized_workspace_post_attempt')`);
         await queryRunner.query(`CREATE TYPE "public"."audit_log_level_enum" AS ENUM('verbose', 'debug', 'info', 'warning', 'error', 'fatal')`);
         await queryRunner.query(`CREATE TABLE "audit_log" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '0', "type" "public"."audit_log_type_enum" NOT NULL, "level" "public"."audit_log_level_enum" NOT NULL DEFAULT 'info', "detail" character varying, "userId" uuid, CONSTRAINT "PK_07fefa57f7f5ab8fc3f52b3ed0b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "workspaces_admins_users" ("workspacesId" uuid NOT NULL, "usersId" uuid NOT NULL, CONSTRAINT "PK_291a47f414927799f74de4d3486" PRIMARY KEY ("workspacesId", "usersId"))`);
@@ -40,6 +43,7 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`CREATE INDEX "IDX_8dfeb31ceec453e4730ae5789c" ON "pages_visitors_users" ("pagesId") `);
         await queryRunner.query(`CREATE INDEX "IDX_9696cd76347fdcbd0d3861353c" ON "pages_visitors_users" ("usersId") `);
         await queryRunner.query(`ALTER TABLE "adresses" ADD CONSTRAINT "FK_b4f5c94493f23641866f161e212" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "blacklisted_tokens" ADD CONSTRAINT "FK_fc690bef555ae373813789f3c4b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "emails" ADD CONSTRAINT "FK_1c41bc3d329b0edc905b6409dba" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "page_contents" ADD CONSTRAINT "FK_b40a490a30cb0a7448ebf11b4d2" FOREIGN KEY ("pageId") REFERENCES "pages"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "page_contents" ADD CONSTRAINT "FK_be753df70fc409f06ea5ffc1cf9" FOREIGN KEY ("contentElementId") REFERENCES "content_elements"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -50,6 +54,8 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "pages" ADD CONSTRAINT "FK_2043118dc32860c1a4f02c94dcf" FOREIGN KEY ("workspaceId") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "pages" ADD CONSTRAINT "FK_605521bc7e0ff96b2d63437ebb9" FOREIGN KEY ("ownerId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "user_preferences" ADD CONSTRAINT "FK_b6202d1cacc63a0b9c8dac2abd4" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_f8ecddfc60e9d1c2719ab17fe6a" FOREIGN KEY ("authId") REFERENCES "authentication_information"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_7c0e92a8b4eb0a82f80299cf926" FOREIGN KEY ("recentWorkspaceId") REFERENCES "workspaces"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "audit_log" ADD CONSTRAINT "FK_2621409ebc295c5da7ff3e41396" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "workspaces_admins_users" ADD CONSTRAINT "FK_d0bec224dec41156ecf50993d65" FOREIGN KEY ("workspacesId") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "workspaces_admins_users" ADD CONSTRAINT "FK_39ca187648d539a70dce244b884" FOREIGN KEY ("usersId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -79,6 +85,8 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "workspaces_admins_users" DROP CONSTRAINT "FK_39ca187648d539a70dce244b884"`);
         await queryRunner.query(`ALTER TABLE "workspaces_admins_users" DROP CONSTRAINT "FK_d0bec224dec41156ecf50993d65"`);
         await queryRunner.query(`ALTER TABLE "audit_log" DROP CONSTRAINT "FK_2621409ebc295c5da7ff3e41396"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_7c0e92a8b4eb0a82f80299cf926"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_f8ecddfc60e9d1c2719ab17fe6a"`);
         await queryRunner.query(`ALTER TABLE "user_preferences" DROP CONSTRAINT "FK_b6202d1cacc63a0b9c8dac2abd4"`);
         await queryRunner.query(`ALTER TABLE "pages" DROP CONSTRAINT "FK_605521bc7e0ff96b2d63437ebb9"`);
         await queryRunner.query(`ALTER TABLE "pages" DROP CONSTRAINT "FK_2043118dc32860c1a4f02c94dcf"`);
@@ -89,6 +97,7 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "page_contents" DROP CONSTRAINT "FK_be753df70fc409f06ea5ffc1cf9"`);
         await queryRunner.query(`ALTER TABLE "page_contents" DROP CONSTRAINT "FK_b40a490a30cb0a7448ebf11b4d2"`);
         await queryRunner.query(`ALTER TABLE "emails" DROP CONSTRAINT "FK_1c41bc3d329b0edc905b6409dba"`);
+        await queryRunner.query(`ALTER TABLE "blacklisted_tokens" DROP CONSTRAINT "FK_fc690bef555ae373813789f3c4b"`);
         await queryRunner.query(`ALTER TABLE "adresses" DROP CONSTRAINT "FK_b4f5c94493f23641866f161e212"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_9696cd76347fdcbd0d3861353c"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_8dfeb31ceec453e4730ae5789c"`);
@@ -111,6 +120,7 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "audit_log"`);
         await queryRunner.query(`DROP TYPE "public"."audit_log_level_enum"`);
         await queryRunner.query(`DROP TYPE "public"."audit_log_type_enum"`);
+        await queryRunner.query(`DROP TABLE "users"`);
         await queryRunner.query(`DROP TABLE "user_preferences"`);
         await queryRunner.query(`DROP TYPE "public"."user_preferences_option_enum"`);
         await queryRunner.query(`DROP TABLE "pages"`);
@@ -123,6 +133,8 @@ export class endToEndImplementation1664748956630 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "content_elements"`);
         await queryRunner.query(`DROP TYPE "public"."content_elements_type_enum"`);
         await queryRunner.query(`DROP TABLE "emails"`);
+        await queryRunner.query(`DROP TABLE "blacklisted_tokens"`);
+        await queryRunner.query(`DROP TABLE "authentication_information"`);
         await queryRunner.query(`DROP TABLE "adresses"`);
         await queryRunner.query(`DROP TYPE "public"."adresses_kind_enum"`);
     }

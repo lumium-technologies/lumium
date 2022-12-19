@@ -37,6 +37,7 @@ features = [
     'console',
     'Headers',
     'Request',
+    'RequestCredentials',
     'RequestInit',
     'RequestMode',
     'Response',

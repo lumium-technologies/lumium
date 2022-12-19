@@ -34,7 +34,7 @@ Cypress.Commands.add("signUp", () => {
     cy.dataCy("passwordConfirmInput").should("be.visible").type(password);
     cy.dataCy("signUpButton").should("be.visible").click().then(() => {
         cy.wait(3000);
-        cy.getCookie('sAccessToken').should("not.be.null");
+        cy.getCookie('accessToken').should("not.be.null");
         cy.url().should('include', SPACES_NEW);
     });
     return cy.wrap([email, password]);
@@ -47,7 +47,7 @@ Cypress.Commands.add("signIn", (email: string, password: string) => {
     cy.dataCy("passwordInput").should("be.visible").type(password);
     cy.dataCy("signInButton").should("be.visible").click().then(() => {
         cy.wait(3000);
-        cy.getCookie('sAccessToken').should("not.be.null");
+        cy.getCookie('accessToken').should("not.be.null");
     });
     cy.url().should('include', SPACES_NEW);
 });
@@ -56,7 +56,7 @@ Cypress.Commands.add("signOut", () => {
     cy.visit(ACCOUNT);
     cy.dataCy("signOut").should("be.visible").click().then(() => {
         cy.wait(3000);
-        cy.getCookie('sAccessToken').should("be.null");
+        cy.getCookie('accessToken').should("be.null");
     });
 });
 

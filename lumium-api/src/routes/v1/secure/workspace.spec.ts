@@ -1,4 +1,4 @@
-import { app } from "../../../../app";
+import { app } from "../../../app";
 import supertest from 'supertest';
 import { E2EKeyCreateDTO, E2EKeyVariantCreateDTO } from "../../../../../types";
 import cryptojs from 'crypto-js';

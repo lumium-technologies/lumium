@@ -7,6 +7,7 @@ use seed::{self, prelude::*, *};
 use serde::Serialize;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
+use web_sys::RequestCredentials;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 #[derive(Serialize)]
@@ -26,6 +27,7 @@ pub async fn create_workspace(password: String, name: String) -> Result<JsValue,
 
     let mut opts = RequestInit::new();
     opts.method("PUT");
+    opts.credentials(RequestCredentials::Include);
     opts.mode(RequestMode::Cors);
     let body = serde_json::ser::to_string(&workspace_create_dto).unwrap();
     opts.body(Some(&JsValue::from(body)));

@@ -1,6 +1,8 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, OneToOne, ManyToOne } from "typeorm"
+import { Entity, Column, OneToMany, ManyToMany, OneToOne, ManyToOne, JoinColumn } from "typeorm"
 import { AbstractEntity } from "./AbstractEntity"
 import { Address } from "./Address"
+import { AuthenticationInformation } from "./AuthenticationInformation"
+import { BlacklistedToken } from "./BlacklistedToken"
 import { Email } from "./Email"
 import { Page } from "./Page"
 import { UserPreference } from "./UserPreference"
@@ -8,9 +10,12 @@ import { Workspace } from "./Workspace"
 
 @Entity("users")
 export class User extends AbstractEntity {
-    // SuperTokens generates this uuid, for consistency and simplicity we make sure to utilize the same value, and not generate a new one
-    @PrimaryColumn("uuid")
-    id?: string
+    @OneToOne(() => AuthenticationInformation, (auth) => auth.user, { cascade: true, onDelete: 'CASCADE' })
+    @JoinColumn()
+    auth?: AuthenticationInformation
+
+    @OneToMany(() => BlacklistedToken, (token) => token.user)
+    blacklistedTokens?: BlacklistedToken[]
 
     @Column({ nullable: true })
     firstName?: string

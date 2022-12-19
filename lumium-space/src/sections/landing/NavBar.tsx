@@ -125,7 +125,7 @@ export const NavBar = () => {
                                 <MenuList>
                                     <MenuItem onClick={() => Router.push(ACCOUNT)}>Account</MenuItem>
                                     <MenuDivider />
-                                    <MenuItem onClick={handleLogout()}>Logout</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
                         </Flex>

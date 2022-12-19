@@ -27,7 +27,7 @@ const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [api] = useApi();
-    const userInfo = useUserInfo();
+    const { refetchUserInfo } = useUserInfo();
 
     const handleSignIn = () => {
         const email = formik.values.email;
@@ -37,11 +37,13 @@ const SignIn: React.FC = () => {
             "password": password
         }, { withCredentials: true }).then((res) => {
             if (res.status == 200) {
-                if (userInfo?.recentWorkspace) {
-                    Router.push('/' + userInfo?.recentWorkspace.id);
-                } else {
-                    Router.push(SPACES_NEW);
-                };
+                refetchUserInfo().then((info) => {
+                    if (info?.recentWorkspace?.id) {
+                        Router.push(ROOT + info?.recentWorkspace?.id);
+                    } else {
+                        Router.push(SPACES_NEW);
+                    };
+                });
             }
         }).catch((err) => {
             if (err.response.data.status == "INVALID_CREDENTIALS") {

@@ -41,7 +41,7 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         'sha512'
     );
     if (key.toString('binary') == derivedKey.toString('binary')) {
-        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { maxAge: 86400, httpOnly: true }).send();
+        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
     }
     return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
 };
@@ -76,5 +76,6 @@ export const signOut = async (req: express.Request, res: express.Response) => {
     const expTime = exp * 1000;
     let token: BlacklistedToken = { user: { id: req.user! }, token: req.token!, expires: expTime };
     await dataSource.getRepository(BlacklistedToken).save(token);
-    return res.status(200).cookie('accessToken', '', { expires: new Date(1970, 1, 1) }).send(); // yes, this is the spec-defined way of deleting a cookie on the client, not joking
+    res.clearCookie('accessToken');
+    return res.status(200).send();
 };

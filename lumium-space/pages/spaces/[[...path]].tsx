@@ -31,7 +31,7 @@ const Spaces: React.FC = () => {
                 bgGradient="linear(to-r, teal.400, teal.600)"
                 backgroundClip="text"
             >
-                You're getting redirected.
+                You&apos;re getting redirected.
             </Heading>
         </Box>
     );

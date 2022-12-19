@@ -51,7 +51,7 @@ export const NavBar = () => {
     const logo = useColorModeValue(darkLogo, lightLogo);
 
     const handleLogout = () => {
-        api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT));
+        api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());
     };
 
     useEffect(() => {
@@ -95,6 +95,9 @@ export const NavBar = () => {
                         </Flex>
                     </HStack>
                 </Flex>
+                <Button onClick={toggleColorMode} data-cy="switchThemeButton" mr="1%">
+                    {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
+                </Button>
                 {
                     loginStatus && (
                         <Flex alignItems={'center'}>
@@ -129,39 +132,36 @@ export const NavBar = () => {
                                 </MenuList>
                             </Menu>
                         </Flex>
-                    ) ||
-                    <Stack
-                        flex={{ base: 1, md: 0 }}
-                        justify={'end'}
-                        direction={'row'}
-                        spacing={6}>
-                        <Button onClick={toggleColorMode} data-cy="switchThemeButton">
-                            {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
-                        </Button>
-                        <Button
-                            as={'a'}
-                            fontSize={'sm'}
-                            fontWeight={400}
-                            variant={'link'}
-                            onClick={() => Router.push(AUTH_SIGNIN)}
-                            data-cy="signInButton"
-                        >
-                            Sign In
-                        </Button>
-                        <Button
-                            fontSize={'sm'}
-                            fontWeight={600}
-                            color={'white'}
-                            bg={'pink.400'}
-                            _hover={{
-                                bg: 'pink.300',
-                            }}
-                            onClick={() => Router.push(AUTH_SIGNUP)}
-                            data-cy="signUpButton"
-                        >
-                            Sign Up
-                        </Button>
-                    </Stack>
+                    ) || (
+                        <Stack
+                            flex={{ base: 1, md: 0 }}
+                            justify={'end'}
+                            direction={'row'}
+                            spacing={2}>
+                            <Button
+                                as={'a'}
+                                fontSize={'sm'}
+                                fontWeight={400}
+                                onClick={() => Router.push(AUTH_SIGNIN)}
+                                data-cy="signInButton"
+                            >
+                                Sign In
+                            </Button>
+                            <Button
+                                fontSize={'sm'}
+                                fontWeight={600}
+                                color={'white'}
+                                bg={'purple'}
+                                _hover={{
+                                    bg: 'purple.300',
+                                }}
+                                onClick={() => Router.push(AUTH_SIGNUP)}
+                                data-cy="signUpButton"
+                            >
+                                Sign Up
+                            </Button>
+                        </Stack>
+                    )
                 }
             </Flex>
             <Collapse in={isOpen} animateOpacity>

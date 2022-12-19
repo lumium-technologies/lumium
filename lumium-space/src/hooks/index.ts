@@ -1,1 +1,1 @@
-export { useApi, useUserInfo } from "./api";
+export { useApi, useUserInfo, useWorkspace } from "./api";

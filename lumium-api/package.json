@@ -35,7 +35,7 @@
         "express-rate-limit": "6.4.0",
         "ioredis": "^5.2.3",
         "jest": "27.5.1",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "node-pg-migrate": "6.2.1",
         "pg": "8.7.3",
         "redis": "^4.3.1",

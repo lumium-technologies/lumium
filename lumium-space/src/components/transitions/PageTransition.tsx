@@ -25,7 +25,7 @@ const PageTransition = ({ children }) => {
             <AnimatePresence initial={false} exitBeforeEnter>
                 <motion.div
                     key={asPath}
-                    variants={shouldReduceMotion ? null : variants}
+                    variants={shouldReduceMotion ? undefined : variants}
                     animate="in"
                     initial="out"
                     exit="out">
@@ -36,4 +36,4 @@ const PageTransition = ({ children }) => {
     );
 };
 
-export default PageTransition;
+export { PageTransition };

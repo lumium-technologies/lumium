@@ -3,7 +3,7 @@ import { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "@definitions/chakra/theme";
 import "@styles/global.css";
-import PageTransition from "@components/transitions/PageTransition";
+import { PageTransition } from "@components/transitions/PageTransition";
 
 const Lumium = ({ Component, pageProps }: AppProps): JSX.Element => {
     return (

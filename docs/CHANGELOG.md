@@ -1,3 +1,32 @@
+## **0.7.0** <sub><sup>2022-12-24 ([b184cde...1e6e970](https://github.com/lumium-technologies/lumium/compare/b184cde...1e6e970?diff=split))</sup></sub>
+
+### Features
+*  add profilemenu on landingpage ([b184cde](https://github.com/lumium-technologies/lumium/commit/b184cde))
+
+##### `auth`
+*  redirect to recent workspace if present ([150eea1](https://github.com/lumium-technologies/lumium/commit/150eea1))
+
+##### `space`
+*  add transitions ([afe876a](https://github.com/lumium-technologies/lumium/commit/afe876a))
+
+
+### Bug Fixes
+*  logout button ([ee2b025](https://github.com/lumium-technologies/lumium/commit/ee2b025))
+*  build error, theme changer icon ([faedb95](https://github.com/lumium-technologies/lumium/commit/faedb95))
+
+##### `e2e`
+*  save e2e key variants correctly on workspace creation ([74bdd09](https://github.com/lumium-technologies/lumium/commit/74bdd09))
+
+##### `space`
+*  build ([cd927c4](https://github.com/lumium-technologies/lumium/commit/cd927c4))
+
+
+### Merged Branches
+*  develop ([6f6a8e8](https://github.com/lumium-technologies/lumium/commit/6f6a8e8))
+*  pull request \#219 from lumium\-technologies/r/landingpage ([e436e5d](https://github.com/lumium-technologies/lumium/commit/e436e5d))
+*  develop ([5d07df2](https://github.com/lumium-technologies/lumium/commit/5d07df2))
+
+
 ## **0.6.1** <sub><sup>2022-12-19 ([d1d0e89...c872be5](https://github.com/lumium-technologies/lumium/compare/d1d0e89...c872be5?diff=split))</sup></sub>
 
 ### Bug Fixes

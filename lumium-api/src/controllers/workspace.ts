@@ -1,10 +1,12 @@
 import express from 'express';
 import { dataSource, error } from "../data-source";
-import { mapToWorkspaceDTO, Workspace } from "../entity/Workspace";
+import { mapToWorkspace, mapToWorkspaceDTO, Workspace } from "../entity/Workspace";
 import type { WorkspaceDTO, WorkspaceUpdateDTO } from '../../../types';
 import { User } from "../entity/User";
 import { AuditEntryEvent } from "../entity/Audit";
 import { WorkspaceCreateDTO } from "../../../types/api/v1/dto/request/WorkspaceCreateDTO";
+import { E2EKey } from '../entity/E2EKey';
+import { E2EKeyVariant, mapToE2EKeyVariant } from '../entity/E2EKeyVariant';
 
 export const info = async (req: express.Request, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
@@ -32,11 +34,16 @@ export const info = async (req: express.Request, res: express.Response<Workspace
 };
 
 export const create = async (req: express.Request<WorkspaceCreateDTO>, res: express.Response<WorkspaceDTO>) => {
-    const workspace = new Workspace();
+    // TODO: process all of this in the same database transaction
     const user = await dataSource.getRepository(User).findOne({ where: { id: req.user! } });
+    const key = { activator: req.body.key };
+    let newKey = await dataSource.getRepository(E2EKey).save(key);
+    newKey.keys = await dataSource.getRepository(E2EKeyVariant).save(req.body.key.keys.map(mapToE2EKeyVariant));
+    let savedKey = await dataSource.getRepository(E2EKey).save(newKey);
+    const workspace = mapToWorkspace(req.body);
     workspace.owner = user;
     workspace.name = req.body.name;
-    workspace.key = req.body.key;
+    workspace.key = savedKey;
     const newWorkspace = await dataSource.getRepository(Workspace).save(workspace);
     user.recentWorkspace = newWorkspace;
     await dataSource.getRepository(User).save(user);

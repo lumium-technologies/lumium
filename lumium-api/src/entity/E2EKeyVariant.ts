@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne } from "typeorm";
+import { E2EKeyVariantCreateDTO } from "../../types";
 import { E2EKeyVariantDTO } from "../../types/api/v1/dto/entity/E2EKeyVariantDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { E2EKey } from "./E2EKey";
@@ -6,7 +7,7 @@ import { E2EKey } from "./E2EKey";
 @Entity('end_to_end_key_variants')
 export class E2EKeyVariant extends AbstractEntity {
     @ManyToOne(() => E2EKey, (key) => key.keys, { cascade: true, onDelete: 'CASCADE' })
-    key: E2EKey
+    key?: E2EKey
 
     @Column()
     activator: string
@@ -39,4 +40,14 @@ export const mapToE2EKeyVariantDTO = (entity: E2EKeyVariant) => {
         version: entity.version
     };
     return dto;
+};
+
+export const mapToE2EKeyVariant = (dto: E2EKeyVariantCreateDTO) => {
+    let entity: E2EKeyVariant = {
+        activator: dto.activator,
+        activatorNonce: dto.activatorNonce,
+        value: dto.value,
+        valueNonce: dto.valueNonce,
+    };
+    return entity;
 };

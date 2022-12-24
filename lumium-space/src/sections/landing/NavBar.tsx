@@ -17,6 +17,12 @@ import {
     Image,
     HStack,
     Spacer,
+    MenuButton,
+    Avatar,
+    Menu,
+    MenuDivider,
+    MenuItem,
+    MenuList,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
@@ -25,23 +31,42 @@ import {
     ChevronRightIcon,
     MoonIcon,
     SunIcon,
+    AddIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
-import { AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
+import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
 import packageInfo from 'package.json';
+import { useEffect, useState } from "react";
+import { useApi } from "@hooks/api";
+import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
+    const [loginStatus, setLoginStatus] = useState(false);
+    const [api] = useApi();
 
     const darkLogo = '/logo/svg/Black logo - no background.svg';
     const lightLogo = '/logo/svg/White logo - no background.svg';
     const logo = useColorModeValue(darkLogo, lightLogo);
 
+    const handleLogout = () => {
+        api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());
+    };
+
+    useEffect(() => {
+        api.get(SECURE_PONG).then((res) => {
+            if (res.status == 200) {
+                setLoginStatus(true);
+            } else {
+                setLoginStatus(false);
+            }
+        });
+    }, [api]);
+
     return (
         <Box>
             <Flex
-                color={useColorModeValue('gray.600', 'white')}
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
@@ -70,41 +95,75 @@ export const NavBar = () => {
                         </Flex>
                     </HStack>
                 </Flex>
-
-                <Stack
-                    flex={{ base: 1, md: 0 }}
-                    justify={'end'}
-                    direction={'row'}
-                    spacing={6}>
-                    <Button onClick={toggleColorMode} data-cy="switchThemeButton">
-                        {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
-                    </Button>
-                    <Button
-                        as={'a'}
-                        fontSize={'sm'}
-                        fontWeight={400}
-                        variant={'link'}
-                        onClick={() => Router.push(AUTH_SIGNIN)}
-                        data-cy="signInButton"
-                    >
-                        Sign In
-                    </Button>
-                    <Button
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'pink.400'}
-                        _hover={{
-                            bg: 'pink.300',
-                        }}
-                        onClick={() => Router.push(AUTH_SIGNUP)}
-                        data-cy="signUpButton"
-                    >
-                        Sign Up
-                    </Button>
-                </Stack>
+                <Button onClick={toggleColorMode} data-cy="switchThemeButton" mr="1%">
+                    {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
+                </Button>
+                {
+                    loginStatus && (
+                        <Flex alignItems={'center'}>
+                            <Button
+                                variant={'solid'}
+                                backgroundColor={"grey"}
+                                size={'sm'}
+                                mr={4}
+                                onClick={() => Router.push(SPACES)}
+                            >
+                                My Space
+                            </Button>
+                            <Menu>
+                                <MenuButton
+                                    as={Button}
+                                    rounded={'full'}
+                                    variant={'link'}
+                                    cursor={'pointer'}
+                                    minW={0}
+                                >
+                                    <Avatar
+                                        size={'sm'}
+                                        src={
+                                            'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+                                        }
+                                    />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem onClick={() => Router.push(ACCOUNT)}>Account</MenuItem>
+                                    <MenuDivider />
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Flex>
+                    ) || (
+                        <Stack
+                            flex={{ base: 1, md: 0 }}
+                            justify={'end'}
+                            direction={'row'}
+                            spacing={2}>
+                            <Button
+                                as={'a'}
+                                fontSize={'sm'}
+                                fontWeight={400}
+                                onClick={() => Router.push(AUTH_SIGNIN)}
+                                data-cy="signInButton"
+                            >
+                                Sign In
+                            </Button>
+                            <Button
+                                fontSize={'sm'}
+                                fontWeight={600}
+                                color={'white'}
+                                bg={'purple'}
+                                _hover={{
+                                    bg: 'purple.300',
+                                }}
+                                onClick={() => Router.push(AUTH_SIGNUP)}
+                                data-cy="signUpButton"
+                            >
+                                Sign Up
+                            </Button>
+                        </Stack>
+                    )
+                }
             </Flex>
-
             <Collapse in={isOpen} animateOpacity>
                 <MobileNav />
             </Collapse>
@@ -125,7 +184,7 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={{base: 'md', 'xx-large': 'lg'}}
+                                fontSize={{ base: 'md', 'xx-large': 'lg' }}
                                 fontWeight={500}
                                 color={linkColor}
                                 _hover={{

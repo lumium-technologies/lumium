@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
-import { WorkspaceDTO } from "../../types";
+import { WorkspaceCreateDTO, WorkspaceDTO } from "../../types";
 import { AbstractEntity } from "./AbstractEntity";
-import { E2EKey, mapToE2EKeyDTO } from "./E2EKey";
+import { E2EKey, mapToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
 import { mapToPageDTO, Page } from "./Page";
 import { User } from "./User";
 import { mapToWorkspacePreferenceDTO, WorkspacePreference } from "./WorkspacePreference";
@@ -29,7 +29,7 @@ export class Workspace extends AbstractEntity {
     @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
     preferences: WorkspacePreference[]
 
-    @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace, { cascade: true, onDelete: 'CASCADE' })
+    @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace)
     @JoinColumn()
     key: E2EKey
 
@@ -54,4 +54,18 @@ export const mapToWorkspaceDTO = (entity: Workspace) => {
         version: entity.version
     };
     return dto;
+};
+
+export const mapToWorkspace = (dto: WorkspaceCreateDTO) => {
+    let entity: Workspace = {
+        owner: null,
+        admins: null,
+        members: null,
+        visitors: null,
+        pages: null,
+        preferences: null,
+        key: mapToE2EKey(dto.key),
+        name: dto.name
+    };
+    return entity;
 };

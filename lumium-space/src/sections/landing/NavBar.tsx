@@ -63,10 +63,10 @@ export const NavBar = () => {
             }
         });
     }, [api]);
+
     return (
         <Box>
             <Flex
-                color={useColorModeValue('gray.600', 'white')}
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
@@ -305,7 +305,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                             <Link key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Link>
-                        ))}
+                    ))}
                 </Stack>
             </Collapse>
         </Stack>

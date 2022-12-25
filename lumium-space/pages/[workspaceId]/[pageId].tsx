@@ -1,12 +1,7 @@
-import { usePage } from "@hooks/api";
-import { useRouter } from "next/router";
+import { LumiumRenderer } from "@components/rendering";
 
 const Page: React.FC = () => {
-    const router = useRouter();
-    const { pageId } = router.query;
-    const page = usePage(pageId);
-
-    return <p>{JSON.stringify(page)}</p>;
+    return <LumiumRenderer />;
 };
 
 export default Page;

@@ -1,4 +1,3 @@
-import { Box, Heading } from "@chakra-ui/react";
 import { useApi, useUserInfo } from "@hooks/api";
 import { SECURE_PONG } from "@routes/api/v1";
 import { AUTH_SIGNIN, ROOT, SPACES_NEW } from "@routes/space";

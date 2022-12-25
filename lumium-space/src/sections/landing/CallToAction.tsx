@@ -46,7 +46,7 @@ export function CallToAction() {
                 </Stack>
                 <Flex w={'full'}>
                     <Illustration
-                        height={{ sm: '24rem', lg: '28rem' }}
+                        height={{ sm: '24rem', lg: '50rem' }}
                         mt={{ base: 12, sm: 16 }}
                     />
                 </Flex>

@@ -7,7 +7,7 @@ export default {
     styles: {
         global: props => ({
             body: {
-                bg: mode('dark', '#1a1a1a')(props)
+                bg: mode('#ffffff', '#1a1a1a')(props),
             },
             h1: {
                 fontWeight: 500,

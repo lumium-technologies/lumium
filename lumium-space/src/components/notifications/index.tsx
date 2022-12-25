@@ -1,1 +1,1 @@
-export { ShowError } from "./ShowError";
+export { Error } from "./Error";

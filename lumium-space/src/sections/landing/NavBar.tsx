@@ -31,10 +31,9 @@ import {
     ChevronRightIcon,
     MoonIcon,
     SunIcon,
-    AddIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
-import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
+import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
@@ -63,10 +62,10 @@ export const NavBar = () => {
             }
         });
     }, [api]);
+
     return (
         <Box>
             <Flex
-                color={useColorModeValue('gray.600', 'white')}
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
@@ -101,15 +100,6 @@ export const NavBar = () => {
                 {
                     loginStatus && (
                         <Flex alignItems={'center'}>
-                            <Button
-                                variant={'solid'}
-                                backgroundColor={"grey"}
-                                size={'sm'}
-                                mr={4}
-                                onClick={() => Router.push(SPACES)}
-                            >
-                                My Space
-                            </Button>
                             <Menu>
                                 <MenuButton
                                     as={Button}
@@ -151,10 +141,7 @@ export const NavBar = () => {
                                 fontSize={'sm'}
                                 fontWeight={600}
                                 color={'white'}
-                                bg={'purple'}
-                                _hover={{
-                                    bg: 'purple.300',
-                                }}
+                                bg={"red.400"}
                                 onClick={() => Router.push(AUTH_SIGNUP)}
                                 data-cy="signUpButton"
                             >
@@ -184,7 +171,7 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={{ base: 'md', 'xx-large': 'lg' }}
+                                fontSize={{ base: 'md', 'xxLarge': 'lg' }}
                                 fontWeight={500}
                                 color={linkColor}
                                 _hover={{
@@ -301,11 +288,11 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                     borderColor={useColorModeValue('gray.200', 'gray.700')}
                     align={'start'}>
                     {children &&
-                        children.map((child) => (
-                            <Link key={child.label} py={2} href={child.href}>
-                                {child.label}
-                            </Link>
-                        ))}
+                            children.map((child) => (
+                                <Link key={child.label} py={2} href={child.href}>
+                                    {child.label}
+                                </Link>
+                            ))}
                 </Stack>
             </Collapse>
         </Stack>

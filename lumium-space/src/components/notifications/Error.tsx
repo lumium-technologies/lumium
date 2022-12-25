@@ -5,14 +5,14 @@ interface ErrorProps {
     message: string;
 };
 
-export const ShowError = ({ show, message }: ErrorProps) => {
+export const Error = ({ show, message }: ErrorProps) => {
     return (
         show ?
             <Alert status='error' width="20%" mr="1%">
                 <AlertIcon />
                 <AlertTitle>{message}</AlertTitle>
             </Alert>
-            :
-            <Text></Text>
+                :
+                <Text></Text>
     );
 };

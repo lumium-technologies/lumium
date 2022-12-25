@@ -8,6 +8,8 @@ import {
     Icon,
     IconProps,
 } from '@chakra-ui/react';
+import { SPACES } from '@routes/space';
+import Router from 'next/router';
 
 export function CallToAction() {
     return (
@@ -24,13 +26,10 @@ export function CallToAction() {
                     collaboration made{' '}
                     <Text as={'span'} color={'red.400'}>
                         secure
-                    </Text>,
-                    <br />pretty and fast
+                    </Text>
                 </Heading>
                 <Text color={'gray.500'} maxW={'3xl'}>
-                    Never miss a meeting. Never be late for one too. Keep track of your
-                    meetings and receive smart reminders in appropriate times. Read your
-                    smart “Daily Agenda” every morning.
+                    your lumium space - the beautiful, fast, end-to-end secure shared workspace
                 </Text>
                 <Stack spacing={6} direction={'row'}>
                     <Button
@@ -38,8 +37,10 @@ export function CallToAction() {
                         px={6}
                         colorScheme={'red'}
                         bg={'red.400'}
-                        _hover={{ bg: 'red.500' }}>
-                        Get started
+                        _hover={{ bg: 'red.500' }}
+                        onClick={() => Router.push(SPACES)}
+                    >
+                        Continue
                     </Button>
                     <Button rounded={'full'} px={6}>
                         Learn more
@@ -869,6 +870,6 @@ export const Illustration = (props: IconProps) => {
                 </linearGradient>
             </defs>
         </Icon>
-    );
+);
 };
 

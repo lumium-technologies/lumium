@@ -245,7 +245,7 @@ const Workspace: React.FC = () => {
             {
                 workspace?.pages.map((p) => {
                     return (
-                        <Button onClick={() => router.push(p.id)}></Button>
+                        <Button key={p.id} onClick={() => router.push(p.id)}></Button>
                     );
                 })
             }

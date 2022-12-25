@@ -99,30 +99,6 @@ export { sec } from './secure';
  */
 
 /**
- * @typedef {object} ContentElementDTO
- * @property {string} id - The uuid
- * @property {string} content - The actual content of the content element
- * @property {array<PageContentDTO>} pageContents - The page contents with this content
- * @property {string} type - enum:markdown - The type of the content element
- * @property {string} createdAt - The object creation timestamp
- * @property {string} updatedAt - The object update timestamp
- * @property {string} deletedAt - The object delete timestamp
- * @property {number} version - The object version number
- */
-
-/**
- * @typedef {object} PageContentDTO
- * @property {string} id - The uuid
- * @property {PageDTO} page - The page this content belongs to
- * @property {number} position - The position on the page this content should be in
- * @property {ContentElementDTO} contentElement - The actual content element at this position
- * @property {string} createdAt - The object creation timestamp
- * @property {string} updatedAt - The object update timestamp
- * @property {string} deletedAt - The object delete timestamp
- * @property {number} version - The object version number
- */
-
-/**
  * @typedef {object} PageDTO
  * @property {string} id - The uuid
  * @property {WorkspaceDTO} workspace - The workspace that this page belongs to
@@ -130,7 +106,7 @@ export { sec } from './secure';
  * @property {array<UserDTO>} admins - The administrators of this page
  * @property {array<UserDTO>} members - The members of this page
  * @property {array<UserDTO>} visitors - The visitors of this page
- * @property {array<PageContentDTO>} contents - The contents of this page
+ * @property {string} content - The markdown content of this page
  * @property {string} name - The name of the page
  * @property {string} createdAt - The object creation timestamp
  * @property {string} updatedAt - The object update timestamp

@@ -22,7 +22,7 @@ const PageTransition = ({ children }) => {
 
     return (
         <div className="lumium-page-transition">
-            <AnimatePresence initial={false} exitBeforeEnter>
+            <AnimatePresence initial={false} mode="wait">
                 <motion.div
                     key={asPath}
                     variants={shouldReduceMotion ? undefined : variants}

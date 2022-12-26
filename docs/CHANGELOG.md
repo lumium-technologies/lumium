@@ -1,3 +1,15 @@
+## **0.8.0** <sub><sup>2022-12-26 ([52b234a...534efb7](https://github.com/lumium-technologies/lumium/compare/52b234a...534efb7?diff=split))</sup></sub>
+
+### Features
+##### `renderer`
+*  add \`LumiumRenderer\` component to page ([06a78a9](https://github.com/lumium-technologies/lumium/commit/06a78a9))
+
+##### `space`
+*  add page route ([4dbe8ec](https://github.com/lumium-technologies/lumium/commit/4dbe8ec))
+*  add editor ([274280c](https://github.com/lumium-technologies/lumium/commit/274280c))
+*  add workspace ([db50cbb](https://github.com/lumium-technologies/lumium/commit/db50cbb))
+
+
 ## **0.7.0** <sub><sup>2022-12-24 ([b184cde...1e6e970](https://github.com/lumium-technologies/lumium/compare/b184cde...1e6e970?diff=split))</sup></sub>
 
 ### Features

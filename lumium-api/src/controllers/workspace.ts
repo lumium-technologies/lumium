@@ -36,7 +36,7 @@ export const info = async (req: express.Request, res: express.Response<Workspace
 export const create = async (req: express.Request<WorkspaceCreateDTO>, res: express.Response<WorkspaceDTO>) => {
     // TODO: process all of this in the same database transaction
     const user = await dataSource.getRepository(User).findOne({ where: { id: req.user! } });
-    const key = { activator: req.body.key };
+    const key = req.body.key;
     let newKey = await dataSource.getRepository(E2EKey).save(key);
     newKey.keys = await dataSource.getRepository(E2EKeyVariant).save(req.body.key.keys.map(mapToE2EKeyVariant));
     let savedKey = await dataSource.getRepository(E2EKey).save(newKey);

@@ -8,6 +8,8 @@ import {
     Icon,
     IconProps,
 } from '@chakra-ui/react';
+import { SPACES, AUTH_SIGNUP } from '@routes/space';
+import Router from 'next/router';
 
 export function CallToAction() {
     return (
@@ -22,32 +24,29 @@ export function CallToAction() {
                     fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
                     lineHeight={'110%'}>
                     collaboration made{' '}
-                    <Text as={'span'} color={'red.400'}>
+                    <Text as={'span'} color={"blue.400"}>
                         secure
-                    </Text>,
-                    <br />pretty and fast
+                    </Text>
                 </Heading>
-                <Text color={'gray.500'} maxW={'3xl'}>
-                    Never miss a meeting. Never be late for one too. Keep track of your
-                    meetings and receive smart reminders in appropriate times. Read your
-                    smart “Daily Agenda” every morning.
+                <Text maxW={'3xl'}>
+                    your lumium space - the beautiful, fast, end-to-end secure shared workspace
                 </Text>
                 <Stack spacing={6} direction={'row'}>
                     <Button
                         rounded={'full'}
                         px={6}
-                        colorScheme={'red'}
-                        bg={'red.400'}
-                        _hover={{ bg: 'red.500' }}>
-                        Get started
+                        bg={'blue.400'}
+                        onClick={() => Router.push(SPACES)}
+                    >
+                        Continue
                     </Button>
-                    <Button rounded={'full'} px={6}>
-                        Learn more
+                    <Button rounded={'full'} px={6} onClick={() => Router.push(AUTH_SIGNUP)}>
+                        Sign up
                     </Button>
                 </Stack>
                 <Flex w={'full'}>
                     <Illustration
-                        height={{ sm: '24rem', lg: '28rem' }}
+                        height={{ sm: '24rem', lg: '50rem' }}
                         mt={{ base: 12, sm: 16 }}
                     />
                 </Flex>

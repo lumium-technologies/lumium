@@ -31,10 +31,9 @@ import {
     ChevronRightIcon,
     MoonIcon,
     SunIcon,
-    AddIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
-import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
+import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
@@ -101,15 +100,6 @@ export const NavBar = () => {
                 {
                     loginStatus && (
                         <Flex alignItems={'center'}>
-                            <Button
-                                variant={'solid'}
-                                backgroundColor={"grey"}
-                                size={'sm'}
-                                mr={4}
-                                onClick={() => Router.push(SPACES)}
-                            >
-                                My Space
-                            </Button>
                             <Menu>
                                 <MenuButton
                                     as={Button}
@@ -139,7 +129,6 @@ export const NavBar = () => {
                             direction={'row'}
                             spacing={2}>
                             <Button
-                                as={'a'}
                                 fontSize={'sm'}
                                 fontWeight={400}
                                 onClick={() => Router.push(AUTH_SIGNIN)}
@@ -150,11 +139,7 @@ export const NavBar = () => {
                             <Button
                                 fontSize={'sm'}
                                 fontWeight={600}
-                                color={'white'}
-                                bg={'purple'}
-                                _hover={{
-                                    bg: 'purple.300',
-                                }}
+                                bg={"blue.400"}
                                 onClick={() => Router.push(AUTH_SIGNUP)}
                                 data-cy="signUpButton"
                             >
@@ -172,9 +157,6 @@ export const NavBar = () => {
 }
 
 const DesktopNav = () => {
-    const linkColor = useColorModeValue('gray.600', 'gray.200');
-    const linkHoverColor = useColorModeValue('gray.800', 'white');
-
     return (
         <Stack direction={'row'} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
@@ -184,13 +166,8 @@ const DesktopNav = () => {
                             <Link
                                 p={2}
                                 href={navItem.href ?? '#'}
-                                fontSize={{ base: 'md', 'xx-large': 'lg' }}
-                                fontWeight={500}
-                                color={linkColor}
-                                _hover={{
-                                    textDecoration: 'none',
-                                    color: linkHoverColor,
-                                }}>
+                                fontSize={{ base: 'md', 'xxLarge': 'lg' }}
+                                fontWeight={500}>
                                 {navItem.label}
                             </Link>
                         </PopoverTrigger>
@@ -198,6 +175,7 @@ const DesktopNav = () => {
                         {navItem.children && (
                             <PopoverContent
                                 border={0}
+                                bg={"transparent"}
                                 boxShadow={'xl'}
                                 p={4}
                                 rounded={'xl'}
@@ -223,13 +201,11 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
             role={'group'}
             display={'block'}
             p={2}
-            rounded={'md'}
-            _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}>
+            rounded={'md'}>
             <Stack direction={'row'} align={'center'}>
                 <Box>
                     <Text
                         transition={'all .3s ease'}
-                        _groupHover={{ color: 'pink.400' }}
                         fontWeight={500}>
                         {label}
                     </Text>
@@ -243,7 +219,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
                     justify={'flex-end'}
                     align={'center'}
                     flex={1}>
-                    <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+                    <Icon w={5} h={5} as={ChevronRightIcon} />
                 </Flex>
             </Stack>
         </Link>
@@ -277,8 +253,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                     textDecoration: 'none',
                 }}>
                 <Text
-                    fontWeight={600}
-                    color={useColorModeValue('gray.600', 'gray.200')}>
+                    fontWeight={600}>
                     {label}
                 </Text>
                 {children && (

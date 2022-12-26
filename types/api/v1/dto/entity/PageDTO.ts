@@ -1,5 +1,4 @@
 import { AbstractEntityDTO } from "./AbstractEntityDTO";
-import { PageContentDTO } from "./PageContentDTO";
 
 export interface PageDTO extends AbstractEntityDTO {
     workspaceId: string;
@@ -7,6 +6,6 @@ export interface PageDTO extends AbstractEntityDTO {
     admins: string[];
     members: string[];
     visitors: string[];
-    contents: PageContentDTO[];
+    content: string;
     name: string;
 }

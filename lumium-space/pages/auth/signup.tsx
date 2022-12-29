@@ -1,13 +1,11 @@
 import {
     Flex,
-    Box,
     FormControl,
     FormLabel,
     Input,
     Stack,
     Link,
     Button,
-    Heading,
     Text,
     useColorModeValue,
     InputGroup,
@@ -19,35 +17,35 @@ import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
+import { ReasonDTO } from '@types';
 
 const SignUp: React.FC = () => {
     const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<ReasonDTO | null>(null);
 
     const handleSignUp = () => {
-        const email = formik.values.email
-        const password = formik.values.password
+        const email = formik.values.email;
+        const password = formik.values.password;
+        const nickName = formik.values.nickName;
         api.post(AUTH_SIGNUP, {
-            "email": email,
-            "password": password
+            email: email,
+            password: password,
+            nickName: nickName
         }).then((res) => {
             if (res.status == 200) {
                 Router.push(SPACES_NEW);
             }
-        }, (err) => {
-            if (err.response.data.status == "EMAIL_ALREADY_EXISTS") {
-                setError("Email already exists");
-            }
-        });
+        }, (err) => setError(err.response.data));
     };
 
     const formik = useFormik({
         initialValues: {
             email: "",
+            nickName: "",
             password: "",
             passwordConfirm: "",
         },
@@ -55,7 +53,7 @@ const SignUp: React.FC = () => {
             if (formik.values.password == formik.values.passwordConfirm) {
                 handleSignUp();
             } else {
-                setError("Passwords don't match");
+                setError({ status: "PASSWORDS_DO_NOT_MATCH", reason: "Passwords don't match" });
             }
         },
         validateOnChange: (false),
@@ -69,7 +67,7 @@ const SignUp: React.FC = () => {
         <AuthBox title="Create your account" logo={logo}>
             <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                 <Stack spacing={4}>
-                    <FormControl id="email" isRequired isInvalid={error != null}>
+                    <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_ALREADY_EXISTS"}>
                         <FormLabel>Email address</FormLabel>
                         <Input
                             name={"email"}
@@ -78,8 +76,19 @@ const SignUp: React.FC = () => {
                             value={formik.values.email}
                             data-cy="emailInput"
                         />
+                        <FormErrorMessage data-cy="emailError">{error?.reason}</FormErrorMessage>
                     </FormControl>
-                    <FormControl id="password" isRequired isInvalid={error != null}>
+                    <FormControl id="nickName" isRequired isInvalid={error?.status == "USERNAME_ALREADY_EXISTS"}>
+                        <FormLabel>Username</FormLabel>
+                        <Input name={"nickName"}
+                            type={"username"}
+                            onChange={formik.handleChange}
+                            value={formik.values.nickName}
+                            data-cy="nickNameInput"
+                        />
+                        <FormErrorMessage data-cy="userNameError">{error?.reason}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl id="password" isRequired isInvalid={error?.status == "PASSWORDS_DO_NOT_MATCH"}>
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
                             <Input
@@ -99,8 +108,9 @@ const SignUp: React.FC = () => {
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
+                        <FormErrorMessage data-cy="passwordError">{error?.reason}</FormErrorMessage>
                     </FormControl>
-                    <FormControl id="passwordConfirmInput" isRequired isInvalid={error != null}>
+                    <FormControl id="passwordConfirmInput" isRequired isInvalid={error?.status == "PASSWORDS_DO_NOT_MATCH"}>
                         <FormLabel>Repeat Password</FormLabel>
                         <Input
                             name={"passwordConfirm"}
@@ -109,7 +119,7 @@ const SignUp: React.FC = () => {
                             value={formik.values.passwordConfirm}
                             data-cy="passwordConfirmInput"
                         />
-                        <FormErrorMessage data-cy="signUpError">{error}</FormErrorMessage>
+                        <FormErrorMessage data-cy="passwordConfirmError">{error?.reason}</FormErrorMessage>
                     </FormControl>
                     <Stack spacing={10} pt={2}>
                         <Button
@@ -128,7 +138,7 @@ const SignUp: React.FC = () => {
                     </Stack>
                     <Flex flexDir="column" alignItems={"center"}>
                         <Text mb={"0"}>
-                            Already an account?
+                            Already have an account?
                         </Text>
                         <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
                     </Flex>

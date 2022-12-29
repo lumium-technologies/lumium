@@ -43,13 +43,13 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
     if (key.toString('binary') == derivedKey.toString('binary')) {
         return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
     }
-    return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'credentials were invalid' });
+    return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'invalid credentials' });
 };
 
 export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
     let exists = await dataSource.getRepository(Email).count({ where: { email: req.body.email } }) != 0;
     if (exists) {
-        return res.status(500).contentType("application/json").send({ status: "EMAIL_ALREADY_EXISTS", reason: "this email already exists" });
+        return res.status(500).contentType("application/json").send({ status: "EMAIL_ALREADY_EXISTS", reason: "email already exists" });
     }
     let salt = crypto.randomBytes(64);
     const derivedKey = crypto.pbkdf2Sync(
@@ -59,7 +59,7 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
         64,
         'sha512'
     );
-    let user = await dataSource.getRepository(User).save({});
+    let user = await dataSource.getRepository(User).save({ nickName: req.body.nickName?.toLowerCase() });
     await dataSource.getRepository(Email).save({ user, primary: true, email: req.body.email });
     let auth = new AuthenticationInformation();
     auth.key = derivedKey.toString('base64');

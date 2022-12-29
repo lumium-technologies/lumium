@@ -28,9 +28,11 @@ Cypress.Commands.add("signUp", () => {
     cy.clearCookies();
     cy.visit(AUTH_SIGNUP);
     let email = makeid() + "@example.com";
+    let username = makeid();
     let password = makeid();
     cy.dataCy("emailInput").should("be.visible").type(email);
     cy.dataCy("passwordInput").should("be.visible").type(password);
+    cy.dataCy("nickNameInput").should("be.visible").type(username);
     cy.dataCy("passwordConfirmInput").should("be.visible").type(password);
     cy.dataCy("signUpButton").should("be.visible").click().then(() => {
         cy.wait(3000);

@@ -1,6 +1,5 @@
 import {
     Flex,
-    Box,
     FormControl,
     FormLabel,
     Input,
@@ -25,7 +24,7 @@ import { ReasonDTO } from '@types';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<ReasonDTO | null>(null);
     const [api] = useApi();
     const { refetchUserInfo } = useUserInfo();
 
@@ -45,13 +44,7 @@ const SignIn: React.FC = () => {
                     };
                 });
             }
-        }).catch((err) => {
-            if (err.response.data.status == "INVALID_CREDENTIALS") {
-                setError("Invalid credentials");
-            } else if (err.response.data.status == "EMAIL_DOES_NOT_EXIST") {
-                setError("Email does not exist");
-            }
-        });
+        }).catch((err) => setError(err.response.data));
     };
 
     const formik = useFormik({
@@ -71,7 +64,7 @@ const SignIn: React.FC = () => {
         <AuthBox title="Sign in to your account" logo={logo}>
             <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                 <Stack spacing={4}>
-                    <FormControl id="email" isRequired isInvalid={error != null}>
+                    <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_DOES_NOT_EXIST"}>
                         <FormLabel>Email address</FormLabel>
                         <Input
                             name={"email"}
@@ -80,8 +73,9 @@ const SignIn: React.FC = () => {
                             value={formik.values.email}
                             data-cy="emailInput"
                         />
+                        <FormErrorMessage data-cy="emailError">{error?.reason}</FormErrorMessage>
                     </FormControl>
-                    <FormControl id="password" isRequired isInvalid={error != null}>
+                    <FormControl id="password" isRequired isInvalid={error?.status == "INVALID_CREDENTIALS"}>
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
                             <Input
@@ -101,7 +95,7 @@ const SignIn: React.FC = () => {
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
-                        <FormErrorMessage data-cy="signInError">{error}</FormErrorMessage>
+                        <FormErrorMessage data-cy="credentialError">{error?.reason}</FormErrorMessage>
                     </FormControl>
                     <Flex justifyContent="space-between" mt="0">
                         <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>

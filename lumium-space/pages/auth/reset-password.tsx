@@ -2,7 +2,7 @@ import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Image, Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Link, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { AuthBox } from "@components/auth/AuthBox";
 import { useApi } from "@hooks/api";
-import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN, ROOT } from "@routes/space";
+import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 import { useFormik } from 'formik';

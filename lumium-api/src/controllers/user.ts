@@ -30,5 +30,7 @@ export const deleteAccount = async (req: express.Request, res: express.Response)
     await dataSource.getRepository(User).remove({ id: req.user! });
     await i({ detail: req.user! + " has deleted his account", type: AuditEntryEvent.USER_DELETED });
 
+    res.clearCookie('accessToken');
+
     return res.status(200).send();
 }

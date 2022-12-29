@@ -57,7 +57,7 @@ function SidebarWithHeader({
 }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
-        <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+        <Box minH="100vh">
             <SidebarContent
                 onClose={() => onClose}
                 display={{ base: 'none', md: 'block' }}
@@ -91,7 +91,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     return (
         <Box
             transition="3s ease"
-            bg={useColorModeValue('white', 'gray.900')}
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'gray.700')}
             w={{ base: 'full', md: 60 }}
@@ -128,7 +127,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
                 role="group"
                 cursor="pointer"
                 _hover={{
-                    bg: 'cyan.400',
+                    bg: 'blue.400',
                     color: 'white',
                 }}
                 {...rest}>
@@ -158,7 +157,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             px={{ base: 4, md: 4 }}
             height="20"
             alignItems="center"
-            bg={useColorModeValue('white', 'gray.900')}
             borderBottomWidth="1px"
             borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
             justifyContent={{ base: 'space-between', md: 'flex-end' }}
@@ -215,7 +213,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'gray.700')}>
                             <MenuItem>Profile</MenuItem>
                             <MenuItem>Settings</MenuItem>
@@ -240,7 +237,7 @@ const Workspace: React.FC = () => {
     return (
         <SidebarWithHeader>
             <Heading>
-                Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.firstName}!
+                Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
             </Heading>
             {
                 workspace?.pages.map((p) => {

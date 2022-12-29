@@ -134,7 +134,7 @@ const spaceHosts: (string)[] = [process.env.SPACE_HOST, process.env.SPACE_HOST_H
 const apiHosts: (string)[] = [process.env.API_HOST, process.env.API_HOST_HEROKU];
 
 const windowMs: number = Number(process.env.EXPRESS_RATE_LIMIT_WINDOW_MILLISECONDS) || 1000;
-const limit: number = Number(process.env.EXPRESS_RATE_LIMIT) || 5;
+const limit: number = Number(process.env.EXPRESS_RATE_LIMIT) || 50;
 
 const limiter = rateLimit({
     windowMs: windowMs,

@@ -65,6 +65,7 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
     auth.key = derivedKey.toString('base64');
     auth.salt = salt.toString('base64');
     user.auth = auth;
+    user.nickName = req.body.nickName;
     await dataSource.getRepository(User).save(user);
     return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
 };

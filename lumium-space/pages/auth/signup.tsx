@@ -1,13 +1,11 @@
 import {
     Flex,
-    Box,
     FormControl,
     FormLabel,
     Input,
     Stack,
     Link,
     Button,
-    Heading,
     Text,
     useColorModeValue,
     InputGroup,
@@ -19,7 +17,7 @@ import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, EMAIL_EXISTS, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
 
@@ -29,11 +27,13 @@ const SignUp: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleSignUp = () => {
-        const email = formik.values.email
-        const password = formik.values.password
+        const email = formik.values.email;
+        const password = formik.values.password;
+        const nickName = formik.values.nickName;
         api.post(AUTH_SIGNUP, {
-            "email": email,
-            "password": password
+            email: email,
+            password: password,
+            nickName: nickName
         }).then((res) => {
             if (res.status == 200) {
                 Router.push(SPACES_NEW);
@@ -48,6 +48,7 @@ const SignUp: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             email: "",
+            nickName: "",
             password: "",
             passwordConfirm: "",
         },
@@ -77,6 +78,15 @@ const SignUp: React.FC = () => {
                             onChange={formik.handleChange}
                             value={formik.values.email}
                             data-cy="emailInput"
+                        />
+                    </FormControl>
+                    <FormControl id="nickName" isRequired isInvalid={error != null}>
+                        <FormLabel>Username</FormLabel>
+                        <Input name={"nickName"}
+                            type={"username"}
+                            onChange={formik.handleChange}
+                            value={formik.values.nickName}
+                            data-cy="nickNameInput"
                         />
                     </FormControl>
                     <FormControl id="password" isRequired isInvalid={error != null}>
@@ -128,7 +138,7 @@ const SignUp: React.FC = () => {
                     </Stack>
                     <Flex flexDir="column" alignItems={"center"}>
                         <Text mb={"0"}>
-                            Already an account?
+                            Already have an account?
                         </Text>
                         <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
                     </Flex>

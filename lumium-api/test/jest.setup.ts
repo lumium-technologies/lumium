@@ -14,6 +14,7 @@ afterAll(async () => {
 global.auth = async () => {
     const response = await supertest(app).post("/v1/auth/signup").send({
         email: randomUUID() + '@example.com',
+        nickName: randomUUID(),
         password: randomUUID()
     });
 

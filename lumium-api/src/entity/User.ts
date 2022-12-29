@@ -23,7 +23,7 @@ export class User extends AbstractEntity {
     @Column({ nullable: true })
     lastName?: string
 
-    @Column({ nullable: true })
+    @Column({ unique: true })
     nickName?: string
 
     @Column({ nullable: true })

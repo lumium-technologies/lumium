@@ -1,3 +1,12 @@
+## **0.8.1** <sub><sup>2022-12-29 ([7b64b8b...751bf1e](https://github.com/lumium-technologies/lumium/compare/7b64b8b...751bf1e?diff=split))</sup></sub>
+
+### Bug Fixes
+*  various little fixes ([ff9d203](https://github.com/lumium-technologies/lumium/commit/ff9d203))
+
+##### `space`
+*  various little improvements ([db31395](https://github.com/lumium-technologies/lumium/commit/db31395))
+
+
 ## **0.8.0** <sub><sup>2022-12-26 ([52b234a...534efb7](https://github.com/lumium-technologies/lumium/compare/52b234a...534efb7?diff=split))</sup></sub>
 
 ### Features

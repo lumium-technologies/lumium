@@ -150,6 +150,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 interface MobileProps extends FlexProps {
     onOpen: () => void;
 }
+
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     return (
         <Flex
@@ -232,13 +233,16 @@ const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId } = router.query;
     const workspace = useWorkspace(workspaceId);
-    const { userInfo }= useUserInfo();
+    const { userInfo } = useUserInfo();
 
     return (
         <SidebarWithHeader>
-            <Heading>
-                Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-            </Heading>
+            {
+                (workspace?.name && userInfo?.nickName) &&
+                    <Heading>
+                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                    </Heading>
+            }
             {
                 workspace?.pages.map((p) => {
                     return (

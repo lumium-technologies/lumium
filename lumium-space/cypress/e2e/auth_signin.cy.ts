@@ -55,14 +55,14 @@ describe("/auth/signin", () => {
         cy.dataCy("signInButton").should("be.visible").click();
         cy.dataCy("form").then(($form) => expect($form[0].checkValidity()).to.be.false,);
     });
-    it("credentials match error", () => {
+    it("email error", () => {
         cy.visit(AUTH_SIGNIN);
         const email: string = makeid() + "@example.com";
         const password: string = makeid();
         cy.dataCy("emailInput").should("be.visible").type(email);
         cy.dataCy("passwordInput").should("be.visible").type(password);
         cy.dataCy("signInButton").should("be.visible").click();
-        cy.dataCy("signInError").should("be.visible");
+        cy.dataCy("emailError").should("be.visible");
         cy.url().should('include', AUTH_SIGNIN);
     });
 });

@@ -52,13 +52,16 @@ describe("/auth/signup", () => {
     it("password match error", () => {
         cy.visit(AUTH_SIGNUP);
         const email: string = makeid() + "@example.com";
+        const username: string = makeid();
         const password: string = makeid();
         const passwordConfirm: string = makeid();
         cy.dataCy("emailInput").should("be.visible").type(email);
+        cy.dataCy("nickNameInput").should("be.visible").type(username);
         cy.dataCy("passwordInput").should("be.visible").type(password);
         cy.dataCy("passwordConfirmInput").should("be.visible").type(passwordConfirm);
         cy.dataCy("signUpButton").should("be.visible").click();
-        cy.dataCy("signUpError").should("be.visible");
+        cy.dataCy("passwordError").should("be.visible");
+        cy.dataCy("passwordConfirmError").should("be.visible");
         cy.url().should('include', AUTH_SIGNUP);
     });
 });

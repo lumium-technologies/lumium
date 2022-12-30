@@ -493,12 +493,12 @@ const Workspace: React.FC = () => {
 
     return (
         <Authenticator>
-            <SidebarWithHeader workspace={workspace} userInfo={userInfo}>
+            <SidebarWithHeader>
                 {
                     (workspace?.name && userInfo?.nickName) &&
-                        <Heading>
-                            Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                        </Heading>
+                    <Heading>
+                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                    </Heading>
                 }
                 {
                     workspace?.pages.map((p) => {

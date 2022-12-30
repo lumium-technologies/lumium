@@ -22,7 +22,7 @@ const Spaces: React.FC = () => {
                 Router.push(AUTH_SIGNIN);
             }
         });
-    }, [api, refetchUserInfo]);
+    });
 
     return null;
 }

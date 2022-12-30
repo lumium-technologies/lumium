@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Progress,
     ButtonGroup,
@@ -17,6 +17,8 @@ import { Authenticator } from '@components/security/Authenticator';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { create_workspace } from 'lumium-renderer';
 import { useFormik } from 'formik';
+import { SPACES } from '@routes/space';
+import Router from 'next/router';
 
 const MultistepForm: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +26,7 @@ const MultistepForm: React.FC = () => {
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
+
     const nextStep = () => {
         if (formik.values.password == formik.values.passwordConfirm) {
             setStep(step + 1);
@@ -36,15 +39,20 @@ const MultistepForm: React.FC = () => {
             setCredentialsMatchError(true);
         }
     };
+
     const handleEnter = (event) => {
         if (event.key == "Enter") {
             nextStep();
         };
     };
+
     const handleDownloadKeys = () => {
-        create_workspace(formik.values.password, formik.values.name);
-        setDownloadedKeys(true);
+        create_workspace(formik.values.password, formik.values.name).then(() => {
+            setDownloadedKeys(true);
+            Router.push(SPACES);
+        });
     };
+
     const formik = useFormik({
         initialValues: {
             name: "",
@@ -56,6 +64,7 @@ const MultistepForm: React.FC = () => {
         },
         validateOnChange: (false),
     });
+
     return (
         <Authenticator>
             <Flex
@@ -79,11 +88,11 @@ const MultistepForm: React.FC = () => {
                         step === 1 && (
                             <>
                                 <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                    Space Creation
+                                    Create a new workspace
                                 </Heading>
                                 <FormControl isRequired>
                                     <FormLabel fontWeight={'normal'}>
-                                        Your Space Name
+                                        Workspace Name
                                     </FormLabel>
                                     <Input
                                         name={"name"}
@@ -93,8 +102,8 @@ const MultistepForm: React.FC = () => {
                                         data-cy={"nameInput"}
                                     />
                                 </FormControl>
-                                <FormControl isRequired>
-                                    <FormLabel>Password</FormLabel>
+                                <FormControl isRequired mt="5">
+                                    <FormLabel>Master Workspace Password</FormLabel>
                                     <InputGroup>
                                         <Input
                                             name={"password"}
@@ -115,7 +124,7 @@ const MultistepForm: React.FC = () => {
                                         </InputRightElement>
                                     </InputGroup>
                                 </FormControl>
-                                <FormControl isRequired isInvalid={credentialsMatchError}>
+                                <FormControl isRequired isInvalid={credentialsMatchError} mt="5" >
                                     <FormLabel>Repeat Password</FormLabel>
                                     <Input
                                         name={"passwordConfirm"}
@@ -134,15 +143,30 @@ const MultistepForm: React.FC = () => {
                                     <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
                                         Download Recovery Keys
                                     </Heading>
-                                    <Text w="100%" textAlign={'center'}>
+                                    <Heading textAlign={'center'}>
+                                        DISCLAIMER
+                                    </Heading>
+                                    <Text w="100%" mt={"5"}>
                                         Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
                                     </Text>
-                                    <Flex w="100%" justifyContent="center">
-                                        <Button backgroundColor={"lightgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>Download Keys and Create Space</Button>
+                                    <Text w="100%" mt={"5"}>
+                                        If you do not have access to your password or your recovery codes, you will not be able to decrypt the content in your workspace. We at lumium will not be able to help you recover your data.
+                                    </Text>
+                                    <Text w="100%" mt={"5"}>
+                                        As your data is fully end-to-end encrypted, key management is your sole responsibility. You will be able to generate additional codes and invalidate existing codes later on.
+                                    </Text>
+                                    <Text w="100%" mt={"5"}>
+                                        As soon as you click the button below, your workspace will be created and you will be prompted to download your recovery keys. The downloaded file will be named `lumium_recovery_keys.txt` and will contain one key per line.
+                                    </Text>
+                                    <Text w="100%" mt={"5"}>
+                                        lumium cannot read your workspace content, except for some metadata (information like which users have access to which workspace, your workspace title, which page was created by which user, when was the last time a user has logged in etc.). We cannot read data like the titles/content of pages in your workspace.
+                                    </Text>
+                                    <Flex w="100%" mt={"5"} justifyContent="center">
+                                        <Button backgroundColor={"darkgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my own responsibility</Button>
                                     </Flex>
                                 </>
                         )}
-                    <ButtonGroup w="100%" mt="auto">
+                    <ButtonGroup w="100%" mt="5">
                         <Flex w="100%" justifyContent="space-between">
                             <Flex>
                                 <Button
@@ -159,6 +183,7 @@ const MultistepForm: React.FC = () => {
                                 >
                                     Back
                                 </Button>
+                                {step!=2 &&
                                 <Button
                                     w="7rem"
                                     type="submit"
@@ -167,19 +192,8 @@ const MultistepForm: React.FC = () => {
                                 >
                                     Next
                                 </Button>
+                                }
                             </Flex>
-                            {
-                                downloadedKeys && (
-                                    <Button
-                                        w="7rem"
-                                        colorScheme="red"
-                                        variant="solid"
-                                        data-cy={"submitButton"}
-                                    >
-                                        Submit
-                                    </Button>
-                                )
-                            }
                         </Flex>
                     </ButtonGroup>
                 </form>

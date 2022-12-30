@@ -152,7 +152,7 @@ const SidebarContent = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarPr
             </Flex>
             {workspace?.name &&
                 <Menu>
-                    <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />}>
+                    <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"}>
                         {workspace?.name}
                     </MenuButton>
                     <MenuList>
@@ -278,7 +278,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">Justina Clark</Text>
+                                    <Text fontSize="sm"></Text>
                                     <Text fontSize="xs" color="gray.600">
                                         Admin
                                     </Text>

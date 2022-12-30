@@ -37,6 +37,7 @@ import {
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
+import { Authenticator } from '@components/security/Authenticator';
 
 interface LinkItemProps {
     name: string;
@@ -236,21 +237,23 @@ const Workspace: React.FC = () => {
     const { userInfo } = useUserInfo();
 
     return (
-        <SidebarWithHeader>
-            {
-                (workspace?.name && userInfo?.nickName) &&
+        <Authenticator>
+            <SidebarWithHeader>
+                {
+                    (workspace?.name && userInfo?.nickName) &&
                     <Heading>
                         Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
                     </Heading>
-            }
-            {
-                workspace?.pages.map((p) => {
-                    return (
-                        <Button key={p.id} onClick={() => router.push(p.id)}></Button>
-                    );
-                })
-            }
-        </SidebarWithHeader>
+                }
+                {
+                    workspace?.pages.map((p) => {
+                        return (
+                            <Button key={p.id} onClick={() => router.push(p.id)}></Button>
+                        );
+                    })
+                }
+            </SidebarWithHeader>
+        </Authenticator>
     );
 };
 

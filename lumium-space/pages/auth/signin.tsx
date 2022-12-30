@@ -15,7 +15,7 @@ import {
 import React, { useState } from 'react'
 import { useApi } from '@hooks/api';
 import Router from 'next/router';
-import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_NEW } from '@routes/space';
+import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
 import { useUserInfo } from '@hooks/api';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox } from '@components/auth/AuthBox';
@@ -36,13 +36,7 @@ const SignIn: React.FC = () => {
             "password": password
         }, { withCredentials: true }).then((res) => {
             if (res.status == 200) {
-                refetchUserInfo().then((info) => {
-                    if (info?.recentWorkspace?.id) {
-                        Router.push(ROOT + info?.recentWorkspace?.id);
-                    } else {
-                        Router.push(SPACES_NEW);
-                    };
-                });
+                Router.push(SPACES);
             }
         }).catch((err) => setError(err.response.data));
     };

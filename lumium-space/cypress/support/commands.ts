@@ -1,4 +1,4 @@
-import { ACCOUNT, AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from "@routes/space";
+import { ACCOUNT, AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from "@routes/space";
 import { makeid } from "./makeid"
 
 declare global {
@@ -37,7 +37,7 @@ Cypress.Commands.add("signUp", () => {
     cy.dataCy("signUpButton").should("be.visible").click().then(() => {
         cy.wait(3000);
         cy.getCookie('accessToken').should("not.be.null");
-        cy.url().should('include', SPACES_NEW);
+        cy.url().should('include', SPACES_CREATE);
     });
     return cy.wrap([email, password]);
 });
@@ -51,7 +51,7 @@ Cypress.Commands.add("signIn", (email: string, password: string) => {
         cy.wait(3000);
         cy.getCookie('accessToken').should("not.be.null");
     });
-    cy.url().should('include', SPACES_NEW);
+    cy.url().should('include', SPACES_CREATE);
 });
 
 Cypress.Commands.add("signOut", () => {

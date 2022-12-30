@@ -1,7 +1,12 @@
-import React, { ReactNode } from 'react';
-import { Heading, Button } from "@chakra-ui/react";
+import React, { ReactNode, useState } from 'react';
+import { create_workspace } from 'lumium-renderer';
+import { useFormik } from 'formik';
+import { Heading, Button, Divider, Modal } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
+import Router from "next/router";
+import { SPACES } from '@routes/space';
+import { UserDTO, WorkspaceDTO } from '@types';
 import {
     IconButton,
     Avatar,
@@ -10,9 +15,11 @@ import {
     Flex,
     HStack,
     VStack,
+    Stack,
     Icon,
     useColorModeValue,
     Link,
+    Image,
     Drawer,
     DrawerContent,
     Text,
@@ -24,6 +31,12 @@ import {
     MenuDivider,
     MenuItem,
     MenuList,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter
 } from '@chakra-ui/react';
 import {
     FiHome,
@@ -34,14 +47,19 @@ import {
     FiMenu,
     FiBell,
     FiChevronDown,
+    FiPlus,
+    FiLock,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
+import { Authenticator } from '@components/security/Authenticator';
+import CreateWorkspace from '@components/forms/CreateWorkspace';
 
 interface LinkItemProps {
     name: string;
     icon: IconType;
 }
+
 const LinkItems: Array<LinkItemProps> = [
     { name: 'Home', icon: FiHome },
     { name: 'Trending', icon: FiTrendingUp },
@@ -51,16 +69,22 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 function SidebarWithHeader({
+    workspace,
+    userInfo,
     children,
 }: {
+    workspace?: WorkspaceDTO;
+    userInfo?: UserDTO;
     children: ReactNode;
 }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <Box minH="100vh">
             <SidebarContent
-                onClose={() => onClose}
+                onSelfClose={() => onClose}
                 display={{ base: 'none', md: 'block' }}
+                workspace={workspace}
+                userInfo={userInfo}
             />
             <Drawer
                 autoFocus={false}
@@ -71,11 +95,11 @@ function SidebarWithHeader({
                 onOverlayClick={onClose}
                 size="full">
                 <DrawerContent>
-                    <SidebarContent onClose={onClose} />
+                    <SidebarContent onSelfClose={onClose} workspace={workspace} />
                 </DrawerContent>
             </Drawer>
             {/* mobilenav */}
-            <MobileNav onOpen={onOpen} />
+            <MobileNav onOpen={onOpen} userInfo={userInfo} workspace={workspace} />
             <Box ml={{ base: 0, md: 60 }} p="4">
                 {children}
             </Box>
@@ -84,31 +108,93 @@ function SidebarWithHeader({
 }
 
 interface SidebarProps extends BoxProps {
-    onClose: () => void;
+    onSelfClose: () => void;
+    workspace?: WorkspaceDTO;
+    userInfo?: UserDTO;
 }
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarProps) => {
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const workspaceCreateModal = (
+        <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent maxW={800}>
+                <ModalHeader>Create a new workspace</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody >
+                    <CreateWorkspace />
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    );
+
     return (
-        <Box
+        <Flex
+            flexDir={"column"}
             transition="3s ease"
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'gray.700')}
             w={{ base: 'full', md: 60 }}
             pos="fixed"
-            h="full"
+            h="100%"
             {...rest}>
+            {workspaceCreateModal}
             <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-                <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                    Logo
-                </Text>
-                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+                <Stack align={'center'}>
+                    <Image src={logo} minWidth={"70%"} maxWidth={"80%"} alt="lumium logo" />
+                </Stack>
+                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onSelfClose} />
             </Flex>
+            {workspace?.name &&
+                <Menu>
+                    <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"}>
+                        {workspace?.name}
+                    </MenuButton>
+                    <MenuList>
+                        {userInfo?.ownedWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.ownedWorkspaces.map((w) => {
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        {userInfo?.administratedWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.administratedWorkspaces.map((w) => {
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        {userInfo?.visitorWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.visitorWorkspaces.map((w) => {
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        <MenuItem as={Button} onClick={onOpen} icon={<FiPlus />}>New workspace</MenuItem>
+                    </MenuList>
+                </Menu>
+            }
+            <Divider mb="2" />
+            <NavItem h="1%" w="100%" icon={FiPlus} mb="2" mt="2" as={Button} bg="none">
+                New page
+            </NavItem>
+            <Divider mt="2" mb="2" />
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
+                <NavItem h="1%" w="100%" key={link.name} icon={link.icon} as={Button} bg="none">
                     {link.name}
                 </NavItem>
             ))}
-        </Box>
+        </Flex>
     );
 };
 
@@ -116,28 +202,17 @@ interface NavItemProps extends FlexProps {
     icon: IconType;
     children: ReactText;
 }
+
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
     return (
         <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
             <Flex
-                align="center"
                 p="4"
-                mx="4"
-                borderRadius="lg"
-                role="group"
-                cursor="pointer"
-                _hover={{
-                    bg: 'blue.400',
-                    color: 'white',
-                }}
                 {...rest}>
                 {icon && (
                     <Icon
                         mr="4"
                         fontSize="16"
-                        _groupHover={{
-                            color: 'white',
-                        }}
                         as={icon}
                     />
                 )}
@@ -149,8 +224,23 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 
 interface MobileProps extends FlexProps {
     onOpen: () => void;
+    userInfo?: UserDTO;
+    workspace?: WorkspaceDTO;
 }
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+
+const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
+    let role = ""
+    if (userInfo?.id) {
+        if (workspace?.ownerId == userInfo?.id) {
+            role = "Owner"
+        } else if (workspace?.admins.includes(userInfo?.id)) {
+            role = "Admin"
+        } else if (workspace?.members.includes(userInfo?.id)) {
+            role = "Member"
+        } else if (workspace?.visitors.includes(userInfo?.id)) {
+            role = "Visitor"
+        }
+    }
     return (
         <Flex
             ml={{ base: 0, md: 60 }}
@@ -202,9 +292,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">Justina Clark</Text>
+                                    <Text fontSize="sm">{userInfo?.nickName}</Text>
                                     <Text fontSize="xs" color="gray.600">
-                                        Admin
+                                        {role}
                                     </Text>
                                 </VStack>
                                 <Box display={{ base: 'none', md: 'flex' }}>
@@ -232,21 +322,26 @@ const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId } = router.query;
     const workspace = useWorkspace(workspaceId);
-    const { userInfo }= useUserInfo();
+    const { userInfo } = useUserInfo();
 
     return (
-        <SidebarWithHeader>
-            <Heading>
-                Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-            </Heading>
-            {
-                workspace?.pages.map((p) => {
-                    return (
-                        <Button key={p.id} onClick={() => router.push(p.id)}></Button>
-                    );
-                })
-            }
-        </SidebarWithHeader>
+        <Authenticator>
+            <SidebarWithHeader workspace={workspace} userInfo={userInfo}>
+                {
+                    (workspace?.name && userInfo?.nickName) &&
+                    <Heading>
+                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                    </Heading>
+                }
+                {
+                    workspace?.pages.map((p) => {
+                        return (
+                            <Button key={p.id} onClick={() => router.push(p.id)}></Button>
+                        );
+                    })
+                }
+            </SidebarWithHeader>
+        </Authenticator>
     );
 };
 

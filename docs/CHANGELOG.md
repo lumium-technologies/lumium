@@ -1,3 +1,39 @@
+## **0.9.0** <sub><sup>2022-12-30 ([1b6525f...fbd862e](https://github.com/lumium-technologies/lumium/compare/1b6525f...fbd862e?diff=split))</sup></sub>
+
+### Features
+##### `space`
+*  start work on workspace interface ([541ace7](https://github.com/lumium-technologies/lumium/commit/541ace7))
+
+
+### Bug Fixes
+*  add authenticator to workspace ([cce3d04](https://github.com/lumium-technologies/lumium/commit/cce3d04))
+*  add parameters back to sidebarheader ([e644f34](https://github.com/lumium-technologies/lumium/commit/e644f34))
+
+##### `space`
+*  empty effect dependencies ([9e28b51](https://github.com/lumium-technologies/lumium/commit/9e28b51))
+*  effect loop ([c36bf89](https://github.com/lumium-technologies/lumium/commit/c36bf89))
+*  infinite retrigger ([5d6e049](https://github.com/lumium-technologies/lumium/commit/5d6e049))
+
+
+### Merged Branches
+*  develop ([aa76c0c](https://github.com/lumium-technologies/lumium/commit/aa76c0c))
+*  develop ([4fe924a](https://github.com/lumium-technologies/lumium/commit/4fe924a))
+*  develop ([9e56a1a](https://github.com/lumium-technologies/lumium/commit/9e56a1a))
+*  develop ([5e8d4d9](https://github.com/lumium-technologies/lumium/commit/5e8d4d9))
+*  develop ([7e3b515](https://github.com/lumium-technologies/lumium/commit/7e3b515))
+*  develop ([7cf8c2b](https://github.com/lumium-technologies/lumium/commit/7cf8c2b))
+*  develop ([7bdc4bc](https://github.com/lumium-technologies/lumium/commit/7bdc4bc))
+
+
+## **0.8.1** <sub><sup>2022-12-29 ([7b64b8b...751bf1e](https://github.com/lumium-technologies/lumium/compare/7b64b8b...751bf1e?diff=split))</sup></sub>
+
+### Bug Fixes
+*  various little fixes ([ff9d203](https://github.com/lumium-technologies/lumium/commit/ff9d203))
+
+##### `space`
+*  various little improvements ([db31395](https://github.com/lumium-technologies/lumium/commit/db31395))
+
+
 ## **0.8.0** <sub><sup>2022-12-26 ([52b234a...534efb7](https://github.com/lumium-technologies/lumium/compare/52b234a...534efb7?diff=split))</sup></sub>
 
 ### Features

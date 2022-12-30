@@ -1,16 +1,13 @@
-import React, { ReactNode, useState } from 'react';
-import { create_workspace } from 'lumium-renderer';
-import { useFormik } from 'formik';
+import React, { ReactNode } from 'react';
 import { Heading, Button, Divider, Modal } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
-import Router from "next/router";
-import { SPACES } from '@routes/space';
 import { UserDTO, WorkspaceDTO } from '@types';
 import {
     IconButton,
     Avatar,
     Box,
+    Textarea,
     CloseButton,
     Flex,
     HStack,
@@ -36,7 +33,6 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    ModalFooter
 } from '@chakra-ui/react';
 import {
     FiHome,
@@ -54,6 +50,7 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Authenticator } from '@components/security/Authenticator';
 import CreateWorkspace from '@components/forms/CreateWorkspace';
+import { LumiumRenderer } from '@components/rendering';
 
 interface LinkItemProps {
     name: string;
@@ -151,38 +148,38 @@ const SidebarContent = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarPr
                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onSelfClose} />
             </Flex>
             {workspace?.name &&
-                <Menu>
-                    <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"}>
-                        {workspace?.name}
-                    </MenuButton>
-                    <MenuList>
-                        {userInfo?.ownedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        {userInfo?.administratedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        {userInfo?.visitorWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        <MenuItem as={Button} onClick={onOpen} icon={<FiPlus />}>New workspace</MenuItem>
-                    </MenuList>
-                </Menu>
+            <Menu>
+                <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"}>
+                    {workspace?.name}
+                </MenuButton>
+                <MenuList>
+                    {userInfo?.ownedWorkspaces?.length != 0 &&
+                    <>
+                        {userInfo?.ownedWorkspaces.map((w) => {
+                            return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                        })}
+                        <Divider />
+                    </>
+                    }
+                    {userInfo?.administratedWorkspaces?.length != 0 &&
+                        <>
+                            {userInfo?.administratedWorkspaces.map((w) => {
+                                return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                            })}
+                            <Divider />
+                        </>
+                    }
+                    {userInfo?.visitorWorkspaces?.length != 0 &&
+                        <>
+                            {userInfo?.visitorWorkspaces.map((w) => {
+                                return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                            })}
+                            <Divider />
+                        </>
+                    }
+                    <MenuItem as={Button} onClick={onOpen} icon={<FiPlus />}>New workspace</MenuItem>
+                </MenuList>
+            </Menu>
             }
             <Divider mb="2" />
             <NavItem h="1%" w="100%" icon={FiPlus} mb="2" mt="2" as={Button} bg="none">
@@ -320,7 +317,7 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
 
 const Workspace: React.FC = () => {
     const router = useRouter();
-    const { workspaceId } = router.query;
+    const { workspaceId, pageId } = router.query;
     const workspace = useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
 
@@ -328,10 +325,17 @@ const Workspace: React.FC = () => {
         <Authenticator>
             <SidebarWithHeader workspace={workspace} userInfo={userInfo}>
                 {
-                    (workspace?.name && userInfo?.nickName) &&
-                    <Heading>
-                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                    </Heading>
+                    (workspace?.name && userInfo?.nickName && !pageId) &&
+                        <Heading>
+                            Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                        </Heading>
+                }
+                {
+                    pageId &&
+                        <Flex flexDir="row">
+                            <Textarea />
+                            <LumiumRenderer />
+                        </Flex>
                 }
                 {
                     workspace?.pages.map((p) => {

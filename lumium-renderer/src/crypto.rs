@@ -1,4 +1,3 @@
-use js_sys::Uint8Array;
 use ring::aead::UnboundKey;
 use ring::digest;
 use ring::digest::digest;
@@ -10,7 +9,10 @@ use ring::aead::{
 };
 use ring::error;
 use ring::rand::{SecureRandom, SystemRandom};
-use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use std::sync::Mutex;
+
+use crate::dtos::{E2EKeyCreateDTO, E2EKeyVariantCreateDTO};
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
@@ -18,51 +20,14 @@ const RECOVERY_CODE_LENGTH: usize = 24;
 const NUM_RECOVERY_CODES: usize = 16;
 const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
+lazy_static! {
+    static ref MASTER_KEY: Arc<Mutex<([u8; MASTER_KEY_BYTE_LENGTH], bool)>> =
+        Arc::new(Mutex::new(([0; MASTER_KEY_BYTE_LENGTH], false)));
+}
+
 #[wasm_bindgen(module = "/js/download.js")]
 extern "C" {
     fn download(file: String, content: String);
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct E2EKeyVariantCreateDTO {
-    #[serde(with = "base64")]
-    pub activator: Vec<u8>,
-    #[serde(with = "base64")]
-    pub activator_nonce: Vec<u8>,
-    #[serde(with = "base64")]
-    pub value: Vec<u8>,
-    #[serde(with = "base64")]
-    pub value_nonce: Vec<u8>,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct E2EKeyCreateDTO {
-    pub keys: Vec<E2EKeyVariantCreateDTO>,
-    #[serde(with = "base64")]
-    pub activator: Vec<u8>,
-}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct E2EKeyVariantDTO {
-    #[serde(with = "base64")]
-    pub activator: Vec<u8>,
-    #[serde(with = "base64")]
-    pub activator_nonce: Vec<u8>,
-    #[serde(with = "base64")]
-    pub value: Vec<u8>,
-    #[serde(with = "base64")]
-    pub value_nonce: Vec<u8>,
-}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct E2EKeyDTO {
-    pub keys: Vec<E2EKeyVariantDTO>,
-    #[serde(with = "base64")]
-    pub activator: Vec<u8>,
 }
 
 pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValue> {
@@ -131,20 +96,34 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
         recovery_codes.join("\n"),
     );
 
+    let mut key = MASTER_KEY.lock().unwrap();
+    *key = (master_key, true);
+
     Ok(key_create_dto)
 }
 
-fn crypt_key(key: &[u8], nonce: Uint8Array) -> (UnboundKey, INonceSequence) {
-    let digest = digest(&digest::SHA256, key);
-    let key = digest.as_ref();
-    let mut nonce_buf = [0; NONCE_LEN];
-    nonce.copy_to(&mut nonce_buf);
-    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce_buf));
-    (UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence)
+fn decrypt_key() -> [u8; MASTER_KEY_BYTE_LENGTH] {
+    todo!()
 }
 
-pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let (key, nonce) = crypt_key(key, nonce);
+fn get_key() -> [u8; MASTER_KEY_BYTE_LENGTH] {
+    let mut key = MASTER_KEY.lock().unwrap();
+    if !key.1 {
+        *key = (decrypt_key(), true);
+    }
+    key.0
+}
+
+pub fn encrypt(nonce: [u8; NONCE_LEN], data: String) -> Vec<u8> {
+    encrypt_data(&get_key(), nonce, data.as_bytes().to_vec())
+}
+
+pub fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Vec<u8> {
+    decrypt_data(&get_key(), nonce, data)
+}
+
+fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
+    let (key, nonce) = prepare_key(key, nonce);
     let mut encryption_key = SealingKey::new(key, nonce);
     encryption_key
         .seal_in_place_append_tag(Aad::empty(), &mut data)
@@ -152,8 +131,8 @@ pub fn encrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8>
     data
 }
 
-pub fn decrypt_data(key: &[u8], nonce: Uint8Array, mut data: Vec<u8>) -> Vec<u8> {
-    let (key, nonce) = crypt_key(key, nonce);
+fn decrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
+    let (key, nonce) = prepare_key(key, nonce);
     let mut decryption_key = OpeningKey::new(key, nonce);
     let length = data.len() - AES_256_GCM.tag_len();
     decryption_key
@@ -176,26 +155,16 @@ impl NonceSequence for INonceSequence {
     }
 }
 
-pub fn generate_random_nonce() -> Uint8Array {
+pub fn generate_random_nonce() -> [u8; NONCE_LEN] {
     let rand_gen = SystemRandom::new();
     let mut raw_nonce = [0u8; NONCE_LEN];
     rand_gen.fill(&mut raw_nonce).unwrap();
-    let array = Uint8Array::new_with_length(NONCE_LEN as u32);
-    array.copy_from(&raw_nonce);
-    array
+    raw_nonce
 }
 
-mod base64 {
-    use serde::{Deserialize, Serialize};
-    use serde::{Deserializer, Serializer};
-
-    pub fn serialize<S: Serializer>(v: &Vec<u8>, s: S) -> Result<S::Ok, S::Error> {
-        let base64 = base64::encode(v);
-        String::serialize(&base64, s)
-    }
-
-    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
-        let base64 = String::deserialize(d)?;
-        base64::decode(base64.as_bytes()).map_err(|e| serde::de::Error::custom(e))
-    }
+fn prepare_key(key: &[u8], nonce: [u8; NONCE_LEN]) -> (UnboundKey, INonceSequence) {
+    let digest = digest(&digest::SHA256, key);
+    let key = digest.as_ref();
+    let nonce_sequence = INonceSequence::new(Nonce::assume_unique_for_key(nonce));
+    (UnboundKey::new(&AES_256_GCM, &key).unwrap(), nonce_sequence)
 }

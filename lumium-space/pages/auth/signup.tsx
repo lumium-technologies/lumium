@@ -17,7 +17,7 @@ import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_NEW } from '@routes/space';
+import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_OVERVIEW } from '@routes/space';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
@@ -37,7 +37,7 @@ const SignUp: React.FC = () => {
             nickName: nickName
         }).then((res) => {
             if (res.status == 200) {
-                Router.push(SPACES_NEW);
+                Router.push(SPACES_OVERVIEW);
             }
         }, (err) => setError(err.response.data));
     };

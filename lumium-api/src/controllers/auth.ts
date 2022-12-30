@@ -51,6 +51,10 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
     if (exists) {
         return res.status(500).contentType("application/json").send({ status: "EMAIL_ALREADY_EXISTS", reason: "email already exists" });
     }
+    exists = await dataSource.getRepository(User).count({ where: { nickName: req.body.nickName?.toLowerCase() } }) != 0;
+    if (exists) {
+        return res.status(500).contentType("application/json").send({ status: "USERNAME_ALREADY_EXISTS", reason: "username is already taken" });
+    }
     let salt = crypto.randomBytes(64);
     const derivedKey = crypto.pbkdf2Sync(
         Buffer.from(req.body.password, 'utf8'),

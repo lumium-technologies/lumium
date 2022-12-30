@@ -99,7 +99,7 @@ function SidebarWithHeader({
                 </DrawerContent>
             </Drawer>
             {/* mobilenav */}
-            <MobileNav onOpen={onOpen} />
+            <MobileNav onOpen={onOpen} userInfo={userInfo} workspace={workspace} />
             <Box ml={{ base: 0, md: 60 }} p="4">
                 {children}
             </Box>
@@ -224,9 +224,23 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 
 interface MobileProps extends FlexProps {
     onOpen: () => void;
+    userInfo?: UserDTO;
+    workspace?: WorkspaceDTO;
 }
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
+    let role = ""
+    if (userInfo?.id) {
+        if (workspace?.ownerId == userInfo?.id) {
+            role = "Owner"
+        } else if (workspace?.admins.includes(userInfo?.id)) {
+            role = "Admin"
+        } else if (workspace?.members.includes(userInfo?.id)) {
+            role = "Member"
+        } else if (workspace?.visitors.includes(userInfo?.id)) {
+            role = "Visitor"
+        }
+    }
     return (
         <Flex
             ml={{ base: 0, md: 60 }}
@@ -278,9 +292,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm"></Text>
+                                    <Text fontSize="sm">{userInfo?.nickName}</Text>
                                     <Text fontSize="xs" color="gray.600">
-                                        Admin
+                                        {role}
                                     </Text>
                                 </VStack>
                                 <Box display={{ base: 'none', md: 'flex' }}>

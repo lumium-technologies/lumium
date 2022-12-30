@@ -64,7 +64,6 @@ describe("/spaces/new", () => {
             cy.dataCy("passwordConfirmInput").should("be.visible").type(password);
             cy.dataCy("nextButton").should("be.visible").click();
             cy.dataCy("downloadButton").should("be.visible").click();
-            cy.dataCy("submitButton").should("be.visible").click();
             cy.deleteAccount();
         });
     });

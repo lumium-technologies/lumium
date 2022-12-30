@@ -5,10 +5,6 @@ describe("redirection", () => {
         cy.visit(ACCOUNT);
         cy.url().should('include', AUTH_SIGNIN);
     });
-    it("redirect /spaces/overview", () => {
-        cy.visit(SPACES_OVERVIEW);
-        cy.url().should('include', AUTH_SIGNIN);
-    });
     it("redirect /spaces/create", () => {
         cy.visit(SPACES_CREATE);
         cy.url().should('include', AUTH_SIGNIN);

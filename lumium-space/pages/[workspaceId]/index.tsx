@@ -312,7 +312,7 @@ const Workspace: React.FC = () => {
 
     return (
         <Authenticator>
-            <SidebarWithHeader>
+            <SidebarWithHeader workspace={workspace} userInfo={userInfo}>
                 {
                     (workspace?.name && userInfo?.nickName) &&
                     <Heading>

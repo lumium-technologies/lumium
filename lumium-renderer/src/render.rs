@@ -22,20 +22,8 @@ fn render_markdown(page: Option<JsValue>) -> String {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct ContentElement {
-    content: String,
-    r#type: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct PageContent {
-    position: u32,
-    content_element: ContentElement,
-}
-
-#[derive(Serialize, Deserialize)]
 pub struct Page {
-    contents: Vec<PageContent>,
+    contents: Vec<String>,
 }
 
 async fn query(url: Url) -> Result<JsValue, JsValue> {

@@ -1,3 +1,19 @@
+## **0.10.0** <sub><sup>2022-12-31 ([4c0cb6c...ec34028](https://github.com/lumium-technologies/lumium/compare/4c0cb6c...ec34028?diff=split))</sup></sub>
+
+### Features
+*  add nickname and role to profile ([61c9ab6](https://github.com/lumium-technologies/lumium/commit/61c9ab6))
+
+##### `e2e`
+*  sync page content ([221a7ef](https://github.com/lumium-technologies/lumium/commit/221a7ef))
+
+##### `renderer`
+*  decrypt workspace key ([5281be1](https://github.com/lumium-technologies/lumium/commit/5281be1))
+
+
+### Merged Branches
+*  develop ([42c6c13](https://github.com/lumium-technologies/lumium/commit/42c6c13))
+
+
 ## **0.9.0** <sub><sup>2022-12-30 ([1b6525f...fbd862e](https://github.com/lumium-technologies/lumium/compare/1b6525f...fbd862e?diff=split))</sup></sub>
 
 ### Features

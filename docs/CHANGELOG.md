@@ -1,3 +1,10 @@
+## **0.10.1** <sub><sup>2022-12-31 ([0ea1e0b...edcabe5](https://github.com/lumium-technologies/lumium/compare/0ea1e0b...edcabe5?diff=split))</sup></sub>
+
+### Bug Fixes
+##### `redis`
+*  set cache time to thirty seconds ([024ca76](https://github.com/lumium-technologies/lumium/commit/024ca76))
+
+
 ## **0.10.0** <sub><sup>2022-12-31 ([4c0cb6c...ec34028](https://github.com/lumium-technologies/lumium/compare/4c0cb6c...ec34028?diff=split))</sup></sub>
 
 ### Features

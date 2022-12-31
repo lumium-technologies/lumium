@@ -2,6 +2,20 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct WorkspaceCreateDTO {
+    pub key: E2EKeyCreateDTO,
+    pub name: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkspaceDTO {
+    pub key: E2EKeyDTO,
+    pub name: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct E2EKeyVariantCreateDTO {
     #[serde(with = "base64")]
     pub activator: Vec<u8>,

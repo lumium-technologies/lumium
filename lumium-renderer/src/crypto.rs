@@ -1,7 +1,11 @@
+use async_recursion::async_recursion;
 use ring::aead::UnboundKey;
 use ring::digest;
 use ring::digest::digest;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+
+use crate::JsFuture;
 
 use passwords::PasswordGenerator;
 use ring::aead::{
@@ -9,10 +13,12 @@ use ring::aead::{
 };
 use ring::error;
 use ring::rand::{SecureRandom, SystemRandom};
+use std::convert::TryInto;
 use std::sync::Arc;
 use std::sync::Mutex;
+use web_sys::{Request, RequestCredentials, RequestInit, RequestMode, Response};
 
-use crate::dtos::{E2EKeyCreateDTO, E2EKeyVariantCreateDTO};
+use crate::dtos::{E2EKeyCreateDTO, E2EKeyVariantCreateDTO, WorkspaceDTO};
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
@@ -23,6 +29,7 @@ const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 lazy_static! {
     static ref MASTER_KEY: Arc<Mutex<([u8; MASTER_KEY_BYTE_LENGTH], bool)>> =
         Arc::new(Mutex::new(([0; MASTER_KEY_BYTE_LENGTH], false)));
+    static ref PASSWORD: Arc<Mutex<String>> = Arc::new(Mutex::new("".to_string()));
 }
 
 #[wasm_bindgen(module = "/js/download.js")]
@@ -38,13 +45,13 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
     sr.fill(&mut activator_key).unwrap();
     let nonce_master_activator = generate_random_nonce();
     let cipher_master_activator = encrypt_data(
-        password.as_bytes(),
+        password.as_bytes().into(),
         nonce_master_activator.clone(),
         activator_key.to_vec(),
     );
     let nonce_master_value = generate_random_nonce();
     let cipher_master_value = encrypt_data(
-        password.as_bytes(),
+        password.as_bytes().into(),
         nonce_master_value.clone(),
         master_key.to_vec(),
     );
@@ -69,13 +76,13 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
     for recovery in &recovery_codes {
         let nonce_recovery_activator = generate_random_nonce();
         let cipher_recovery_activator = encrypt_data(
-            recovery.as_bytes(),
+            recovery.as_bytes().into(),
             nonce_recovery_activator.clone(),
             activator_key.to_vec(),
         );
         let nonce_recovery_value = generate_random_nonce();
         let cipher_recovery_value = encrypt_data(
-            recovery.as_bytes(),
+            recovery.as_bytes().into(),
             nonce_recovery_value.clone(),
             master_key.to_vec(),
         );
@@ -102,27 +109,80 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
     Ok(key_create_dto)
 }
 
-fn decrypt_key() -> [u8; MASTER_KEY_BYTE_LENGTH] {
-    todo!()
+#[async_recursion(?Send)]
+async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
+    let mut opts = RequestInit::new();
+    opts.method("GET");
+    opts.credentials(RequestCredentials::Include);
+    opts.mode(RequestMode::Cors);
+
+    let window = web_sys::window().unwrap();
+    let workspace_id = window.location().pathname()?;
+    let origin = format!(
+        "{}/{}/{}",
+        env!("RENDERER_API_HOST").to_string(),
+        "v1/secure/workspace",
+        workspace_id
+    );
+    let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
+    request
+        .headers()
+        .set("Content-Type", "application/json")
+        .unwrap();
+
+    let fetch = window.fetch_with_request(&request);
+    let resp_value = JsFuture::from(fetch).await?;
+    assert!(resp_value.is_instance_of::<Response>());
+    let resp: Response = resp_value.dyn_into().unwrap();
+    if resp.status() != 200 {
+        return Err(JsValue::from("failed to get workspace"));
+    }
+
+    let json = JsFuture::from(resp.json()?).await?;
+    let password = PASSWORD.lock().unwrap().to_string();
+    let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
+
+    for variant_dto in workspace_dto.key.keys {
+        if encrypt(
+            variant_dto.activator_nonce.clone().try_into().unwrap(),
+            workspace_dto.key.activator.clone(),
+        )
+        .await?
+            == variant_dto.activator
+        {
+            return Ok(decrypt_data(
+                password.as_bytes(),
+                variant_dto.value_nonce.try_into().unwrap(),
+                variant_dto.value,
+            )
+            .try_into()
+            .unwrap());
+        }
+    }
+
+    Err(JsValue::from("failed to decrypt workspace key"))
 }
 
-fn get_key() -> [u8; MASTER_KEY_BYTE_LENGTH] {
+#[async_recursion(?Send)]
+async fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let mut key = MASTER_KEY.lock().unwrap();
     if !key.1 {
-        *key = (decrypt_key(), true);
+        *key = (decrypt_key().await?, true);
     }
-    key.0
+    Ok(key.0)
 }
 
-pub fn encrypt(nonce: [u8; NONCE_LEN], data: String) -> Vec<u8> {
-    encrypt_data(&get_key(), nonce, data.as_bytes().to_vec())
+#[async_recursion(?Send)]
+pub async fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(encrypt_data(&get_key().await?, nonce, data))
 }
 
-pub fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Vec<u8> {
-    decrypt_data(&get_key(), nonce, data)
+#[async_recursion(?Send)]
+pub async fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(decrypt_data(&get_key().await?, nonce, data))
 }
 
-fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
+pub fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
     let (key, nonce) = prepare_key(key, nonce);
     let mut encryption_key = SealingKey::new(key, nonce);
     encryption_key
@@ -131,7 +191,7 @@ fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8
     data
 }
 
-fn decrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
+pub fn decrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {
     let (key, nonce) = prepare_key(key, nonce);
     let mut decryption_key = OpeningKey::new(key, nonce);
     let length = data.len() - AES_256_GCM.tag_len();

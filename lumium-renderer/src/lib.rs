@@ -6,20 +6,12 @@ pub mod render;
 extern crate lazy_static;
 
 use crypto::{encrypt, generate_key_variants, generate_random_nonce};
-use dtos::{E2EKeyCreateDTO, PageDTO};
+use dtos::{PageDTO, WorkspaceCreateDTO};
 use seed::{self, prelude::*, *};
-use serde::Serialize;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::RequestCredentials;
 use web_sys::{Request, RequestInit, RequestMode, Response};
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct WorkspaceCreateDTO {
-    pub key: E2EKeyCreateDTO,
-    pub name: String,
-}
 
 #[wasm_bindgen]
 pub async fn create_workspace(password: String, name: String) -> Result<JsValue, JsValue> {
@@ -61,8 +53,8 @@ pub async fn create_workspace(password: String, name: String) -> Result<JsValue,
 #[wasm_bindgen]
 pub async fn sync_page(id: String, name: String, content: String) -> Result<JsValue, JsValue> {
     let nonce = generate_random_nonce();
-    let content = encrypt(nonce, content);
-    let name = encrypt(nonce, name);
+    let content = encrypt(nonce, content.as_bytes().to_vec()).await?;
+    let name = encrypt(nonce, name.as_bytes().to_vec()).await?;
     let page_dto = PageDTO {
         id,
         name,

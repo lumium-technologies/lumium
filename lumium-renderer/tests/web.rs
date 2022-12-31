@@ -3,7 +3,6 @@
 #![cfg(target_arch = "wasm32")]
 
 extern crate wasm_bindgen_test;
-use std::vec::Vec;
 
 use lumium_renderer::crypto::{decrypt_data, encrypt_data, generate_random_nonce};
 use ring::rand::SecureRandom;
@@ -29,7 +28,7 @@ fn encryption_decryption() {
     rand_gen.fill(&mut key).unwrap();
     console_log!("key: {:?}", key);
     let nonce = generate_random_nonce();
-    console_log!("nonce: {:?}", nonce.to_string());
+    console_log!("nonce: {:?}", nonce);
     let cipher = encrypt_data(&key, nonce.clone(), data.clone());
     console_log!("cipher: {:?}", cipher);
     let plain = decrypt_data(&key, nonce, cipher);

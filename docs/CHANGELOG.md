@@ -1,3 +1,10 @@
+## **0.11.0** <sub><sup>2023-01-01 ([462d0ba...8067b36](https://github.com/lumium-technologies/lumium/compare/462d0ba...8067b36?diff=split))</sup></sub>
+
+### Features
+##### `space`
+*  add color mode toggle to workspace ([c78ca8e](https://github.com/lumium-technologies/lumium/commit/c78ca8e))
+
+
 ## **0.10.1** <sub><sup>2022-12-31 ([0ea1e0b...edcabe5](https://github.com/lumium-technologies/lumium/compare/0ea1e0b...edcabe5?diff=split))</sup></sub>
 
 ### Bug Fixes

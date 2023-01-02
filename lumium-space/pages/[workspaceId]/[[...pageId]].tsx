@@ -4,6 +4,7 @@ import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import { UserDTO, WorkspaceDTO } from '@types';
 import {
+    useColorMode,
     IconButton,
     Avatar,
     Box,
@@ -51,6 +52,7 @@ import { ReactText } from 'react';
 import { Authenticator } from '@components/security/Authenticator';
 import CreateWorkspace from '@components/forms/CreateWorkspace';
 import { LumiumRenderer } from '@components/rendering';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 interface LinkItemProps {
     name: string;
@@ -75,6 +77,7 @@ function SidebarWithHeader({
     children: ReactNode;
 }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
+
     return (
         <Box minH="100vh">
             <SidebarContent
@@ -141,9 +144,9 @@ const SidebarContent = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarPr
             h="100%"
             {...rest}>
             {workspaceCreateModal}
-            <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-                <Stack align={'center'}>
-                    <Image src={logo} minWidth={"70%"} maxWidth={"80%"} alt="lumium logo" />
+            <Flex h="20" alignItems="center" justifyContent="center">
+                <Stack align={'center'} display={'flex'}>
+                    <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
                 </Stack>
                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onSelfClose} />
             </Flex>
@@ -226,6 +229,12 @@ interface MobileProps extends FlexProps {
 }
 
 const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
+    const { colorMode, toggleColorMode } = useColorMode();
+
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    let logo = useColorModeValue(darkLogo, lightLogo);
+
     let role = ""
     if (userInfo?.id) {
         if (workspace?.ownerId == userInfo?.id) {
@@ -238,6 +247,7 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
             role = "Visitor"
         }
     }
+
     return (
         <Flex
             ml={{ base: 0, md: 60 }}
@@ -256,13 +266,9 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                 icon={<FiMenu />}
             />
 
-            <Text
-                display={{ base: 'flex', md: 'none' }}
-                fontSize="2xl"
-                fontFamily="monospace"
-                fontWeight="bold">
-                Logo
-            </Text>
+            <Stack align={'center'} display={{ base: 'flex', md: 'none'}}>
+                <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
+            </Stack>
 
             <HStack spacing={{ base: '0', md: '6' }}>
                 <IconButton
@@ -271,6 +277,9 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                     aria-label="open menu"
                     icon={<FiBell />}
                 />
+                <Button onClick={toggleColorMode} data-cy="switchThemeButton" mr="1%">
+                    {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
+                </Button>
                 <Flex alignItems={'center'}>
                     <Menu>
                         <MenuButton

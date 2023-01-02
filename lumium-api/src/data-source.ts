@@ -6,11 +6,11 @@ import dotenvExpand from 'dotenv-expand';
 import { AuditEntry, AuditEntryLevel } from './entity/Audit';
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
-    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.review'}));
+    dotenvExpand.expand(dotenv.config({ path: process.cwd() + '/.env.review' }));
 } else if (process.env.NODE_TEST) {
-    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.test'}));
+    dotenvExpand.expand(dotenv.config({ path: process.cwd() + '/.env.test' }));
 } else if (process.env.NODE_ENV !== 'production') {
-    dotenvExpand.expand(dotenv.config({path: process.cwd() + '/.env.development'}));
+    dotenvExpand.expand(dotenv.config({ path: process.cwd() + '/.env.development' }));
 }
 
 const schema = 'rediss://';
@@ -34,7 +34,7 @@ export const dataSource = new DataSource({
         type: 'ioredis',
         options: redisUrl,
         alwaysEnabled: true,
-        duration: 3600000
+        duration: 30000
     }
 });
 
@@ -67,25 +67,25 @@ export const audit = async (entry: AuditEntry) => {
 };
 
 export const verbose = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.VERBOSE});
+    await audit({ ...entry, level: AuditEntryLevel.VERBOSE });
 };
 
 export const debug = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.DEBUG});
+    await audit({ ...entry, level: AuditEntryLevel.DEBUG });
 };
 
 export const info = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.INFO});
+    await audit({ ...entry, level: AuditEntryLevel.INFO });
 };
 
 export const warn = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.WARNING});
+    await audit({ ...entry, level: AuditEntryLevel.WARNING });
 };
 
 export const error = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.ERROR});
+    await audit({ ...entry, level: AuditEntryLevel.ERROR });
 };
 
 export const fatal = async (entry: AuditEntry) => {
-    await audit({...entry, level: AuditEntryLevel.FATAL});
+    await audit({ ...entry, level: AuditEntryLevel.FATAL });
 };

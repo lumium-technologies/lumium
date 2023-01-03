@@ -1,4 +1,4 @@
-import { useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import { CallToAction } from "@sections/landing/CallToAction";
 import { Footer } from "@sections/landing/Footer";
 import { NavBar } from "@sections/landing/NavBar";
@@ -13,8 +13,10 @@ const LandingPage = () => {
     let logo = useColorModeValue(darkLogo, lightLogo);
     return (
         <>
-            <NavBar logo={logo} />
-            <CallToAction />
+            <Box mb={"1%"}>
+                <NavBar logo={logo} />
+                <CallToAction />
+            </Box>
             <Footer />
         </>
     );

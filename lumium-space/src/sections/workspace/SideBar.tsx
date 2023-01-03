@@ -1,7 +1,8 @@
 import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps } from "@chakra-ui/react";
-import { useColorModeValue } from "@chakra-ui/system";
 import CreateWorkspace from "@components/forms/CreateWorkspace";
+import { ROOT } from "@routes/space";
 import { WorkspaceDTO, UserDTO } from "@types";
+import Router from "next/router";
 import { ReactElement, ReactText } from "react";
 import { IconType } from "react-icons";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
@@ -89,7 +90,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -97,7 +98,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.administratedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -105,7 +106,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.visitorWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>

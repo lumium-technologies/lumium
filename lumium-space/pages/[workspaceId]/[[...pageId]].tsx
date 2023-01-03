@@ -86,7 +86,7 @@ const Workspace: React.FC = () => {
                                 p={6}
                                 my={12}>
                                 <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                    Enter the password for "{workspace?.name}"
+                                    Enter the password for <em>{workspace?.name}</em>
                                 </Heading>
                                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                                     <FormControl id="password" isRequired>

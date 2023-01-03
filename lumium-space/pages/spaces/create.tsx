@@ -5,6 +5,7 @@ import { useColorModeValue } from '@chakra-ui/react';
 
 const MultistepForm: React.FC = () => {
     let disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
+
     return (
         <Authenticator>
             <CreateWorkspace disclaimerButtonColor={disclaimerButtonColor} />

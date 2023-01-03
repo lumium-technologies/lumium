@@ -1,3 +1,8 @@
+## **0.11.1** <sub><sup>2023-01-03 ([6e686a5...405babd](https://github.com/lumium-technologies/lumium/compare/6e686a5...405babd?diff=split))</sup></sub>
+
+*no relevant changes*
+
+
 ## **0.11.0** <sub><sup>2023-01-01 ([462d0ba...8067b36](https://github.com/lumium-technologies/lumium/compare/462d0ba...8067b36?diff=split))</sup></sub>
 
 ### Features

@@ -6,7 +6,11 @@ import { create_workspace } from "lumium-renderer";
 import Router from "next/router";
 import { useState } from "react";
 
-const CreateWorkspace: React.FC = () => {
+interface createWorkspaceProps {
+    disclaimerButtonColor: string;
+}
+
+const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
@@ -139,7 +143,7 @@ const CreateWorkspace: React.FC = () => {
                                 lumium cannot read your workspace content, except for some metadata (information like which users have access to which workspace, your workspace title, which page was created by which user, when was the last time a user has logged in etc.). We cannot read data like the titles/content of pages in your workspace.
                             </Text>
                             <Flex w="100%" mt={"5"} justifyContent="center">
-                                <Button backgroundColor={"darkgreen"} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my own responsibility</Button>
+                                <Button backgroundColor={disclaimerButtonColor} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my own responsibility</Button>
                             </Flex>
                         </>
                     )}

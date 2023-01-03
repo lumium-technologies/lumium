@@ -4,7 +4,7 @@ import { User } from "./User";
 
 @Entity("blacklisted_tokens")
 export class BlacklistedToken extends AbstractEntity {
-    @ManyToOne(() => User, (user) => user.blacklistedTokens, { cascade: true, onDelete: 'CASCADE'})
+    @ManyToOne(() => User, (user) => user.blacklistedTokens, { cascade: true, onDelete: 'CASCADE' })
     user: User
 
     @Column()

@@ -69,68 +69,68 @@ const Workspace: React.FC = () => {
                 <Box p="4">
                     {
                         (workspace?.name && userInfo?.nickName && !pageId) &&
-                        <Heading>
-                            Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                        </Heading> ||
-                        !passwordEntered &&
-                        <Flex
-                            align={'center'}
-                            justify={'center'}
-                        >
-                            <Stack
-                                spacing={4}
-                                w={'full'}
-                                maxW={'md'}
-                                rounded={'xl'}
-                                boxShadow={'lg'}
-                                p={6}
-                                my={12}>
-                                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                    Enter the password for "{workspace?.name}"
-                                </Heading>
-                                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                    <FormControl id="password" isRequired>
-                                        <FormLabel>Password</FormLabel>
-                                        <InputGroup>
-                                            <Input
-                                                name={"password"}
-                                                type={showPassword ? 'text' : 'password'}
-                                                onChange={formik.handleChange}
-                                                value={formik.values.password}
-                                                data-cy="passwordInput"
-                                            />
-                                            <InputRightElement h={'full'}>
+                            <Heading>
+                                Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                            </Heading> ||
+                                !passwordEntered &&
+                                <Flex
+                                    align={'center'}
+                                    justify={'center'}
+                                >
+                                    <Stack
+                                        spacing={4}
+                                        w={'full'}
+                                        maxW={'md'}
+                                        rounded={'xl'}
+                                        boxShadow={'lg'}
+                                        p={6}
+                                        my={12}>
+                                        <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+                                            Enter the password for &quot;{workspace?.name}&quot;
+                                        </Heading>
+                                        <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                                            <FormControl id="password" isRequired>
+                                                <FormLabel>Password</FormLabel>
+                                                <InputGroup>
+                                                    <Input
+                                                        name={"password"}
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        onChange={formik.handleChange}
+                                                        value={formik.values.password}
+                                                        data-cy="passwordInput"
+                                                    />
+                                                    <InputRightElement h={'full'}>
+                                                        <Button
+                                                            variant={'ghost'}
+                                                            onClick={() =>
+                                                                setShowPassword((showPassword) => !showPassword)
+                                                            }>
+                                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                        </Button>
+                                                    </InputRightElement>
+                                                </InputGroup>
+                                                <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
+                                            </FormControl>
+                                            <Stack spacing={6}>
                                                 <Button
-                                                    variant={'ghost'}
-                                                    onClick={() =>
-                                                        setShowPassword((showPassword) => !showPassword)
-                                                    }>
-                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                    bg={'blue.400'}
+                                                    color={'white'}
+                                                    _hover={{
+                                                        bg: 'blue.500',
+                                                    }}
+                                                    type="submit"
+                                                >
+                                                    Submit
                                                 </Button>
-                                            </InputRightElement>
-                                        </InputGroup>
-                                        <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
-                                    </FormControl>
-                                    <Stack spacing={6}>
-                                        <Button
-                                            bg={'blue.400'}
-                                            color={'white'}
-                                            _hover={{
-                                                bg: 'blue.500',
-                                            }}
-                                            type="submit"
-                                        >
-                                            Submit
-                                        </Button>
+                                            </Stack>
+                                        </form>
                                     </Stack>
-                                </form>
-                            </Stack>
-                        </Flex>
-                        || pageId &&
-                        <Flex flexDir="row">
-                            <Textarea />
-                            <LumiumRenderer />
-                        </Flex>
+                                </Flex>
+                                    || pageId &&
+                                    <Flex flexDir="row">
+                                        <Textarea />
+                                        <LumiumRenderer />
+                                    </Flex>
                     }
                     {
                         workspace?.pages.map((p) => {

@@ -1,17 +1,21 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode, useColorModeValue, Box, Image, Text, FlexProps, Flex, IconButton, Stack, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
+import { useApi } from "@hooks/api";
+import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
+import { ACCOUNT, ROOT } from "@routes/space";
 import { UserDTO, WorkspaceDTO } from "@types";
+import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 
-interface MobileProps extends FlexProps {
+interface NavBarProps extends FlexProps {
     onOpen: () => void;
     userInfo?: UserDTO;
     workspace?: WorkspaceDTO;
 }
 
-const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
+const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
-
+    const [api] = useApi();
     let role = ""
     if (userInfo?.id) {
         if (workspace?.ownerId == userInfo?.id) {
@@ -86,10 +90,9 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                         <MenuList
                             borderColor={useColorModeValue('gray.200', 'gray.700')}>
                             <MenuItem>Profile</MenuItem>
-                            <MenuItem>Settings</MenuItem>
-                            <MenuItem>Billing</MenuItem>
+                            <MenuItem onClick={() => { Router.push(ACCOUNT) }}>Settings</MenuItem>
                             <MenuDivider />
-                            <MenuItem>Sign out</MenuItem>
+                            <MenuItem onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}>Sign out</MenuItem>
                         </MenuList>
                     </Menu>
                 </Flex>
@@ -97,4 +100,4 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
         </Flex >
     );
 };
-export default MobileNav;
+export default NavBar;

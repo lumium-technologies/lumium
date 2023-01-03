@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Button, Divider, Modal, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
@@ -13,7 +13,7 @@ import {
 import { Authenticator } from '@components/security/Authenticator';
 import { LumiumRenderer } from '@components/rendering';
 import SideBar from '@sections/workspace/SideBar';
-import MobileNav from '@sections/workspace/NavBar';
+import NavBar from '@sections/workspace/NavBar';
 import { useFormik } from 'formik';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
@@ -65,7 +65,7 @@ const Workspace: React.FC = () => {
                     </DrawerContent>
                 </Drawer>
                 {/* mobilenav */}
-                <MobileNav onOpen={onOpen} userInfo={userInfo} workspace={workspace} />
+                <NavBar onOpen={onOpen} userInfo={userInfo} workspace={workspace} />
                 <Box p="4">
                     {
                         (workspace?.name && userInfo?.nickName && !pageId) &&

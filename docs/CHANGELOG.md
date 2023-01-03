@@ -1,3 +1,14 @@
+## **0.12.0** <sub><sup>2023-01-03 ([b8613fc...3f3970c](https://github.com/lumium-technologies/lumium/compare/b8613fc...3f3970c?diff=split))</sup></sub>
+
+### Features
+*  add closeable sidebar ([5167100](https://github.com/lumium-technologies/lumium/commit/5167100))
+
+
+### Merged Branches
+*  develop ([30915fd](https://github.com/lumium-technologies/lumium/commit/30915fd))
+*  pull request \#243 from lumium\-technologies/r/sidebar ([852aec7](https://github.com/lumium-technologies/lumium/commit/852aec7))
+
+
 ## **0.11.1** <sub><sup>2023-01-03 ([6e686a5...405babd](https://github.com/lumium-technologies/lumium/compare/6e686a5...405babd?diff=split))</sup></sub>
 
 *no relevant changes*

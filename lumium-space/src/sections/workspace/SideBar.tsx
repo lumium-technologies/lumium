@@ -1,8 +1,9 @@
 import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps } from "@chakra-ui/react";
-import { useColorModeValue } from "@chakra-ui/system";
 import CreateWorkspace from "@components/forms/CreateWorkspace";
+import { ROOT } from "@routes/space";
 import { WorkspaceDTO, UserDTO } from "@types";
-import { ReactText } from "react";
+import Router from "next/router";
+import { ReactElement, ReactText } from "react";
 import { IconType } from "react-icons";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
 
@@ -32,69 +33,64 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 
 interface LinkItemProps {
     name: string;
-    icon: IconType;
+    icon: ReactElement;
 }
 const LinkItems: Array<LinkItemProps> = [
-    { name: 'Home', icon: FiHome },
-    { name: 'Trending', icon: FiTrendingUp },
-    { name: 'Explore', icon: FiCompass },
-    { name: 'Favourites', icon: FiStar },
-    { name: 'Settings', icon: FiSettings },
+    { name: 'Home', icon: <FiHome /> },
+    { name: 'Trending', icon: <FiTrendingUp /> },
+    { name: 'Explore', icon: <FiCompass /> },
+    { name: 'Favourites', icon: <FiStar /> },
+    { name: 'Settings', icon: <FiSettings /> },
 ];
 
 interface SidebarProps extends BoxProps {
     onSelfClose: () => void;
-    workspace?: WorkspaceDTO;
-    userInfo?: UserDTO;
+    workspace: WorkspaceDTO | undefined;
+    userInfo: UserDTO | undefined;
+    logo: string;
+    disclaimerButtonColor: string;
 }
 
-const SideBar = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarProps) => {
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
+const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-
-    const workspaceCreateModal = (
-        <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent maxW={800}>
-                <ModalHeader>Create a new workspace</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody >
-                    <CreateWorkspace />
-                </ModalBody>
-            </ModalContent>
-        </Modal>
-    );
 
     return (
         <Flex
             flexDir={"column"}
             transition="3s ease"
-            borderRight="1px"
-            borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-            w={{ base: 'full', md: 60 }}
             pos="fixed"
             h="100%"
-            {...rest}>
-            {workspaceCreateModal}
+            width={"100%"}
+            {...rest}
+            backgroundColor={backgroundColor}
+        >
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent maxW={800}>
+                    <ModalHeader>Create a new workspace</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody >
+                        <CreateWorkspace disclaimerButtonColor={disclaimerButtonColor} />
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             <Flex h="20" alignItems="center" justifyContent="center">
                 <Stack align={'center'} display={'flex'}>
                     <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
                 </Stack>
-                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onSelfClose} />
+                <CloseButton display={'flex'} onClick={onSelfClose} />
             </Flex>
             {workspace?.name &&
                 <Menu>
-                    <MenuButton p={"2"} bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"}>
+                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"} justifyContent={{ base: "center", md: "flex-start" }}>
                         {workspace?.name}
                     </MenuButton>
                     <MenuList>
                         {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -102,7 +98,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarProps) =>
                         {userInfo?.administratedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -110,7 +106,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarProps) =>
                         {userInfo?.visitorWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -119,15 +115,15 @@ const SideBar = ({ onSelfClose, workspace, userInfo, ...rest }: SidebarProps) =>
                     </MenuList>
                 </Menu>
             }
-            <Divider mb="2" />
-            <NavItem h="1%" w="100%" icon={FiPlus} mb="2" mt="2" as={Button} bg="none">
+            <Divider />
+            <Button leftIcon={<FiPlus />} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
                 New page
-            </NavItem>
-            <Divider mt="2" mb="2" />
+            </Button>
+            <Divider />
             {LinkItems.map((link) => (
-                <NavItem h="1%" w="100%" key={link.name} icon={link.icon} as={Button} bg="none">
+                <Button key={link.name} leftIcon={link.icon} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
                     {link.name}
-                </NavItem>
+                </Button>
             ))}
         </Flex>
     );

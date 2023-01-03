@@ -35,19 +35,15 @@ import {
 import Router from 'next/router';
 import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 import packageInfo from 'package.json';
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 
-export const NavBar = () => {
+export const NavBar = (logo) => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
     const [api] = useApi();
-
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    const logo = useColorModeValue(darkLogo, lightLogo);
 
     const handleLogout = () => {
         api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());
@@ -280,7 +276,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                             <Link key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Link>
-                    ))}
+                        ))}
                 </Stack>
             </Collapse>
         </Stack>

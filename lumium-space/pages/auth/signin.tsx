@@ -16,7 +16,6 @@ import React, { useState } from 'react'
 import { useApi } from '@hooks/api';
 import Router from 'next/router';
 import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
-import { useUserInfo } from '@hooks/api';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
@@ -26,7 +25,6 @@ const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<ReasonDTO | null>(null);
     const [api] = useApi();
-    const { refetchUserInfo } = useUserInfo();
 
     const handleSignIn = () => {
         const email = formik.values.email;

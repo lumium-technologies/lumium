@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode, useColorModeValue, Box, Image, Text, FlexProps, Flex, IconButton, Stack, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
+import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
 import { ACCOUNT, ROOT } from "@routes/space";
@@ -88,7 +88,8 @@ const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            borderColor={useColorModeValue('gray.200', 'gray.700')}>
+                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                        >
                             <MenuItem>Profile</MenuItem>
                             <MenuItem onClick={() => { Router.push(ACCOUNT) }}>Settings</MenuItem>
                             <MenuDivider />

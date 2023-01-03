@@ -13,7 +13,7 @@ import {
     FormErrorMessage,
     Image
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -23,6 +23,9 @@ import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
 
 const SignUp: React.FC = () => {
+    useEffect(() => {
+        document.title = "Lumium | Sign Up"
+    }, []);
     const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<ReasonDTO | null>(null);

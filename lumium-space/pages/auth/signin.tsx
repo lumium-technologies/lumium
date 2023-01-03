@@ -12,19 +12,23 @@ import {
     InputGroup,
     useColorModeValue
 } from '@chakra-ui/react';
-import React, { useState } from 'react'
-import { useApi } from '@hooks/api';
+import React, { useEffect, useState } from 'react'
+import { useApi, useUserInfo } from '@hooks/api';
 import Router from 'next/router';
-import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES } from '@routes/space';
+import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES, SPACES_CREATE } from '@routes/space';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox } from '@components/auth/AuthBox';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
 
 const SignIn: React.FC = () => {
+    useEffect(() => {
+        document.title = "Lumium | Sign In"
+    }, []);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<ReasonDTO | null>(null);
     const [api] = useApi();
+    const { refetchUserInfo } = useUserInfo();
 
     const handleSignIn = () => {
         const email = formik.values.email;
@@ -34,7 +38,13 @@ const SignIn: React.FC = () => {
             "password": password
         }, { withCredentials: true }).then((res) => {
             if (res.status == 200) {
-                Router.push(SPACES);
+                refetchUserInfo().then((info) => {
+                    if (info?.recentWorkspace) {
+                        Router.push(ROOT + info?.recentWorkspace.id);
+                    } else {
+                        Router.push(SPACES_CREATE);
+                    };
+                });
             }
         }).catch((err) => setError(err.response.data));
     };

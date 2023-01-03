@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
@@ -41,6 +41,9 @@ const Workspace: React.FC = () => {
     let backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
     let disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
 
+    useEffect(() => {
+        document.title = "Lumium | " + workspace?.name;
+    }, [workspace]);
     return (
         <Authenticator>
             <Box minH="100vh">

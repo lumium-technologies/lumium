@@ -39,7 +39,11 @@ import { ReactElement, useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 
-export const NavBar = (logo) => {
+interface NavBarProps {
+    logo: string;
+}
+
+export const NavBar = ({ logo }: NavBarProps) => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);

@@ -4,8 +4,12 @@ import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_USER_DELETE } from "@routes/api/v1";
 import { ROOT } from "@routes/space";
 import Router from "next/router";
+import { useEffect } from "react";
 
 const AccountPage: React.FC = () => {
+    useEffect(() => {
+        document.title = "Lumium | Account Settings"
+    }, []);
     const [api] = useApi();
     const handleDelete = () => {
         api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));

@@ -1,6 +1,5 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Box, Image, Text, FlexProps, Flex, IconButton, Stack, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider } from "@chakra-ui/react";
-import { useColorMode, useColorModeValue } from "@chakra-ui/system";
+import { useColorMode, useColorModeValue, Box, Image, Text, FlexProps, Flex, IconButton, Stack, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
 import { UserDTO, WorkspaceDTO } from "@types";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 
@@ -12,10 +11,6 @@ interface MobileProps extends FlexProps {
 
 const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
-
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
 
     let role = ""
     if (userInfo?.id) {
@@ -32,27 +27,24 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
 
     return (
         <Flex
-            ml={{ base: 0, md: 60 }}
-            px={{ base: 4, md: 4 }}
-            height="20"
-            alignItems="center"
+            alignItems={"Center"}
             borderBottomWidth="1px"
             borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-            justifyContent={{ base: 'space-between', md: 'flex-end' }}
-            {...rest}>
+            {...rest}
+            pl={{ base: "4%", md: "2%" }}
+            pr={{ base: "4%", md: "2%" }}
+            pt={"1vh"}
+            pb={"1vh"}
+        >
             <IconButton
-                display={{ base: 'flex', md: 'none' }}
+                display={'flex'}
                 onClick={onOpen}
                 variant="outline"
                 aria-label="open menu"
                 icon={<FiMenu />}
             />
-
-            <Stack align={'center'} display={{ base: 'flex', md: 'none' }}>
-                <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
-            </Stack>
-
-            <HStack spacing={{ base: '0', md: '6' }}>
+            <Spacer />
+            <HStack>
                 <IconButton
                     size="lg"
                     variant="ghost"
@@ -62,12 +54,13 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                 <Button onClick={toggleColorMode} data-cy="switchThemeButton" mr="1%">
                     {colorMode === 'light' && <MoonIcon /> || <SunIcon />}
                 </Button>
-                <Flex alignItems={'center'}>
+                <Flex>
                     <Menu>
                         <MenuButton
                             py={2}
                             transition="all 0.3s"
-                            _focus={{ boxShadow: 'none' }}>
+                            _focus={{ boxShadow: 'none' }}
+                        >
                             <HStack>
                                 <Avatar
                                     size={'sm'}
@@ -76,7 +69,7 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                                     }
                                 />
                                 <VStack
-                                    display={{ base: 'none', md: 'flex' }}
+                                    display={'flex'}
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
@@ -85,7 +78,7 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                                         {role}
                                     </Text>
                                 </VStack>
-                                <Box display={{ base: 'none', md: 'flex' }}>
+                                <Box display={'flex'}>
                                     <FiChevronDown />
                                 </Box>
                             </HStack>
@@ -101,7 +94,7 @@ const MobileNav = ({ onOpen, userInfo, workspace, ...rest }: MobileProps) => {
                     </Menu>
                 </Flex>
             </HStack>
-        </Flex>
+        </Flex >
     );
 };
 export default MobileNav;

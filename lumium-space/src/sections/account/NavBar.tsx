@@ -10,30 +10,12 @@ import NextLink from 'next/link';
 import { RxDoubleArrowUp } from "react-icons/rx";
 
 interface NavBarProps extends FlexProps {
-    onOpenSideBar: () => void;
-    userInfo?: UserDTO;
-    workspace?: WorkspaceDTO;
-    pinnedSidebar: boolean;
-    setPinnedNavBar: (bool: any) => void;
     backgroundColor: string;
 }
 
-export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setPinnedNavBar, backgroundColor, ...rest }: NavBarProps) => {
+export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
-    let role = ""
-    if (userInfo?.id) {
-        if (workspace?.ownerId == userInfo?.id) {
-            role = "Owner"
-        } else if (workspace?.admins.includes(userInfo?.id)) {
-            role = "Admin"
-        } else if (workspace?.members.includes(userInfo?.id)) {
-            role = "Member"
-        } else if (workspace?.visitors.includes(userInfo?.id)) {
-            role = "Visitor"
-        }
-    }
-
     return (
         <Flex
             borderBottomWidth="1px"
@@ -45,23 +27,10 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
             maxH={"9vh"}
             alignItems={"Center"}
             {...rest}
+            width={"100%"}
         >
-            {!pinnedSidebar &&
-                <IconButton
-                    display={'flex'}
-                    variant="outline"
-                    aria-label="open menu"
-                    icon={<FiMenu />}
-                    onClick={onOpenSideBar}
-                />
-            }
             <Spacer />
             <HStack>
-                <IconButton
-                    variant="ghost"
-                    aria-label="close navbar"
-                    icon={<FiBell />}
-                />
                 <IconButton
                     icon={colorMode === 'light' && <MoonIcon /> || <SunIcon />}
                     mr="1%"
@@ -79,16 +48,6 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                         'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
                                     }
                                 />
-                                <VStack
-                                    display={'flex'}
-                                    alignItems="flex-start"
-                                    spacing="1px"
-                                    ml="2">
-                                    <Text fontSize="sm">{userInfo?.nickName}</Text>
-                                    <Text fontSize="xs" color="gray.600">
-                                        {role}
-                                    </Text>
-                                </VStack>
                                 <Box display={'flex'}>
                                     <FiChevronDown />
                                 </Box>
@@ -99,28 +58,14 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                             backgroundColor={backgroundColor}
                         >
                             <Button
-                                width={"100%"}
-                                justifyContent={{ base: "center", md: "flex-start" }}
-                                bg="None" as={NextLink}
-                                href={ACCOUNT}
-                            >Settings</Button>
-                            <MenuDivider />
-                            <Button
-                                width={"100%"}
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None"
+                                width={"100%"}
                                 onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}
                             >Sign out</Button>
                         </MenuList>
                     </Menu>
                 </Flex>
-                <IconButton
-                    display={'flex'}
-                    onClick={() => (setPinnedNavBar(false))}
-                    variant="outline"
-                    aria-label="open menu"
-                    icon={<RxDoubleArrowUp />}
-                />
             </HStack >
         </Flex >
     );

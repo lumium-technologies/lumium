@@ -1,32 +1,87 @@
-import { Button } from "@chakra-ui/react";
+import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { PageTitle } from "@components/other";
 import { Authenticator } from "@components/security/Authenticator";
-import { useApi } from "@hooks/api";
-import { SECURE_AUTH_SIGNOUT, SECURE_USER_DELETE } from "@routes/api/v1";
+import { useApi, useUserInfo } from "@hooks/api";
+import { SECURE_USER_DELETE } from "@routes/api/v1";
 import { ROOT } from "@routes/space";
+import { NavBar, SideBar } from "@sections/account";
 import Router from "next/router";
+import { useEffect, useState } from "react";
 
-const AccountPage: React.FC = () => {
+const Account: React.FC = () => {
+    const darkLogo = '/logo/svg/Black logo - no background.svg';
+    const lightLogo = '/logo/svg/White logo - no background.svg';
+    const logo = useColorModeValue(darkLogo, lightLogo);
+    const backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
+
     const [api] = useApi();
+    const [email, setEmail] = useState("");
+    const [page, setPage] = useState("personalInfo");
+    const { userInfo } = useUserInfo();
     const handleDelete = () => {
         api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));
     };
-    const handleLogout = () => {
-        api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT));
-    };
+    useEffect(() => {
+        userInfo?.emails.map((e) => {
+            if (e.primary) {
+                setEmail(e.email);
+            }
+        });
+    }, [userInfo])
     return (
         <>
             <PageTitle title={"Lumium | Account"} />
             <Authenticator>
-                <Button backgroundColor={"grey"} onClick={handleLogout} data-cy={"signOut"}>
-                    Logout
-                </Button>
-                <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy={"deleteAccount"}>
-                    Delete Account
-                </Button>
+                <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
+                    <SideBar
+                        logo={logo}
+                        backgroundColor={backgroundColor}
+                        setPage={setPage}
+                    />
+                    <Flex width={"100%"} flexDirection={"column"} >
+                        <NavBar backgroundColor={backgroundColor} />
+                        <Flex flexDirection={"column"} alignContent={"center"} height={"100%"} ml={"1vh"}>
+                            {
+                                page == "personalInfo" && (
+                                    <>
+                                        <Heading>Personal Information</Heading>
+                                        <Flex flexDirection={"column"}>
+                                            <Stack direction={"row"}>
+                                                <Text fontSize="sm" width={"10vh"}>Username</Text>
+                                                <Text fontSize="sm" >{userInfo?.nickName}</Text>
+                                            </Stack>
+                                            <Stack direction={"row"}>
+                                                <Text fontSize="sm" width={"10vh"}>E-Mail</Text>
+                                                <Text fontSize="sm">{email}</Text>
+                                            </Stack>
+                                        </Flex>
+                                    </>
+                                ) ||
+                                page == "security" && (
+                                    <>
+                                        <Heading>Security</Heading>
+                                        <Flex>
+                                            <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy={"deleteAccount"}>
+                                                Delete Account
+                                            </Button>
+                                        </Flex>
+                                    </>
+                                ) ||
+                                page == "payments" && (
+                                    <>
+                                        <Heading>Payments and Subscribtions</Heading>
+                                        <Flex>
+
+                                        </Flex>
+                                    </>
+                                )
+                            }
+                        </Flex>
+                    </Flex>
+                </Flex>
             </Authenticator>
         </>
     );
 };
 
-export default AccountPage;
+export default Account;

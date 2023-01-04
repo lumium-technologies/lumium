@@ -39,6 +39,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundC
         onOpen: onOpenModal,
         onClose: onCloseModal
     } = useDisclosure();
+
     const handlePinned = () => {
         if (pinnedSideBar) {
             setPinnedSideBar(false);
@@ -46,6 +47,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundC
             setPinnedSideBar(true);
         }
     }
+
     return (
         <Flex
             flexDir={"column"}
@@ -80,43 +82,43 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundC
                 </Stack>
                 <Flex flexDirection={"column"}>
                     {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onCloseSideBar} />)}
-                    <IconButton aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
+                    <IconButton m={1} bg={"none"} aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
                 </Flex>
             </Flex>
             {
                 workspace?.name &&
-                <Menu>
-                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
-                        {workspace?.name}
-                    </MenuButton>
-                    <MenuList bg={backgroundColor}>
-                        {userInfo?.ownedWorkspaces?.length != 0 &&
+                    <Menu>
+                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                            {workspace?.name}
+                        </MenuButton>
+                        <MenuList bg={backgroundColor}>
+                            {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
                                     return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
-                        }
-                        {userInfo?.administratedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        {userInfo?.visitorWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        <MenuItem icon={<FiPlus />} bg="none" as={Button} onClick={onOpenModal}>New workspace</MenuItem>
-                    </MenuList>
-                </Menu >
+                            }
+                            {userInfo?.administratedWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.administratedWorkspaces.map((w) => {
+                                        return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            {userInfo?.visitorWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.visitorWorkspaces.map((w) => {
+                                        return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            <MenuItem icon={<FiPlus />} bg="none" as={Button} onClick={onOpenModal}>New workspace</MenuItem>
+                        </MenuList>
+                    </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>

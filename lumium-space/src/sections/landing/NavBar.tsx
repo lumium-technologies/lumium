@@ -107,6 +107,7 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                     rounded={'full'}
                                     variant={'link'}
                                     cursor={'pointer'}
+                                    data-cy={'profileDropDownMenu'}
                                     minW={0}
                                 >
                                     <Avatar
@@ -119,7 +120,7 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                 <MenuList>
                                     <MenuItem as={NextLink} href={ACCOUNT}>Account</MenuItem>
                                     <MenuDivider />
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    <MenuItem data-cy={'signOut'} onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
                         </Flex>
@@ -283,7 +284,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                             <Link key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Link>
-                        ))}
+                    ))}
                 </Stack>
             </Collapse>
         </Stack>

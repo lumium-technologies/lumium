@@ -47,13 +47,13 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
             {...rest}
         >
             {!pinnedSidebar &&
-                <IconButton
-                    display={'flex'}
-                    variant="outline"
-                    aria-label="open menu"
-                    icon={<FiMenu />}
-                    onClick={onOpenSideBar}
-                />
+            <IconButton
+                display={'flex'}
+                variant="outline"
+                aria-label="open menu"
+                icon={<FiMenu />}
+                onClick={onOpenSideBar}
+            />
             }
             <Spacer />
             <HStack>
@@ -64,14 +64,15 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                 />
                 <IconButton
                     icon={colorMode === 'light' && <MoonIcon /> || <SunIcon />}
-                    mr="1%"
+                    m={3}
+                    bg={"none"}
                     aria-label="switch theme"
                     onClick={toggleColorMode}
                     data-cy="switchThemeButton"
                 />
                 <Flex>
                     <Menu>
-                        <MenuButton>
+                        <MenuButton data-cy={"profileDropDownMenu"}>
                             <HStack>
                                 <Avatar
                                     size={'sm'}
@@ -109,6 +110,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                 width={"100%"}
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None"
+                                data-cy={"signOut"}
                                 onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}
                             >Sign out</Button>
                         </MenuList>

@@ -41,6 +41,7 @@ const Workspace: React.FC = () => {
     const handlePasswordEntered = () => {
         setPasswordEntered(true);
     }
+
     const formik = useFormik({
         initialValues: {
             password: "",
@@ -48,9 +49,10 @@ const Workspace: React.FC = () => {
         onSubmit: handlePasswordEntered,
         validateOnChange: (false),
     });
+
     return (
         <>
-            <PageTitle title={"Lumium | " + workspace?.name} />
+            <PageTitle title={workspace?.name ? "Lumium | " + workspace?.name : "Lumium"} />
             <Authenticator>
                 <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
                     {!pinnedSideBar && (
@@ -90,7 +92,7 @@ const Workspace: React.FC = () => {
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
                             />
-                        )
+                    )
                     }
                     {/* mobilenav */}
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
@@ -132,70 +134,70 @@ const Workspace: React.FC = () => {
                             }
                             {
                                 (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
-                                <>
-                                    <Heading>
-                                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                    </Heading>
-                                    <Flex
-                                        align={'center'}
-                                        justify={'center'}
-                                    >
-                                        <Stack
-                                            spacing={4}
-                                            w={'full'}
-                                            maxW={'md'}
-                                            rounded={'xl'}
-                                            boxShadow={'lg'}
-                                            p={6}
-                                            my={12}
+                                    <>
+                                        <Heading>
+                                            Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                                        </Heading>
+                                        <Flex
+                                            align={'center'}
+                                            justify={'center'}
                                         >
-                                            <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                                Enter the password for <em>{workspace?.name}</em>
-                                            </Heading>
-                                            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                                <FormControl id="password" isRequired>
-                                                    <FormLabel>Password</FormLabel>
-                                                    <InputGroup>
-                                                        <Input
-                                                            name={"password"}
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            onChange={formik.handleChange}
-                                                            value={formik.values.password}
-                                                            data-cy="passwordInput"
-                                                        />
-                                                        <InputRightElement h={'full'}>
-                                                            <Button
-                                                                variant={'ghost'}
-                                                                onClick={() =>
-                                                                    setShowPassword((showPassword) => !showPassword)
-                                                                }>
-                                                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                            </Button>
-                                                        </InputRightElement>
-                                                    </InputGroup>
-                                                    <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
-                                                </FormControl>
-                                                <Stack spacing={6} mt={"2%"}>
-                                                    <Button
-                                                        bg={'blue.400'}
-                                                        color={'white'}
-                                                        _hover={{
-                                                            bg: 'blue.500',
-                                                        }}
-                                                        type="submit"
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                                </Stack>
-                                            </form>
-                                        </Stack>
-                                    </Flex>
-                                </>
-                                || pageId &&
-                                <Flex flexDir="row">
-                                    <Textarea />
-                                    <LumiumRenderer />
-                                </Flex>
+                                            <Stack
+                                                spacing={4}
+                                                w={'full'}
+                                                maxW={'md'}
+                                                rounded={'xl'}
+                                                boxShadow={'lg'}
+                                                p={6}
+                                                my={12}
+                                            >
+                                                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+                                                    Enter the password for <em>{workspace?.name}</em>
+                                                </Heading>
+                                                <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                                                    <FormControl id="password" isRequired>
+                                                        <FormLabel>Password</FormLabel>
+                                                        <InputGroup>
+                                                            <Input
+                                                                name={"password"}
+                                                                type={showPassword ? 'text' : 'password'}
+                                                                onChange={formik.handleChange}
+                                                                value={formik.values.password}
+                                                                data-cy="passwordInput"
+                                                            />
+                                                            <InputRightElement h={'full'}>
+                                                                <Button
+                                                                    variant={'ghost'}
+                                                                    onClick={() =>
+                                                                        setShowPassword((showPassword) => !showPassword)
+                                                                    }>
+                                                                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                                </Button>
+                                                            </InputRightElement>
+                                                        </InputGroup>
+                                                        <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
+                                                    </FormControl>
+                                                    <Stack spacing={6} mt={"2%"}>
+                                                        <Button
+                                                            bg={'blue.400'}
+                                                            color={'white'}
+                                                            _hover={{
+                                                                bg: 'blue.500',
+                                                            }}
+                                                            type="submit"
+                                                        >
+                                                            Submit
+                                                        </Button>
+                                                    </Stack>
+                                                </form>
+                                            </Stack>
+                                        </Flex>
+                                    </>
+                                        || pageId &&
+                                        <Flex flexDir="row">
+                                            <Textarea />
+                                            <LumiumRenderer />
+                                        </Flex>
                             }
                             {
                                 workspace?.pages.map((p) => {

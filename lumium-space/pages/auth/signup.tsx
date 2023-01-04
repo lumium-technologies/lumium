@@ -40,7 +40,7 @@ const SignUp: React.FC = () => {
             if (res.status == 200) {
                 Router.push(SPACES_CREATE);
             }
-        }, (err) => setError(err.response.data));
+        }, (err) => setError(err.response?.data));
     };
 
     const formik = useFormik({

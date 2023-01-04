@@ -8,7 +8,7 @@ const LandingPage = () => {
     let logo = useColorModeValue(darkLogo, lightLogo);
     return (
         <>
-            <PageTitle title={"Lumium | Your Collaboration Space"} />
+            <PageTitle title={"Lumium | Your Secure Collaborative Workspace"} />
             <Box mb={"1%"}>
                 <NavBar logo={logo} />
                 <CallToAction />

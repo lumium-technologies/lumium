@@ -37,7 +37,7 @@ export const SideBar = ({ logo, backgroundColor, setPage, ...rest }: SidebarProp
             <Button leftIcon={<BsInfoCircleFill />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} onClick={() => { setPage("personalInfo") }}>
                 Personal Information
             </Button>
-            <Button leftIcon={<AiOutlineSecurityScan />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} onClick={() => { setPage("security") }}>
+            <Button data-cy={'securityTab'} leftIcon={<AiOutlineSecurityScan />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} onClick={() => { setPage("security") }}>
                 Security
             </Button>
             <Button leftIcon={<MdPayment />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} onClick={() => { setPage("payments") }}>

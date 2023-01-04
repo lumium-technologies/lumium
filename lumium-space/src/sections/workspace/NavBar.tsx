@@ -13,7 +13,7 @@ interface NavBarProps extends FlexProps {
     workspace?: WorkspaceDTO;
 }
 
-const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     let role = ""
@@ -101,4 +101,3 @@ const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
         </Flex >
     );
 };
-export default NavBar;

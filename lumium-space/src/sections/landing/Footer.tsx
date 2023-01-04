@@ -11,7 +11,7 @@ import { FaGithub } from 'react-icons/fa';
 import { ReactNode } from 'react';
 import packageInfo from 'package.json';
 
-export function Footer() {
+export const Footer = () => {
     const darkLogo = '/logo/svg/Black logo - no background.svg';
     const lightLogo = '/logo/svg/White logo - no background.svg';
     const logo = useColorModeValue(darkLogo, lightLogo);

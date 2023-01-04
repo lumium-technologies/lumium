@@ -1,16 +1,13 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Image, Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Link, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { AuthBox } from "@components/auth/AuthBox";
+import { Box, Button, Fade, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { AuthBox, PageTitle } from "@components/other";
 import { useApi } from "@hooks/api";
 import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from 'formik';
 
 const ResetPassword: React.FC = () => {
-    useEffect(() => {
-        document.title = "Lumium | Reset your Password"
-    }, []);
     const [passwordMatchError, setPasswordMatchError] = useState(false);
     const [emailExistsError, setEmailExistsError] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
@@ -207,9 +204,12 @@ const ResetPassword: React.FC = () => {
     );
 
     return (
-        <Fade in={true}>
-            {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
-        </Fade>
+        <>
+            <PageTitle title={"Lumium | Reset your password"} />
+            <Fade in={true}>
+                {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
+            </Fade>
+        </>
     );
 };
 

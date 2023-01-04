@@ -10,7 +10,7 @@ interface createWorkspaceProps {
     disclaimerButtonColor: string;
 }
 
-const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
+export const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
@@ -181,4 +181,3 @@ const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
         </Flex>
     )
 }
-export default CreateWorkspace;

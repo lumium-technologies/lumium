@@ -11,7 +11,7 @@ import {
 import { SPACES, AUTH_SIGNUP } from '@routes/space';
 import Router from 'next/router';
 
-export function CallToAction() {
+export const CallToAction = () => {
     return (
         <Container maxW={'5xl'}>
             <Stack

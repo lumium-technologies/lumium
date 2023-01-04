@@ -1,5 +1,5 @@
 import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps } from "@chakra-ui/react";
-import CreateWorkspace from "@components/forms/CreateWorkspace";
+import { CreateWorkspace } from "@components/other";
 import { ROOT } from "@routes/space";
 import { WorkspaceDTO, UserDTO } from "@types";
 import Router from "next/router";
@@ -51,7 +51,7 @@ interface SidebarProps extends BoxProps {
     disclaimerButtonColor: string;
 }
 
-const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
+export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -128,4 +128,3 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
         </Flex>
     );
 };
-export default SideBar;

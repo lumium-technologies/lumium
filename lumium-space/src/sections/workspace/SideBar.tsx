@@ -1,13 +1,10 @@
-import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton, useColorModeValue } from "@chakra-ui/react";
-import { CreateWorkspace } from "@components/other";
-import { ROOT } from "@routes/space";
+import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton, useColorModeValue } from "@chakra-ui/react";
+import { CreateWorkspace, WorkspaceSideBarButton } from "@components/other";
 import { WorkspaceDTO, UserDTO } from "@types";
 import { ReactElement, ReactText } from "react";
-import { IconType } from "react-icons";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
 import { AiFillPushpin } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
-import NextLink from 'next/link';
 
 interface LinkItemProps {
     name: string;
@@ -26,14 +23,13 @@ interface SidebarProps extends BoxProps {
     workspace: WorkspaceDTO | undefined;
     userInfo: UserDTO | undefined;
     logo: string;
-    backgroundColor: string;
     disclaimerButtonColor: string;
     setPinnedSideBar: (bool: any) => void;
     pinnedSideBar: boolean;
-    sidebarWidth: string;
+    sidebarWidth?: string;
 }
 
-export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
+export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerButtonColor, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
     const {
         isOpen: isOpenModal,
         onOpen: onOpenModal,
@@ -47,7 +43,10 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundC
             setPinnedSideBar(true);
         }
     }
-
+    if (!sidebarWidth) {
+        sidebarWidth = "100%";
+    }
+    const backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
     return (
         <Flex
             flexDir={"column"}
@@ -82,43 +81,43 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, backgroundC
                 </Stack>
                 <Flex flexDirection={"column"}>
                     {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onCloseSideBar} />)}
-                    <IconButton m={1} bg={"none"} aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
+                    <IconButton bg={"none"} aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
                 </Flex>
             </Flex>
             {
                 workspace?.name &&
-                    <Menu>
-                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
-                            {workspace?.name}
-                        </MenuButton>
-                        <MenuList bg={backgroundColor}>
-                            {userInfo?.ownedWorkspaces?.length != 0 &&
+                <Menu matchWidth={true}>
+                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                        {workspace?.name}
+                    </MenuButton>
+                    <MenuList bg={backgroundColor} overflow={"hidden"}>
+                        {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
+                                    return <WorkspaceSideBarButton w={w} />;
                                 })}
                                 <Divider />
                             </>
-                            }
-                            {userInfo?.administratedWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.administratedWorkspaces.map((w) => {
-                                        return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            {userInfo?.visitorWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.visitorWorkspaces.map((w) => {
-                                        return <MenuItem icon={<FiLock />} bg="none" key={w.id} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            <MenuItem icon={<FiPlus />} bg="none" as={Button} onClick={onOpenModal}>New workspace</MenuItem>
-                        </MenuList>
-                    </Menu >
+                        }
+                        {userInfo?.administratedWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.administratedWorkspaces.map((w) => {
+                                    return <WorkspaceSideBarButton w={w} />;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        {userInfo?.visitorWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.visitorWorkspaces.map((w) => {
+                                    return <WorkspaceSideBarButton w={w} />;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
+                    </MenuList>
+                </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>

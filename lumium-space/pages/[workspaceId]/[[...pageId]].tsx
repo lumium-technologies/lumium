@@ -97,7 +97,7 @@ const Workspace: React.FC = () => {
                         <Box p="4">
                             {
                                 !pinnedNavBar && (
-                                    <IconButton aria-label="PinIcon" icon={<RxDoubleArrowDown />} onClick={() => { setPinnedNavBar(true) }} size={"sm"} display={{ base: "none", md: "flex" }} right="5" position={"absolute"} />
+                                    <IconButton aria-label="PinIcon" icon={<RxDoubleArrowDown />} onClick={() => { setPinnedNavBar(true) }} size={"sm"} right="5" position={"absolute"} />
                                 )
                             }
                             {

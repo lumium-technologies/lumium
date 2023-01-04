@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue, IconButton, position } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
@@ -17,15 +17,17 @@ import { useFormik } from 'formik';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { PageTitle } from '@components/other';
 import NextLink from 'next/link';
+import { RxDoubleArrowDown } from "react-icons/rx";
 
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
     const workspace = useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isOpenSideBar, onOpen: onOpenSideBar, onClose: onCloseSideBar } = useDisclosure();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
+    const [pinnedNavBar, setPinnedNavBar] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const handlePasswordEntered = () => {
         setPasswordEntered(true);
@@ -50,16 +52,16 @@ const Workspace: React.FC = () => {
                     {!pinnedSideBar && (
                         <Drawer
                             autoFocus={false}
-                            isOpen={isOpen}
+                            isOpen={isOpenSideBar}
                             placement="left"
-                            onClose={onClose}
+                            onClose={onCloseSideBar}
                             returnFocusOnClose={false}
-                            onOverlayClick={onClose}
+                            onOverlayClick={onCloseSideBar}
                             size={{ base: "full", md: "xs" }}
                         >
                             <DrawerContent>
                                 <SideBar
-                                    onSelfClose={onClose}
+                                    onSelfClose={onCloseSideBar}
                                     workspace={workspace}
                                     userInfo={userInfo}
                                     logo={logo}
@@ -74,7 +76,6 @@ const Workspace: React.FC = () => {
                     ) ||
                         (
                             <SideBar
-                                onSelfClose={onClose}
                                 workspace={workspace}
                                 userInfo={userInfo}
                                 logo={logo}
@@ -88,8 +89,17 @@ const Workspace: React.FC = () => {
                     }
                     {/* mobilenav */}
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
-                        <NavBar onOpen={onOpen} userInfo={userInfo} workspace={workspace} pinnedSidebar={pinnedSideBar} />
+                        {
+                            pinnedNavBar && (
+                                <NavBar onOpenSideBar={onOpenSideBar} userInfo={userInfo} workspace={workspace} pinnedSidebar={pinnedSideBar} setPinnedNavBar={setPinnedNavBar} />
+                            )
+                        }
                         <Box p="4">
+                            {
+                                !pinnedNavBar && (
+                                    <IconButton aria-label="PinIcon" icon={<RxDoubleArrowDown />} onClick={() => { setPinnedNavBar(true) }} size={"sm"} display={{ base: "none", md: "flex" }} right="5" position={"absolute"} />
+                                )
+                            }
                             {
                                 (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
                                 <>

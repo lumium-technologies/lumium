@@ -46,7 +46,7 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 interface SidebarProps extends BoxProps {
-    onSelfClose: () => void;
+    onSelfClose?: () => void;
     workspace: WorkspaceDTO | undefined;
     userInfo: UserDTO | undefined;
     logo: string;

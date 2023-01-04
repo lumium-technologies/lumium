@@ -25,6 +25,7 @@ const Workspace: React.FC = () => {
     const { userInfo } = useUserInfo();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [passwordEntered, setPasswordEntered] = useState(false);
+    const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const handlePasswordEntered = () => {
         setPasswordEntered(true);
@@ -41,22 +42,37 @@ const Workspace: React.FC = () => {
     let logo = useColorModeValue(darkLogo, lightLogo);
     let backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
     let disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
-
     return (
         <>
             <PageTitle title={"Lumium | " + workspace?.name} />
             <Authenticator>
-                <Box minH="100vh">
-                    <Drawer
-                        autoFocus={false}
-                        isOpen={isOpen}
-                        placement="left"
-                        onClose={onClose}
-                        returnFocusOnClose={false}
-                        onOverlayClick={onClose}
-                        size={{ base: "full", md: "xs" }}
-                    >
-                        <DrawerContent>
+                <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
+                    {!pinnedSideBar && (
+                        <Drawer
+                            autoFocus={false}
+                            isOpen={isOpen}
+                            placement="left"
+                            onClose={onClose}
+                            returnFocusOnClose={false}
+                            onOverlayClick={onClose}
+                            size={{ base: "full", md: "xs" }}
+                        >
+                            <DrawerContent>
+                                <SideBar
+                                    onSelfClose={onClose}
+                                    workspace={workspace}
+                                    userInfo={userInfo}
+                                    logo={logo}
+                                    backgroundColor={backgroundColor}
+                                    disclaimerButtonColor={disclaimerButtonColor}
+                                    setPinnedSideBar={setPinnedSideBar}
+                                    pinnedSideBar={pinnedSideBar}
+                                    sidebarWidth={"100%"}
+                                />
+                            </DrawerContent>
+                        </Drawer>
+                    ) ||
+                        (
                             <SideBar
                                 onSelfClose={onClose}
                                 workspace={workspace}
@@ -64,87 +80,92 @@ const Workspace: React.FC = () => {
                                 logo={logo}
                                 backgroundColor={backgroundColor}
                                 disclaimerButtonColor={disclaimerButtonColor}
+                                setPinnedSideBar={setPinnedSideBar}
+                                pinnedSideBar={pinnedSideBar}
+                                sidebarWidth={"320px"}
                             />
-                        </DrawerContent>
-                    </Drawer>
+                        )
+                    }
                     {/* mobilenav */}
-                    <NavBar onOpen={onOpen} userInfo={userInfo} workspace={workspace} />
-                    <Box p="4">
-                        {
-                            (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
-                            <>
-                                <Heading>
-                                    Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                </Heading>
-                                <Flex
-                                    align={'center'}
-                                    justify={'center'}
-                                >
-                                    <Stack
-                                        spacing={4}
-                                        w={'full'}
-                                        maxW={'md'}
-                                        rounded={'xl'}
-                                        boxShadow={'lg'}
-                                        p={6}
-                                        my={12}>
-                                        <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                            Enter the password for <em>{workspace?.name}</em>
-                                        </Heading>
-                                        <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                            <FormControl id="password" isRequired>
-                                                <FormLabel>Password</FormLabel>
-                                                <InputGroup>
-                                                    <Input
-                                                        name={"password"}
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        onChange={formik.handleChange}
-                                                        value={formik.values.password}
-                                                        data-cy="passwordInput"
-                                                    />
-                                                    <InputRightElement h={'full'}>
-                                                        <Button
-                                                            variant={'ghost'}
-                                                            onClick={() =>
-                                                                setShowPassword((showPassword) => !showPassword)
-                                                            }>
-                                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                        </Button>
-                                                    </InputRightElement>
-                                                </InputGroup>
-                                                <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
-                                            </FormControl>
-                                            <Stack spacing={6} mt={"2%"}>
-                                                <Button
-                                                    bg={'blue.400'}
-                                                    color={'white'}
-                                                    _hover={{
-                                                        bg: 'blue.500',
-                                                    }}
-                                                    type="submit"
-                                                >
-                                                    Submit
-                                                </Button>
-                                            </Stack>
-                                        </form>
-                                    </Stack>
+                    <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
+                        <NavBar onOpen={onOpen} userInfo={userInfo} workspace={workspace} pinnedSidebar={pinnedSideBar} />
+                        <Box p="4">
+                            {
+                                (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
+                                <>
+                                    <Heading>
+                                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                                    </Heading>
+                                    <Flex
+                                        align={'center'}
+                                        justify={'center'}
+                                    >
+                                        <Stack
+                                            spacing={4}
+                                            w={'full'}
+                                            maxW={'md'}
+                                            rounded={'xl'}
+                                            boxShadow={'lg'}
+                                            p={6}
+                                            my={12}>
+                                            <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+                                                Enter the password for <em>{workspace?.name}</em>
+                                            </Heading>
+                                            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                                                <FormControl id="password" isRequired>
+                                                    <FormLabel>Password</FormLabel>
+                                                    <InputGroup>
+                                                        <Input
+                                                            name={"password"}
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            onChange={formik.handleChange}
+                                                            value={formik.values.password}
+                                                            data-cy="passwordInput"
+                                                        />
+                                                        <InputRightElement h={'full'}>
+                                                            <Button
+                                                                variant={'ghost'}
+                                                                onClick={() =>
+                                                                    setShowPassword((showPassword) => !showPassword)
+                                                                }>
+                                                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                            </Button>
+                                                        </InputRightElement>
+                                                    </InputGroup>
+                                                    <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
+                                                </FormControl>
+                                                <Stack spacing={6} mt={"2%"}>
+                                                    <Button
+                                                        bg={'blue.400'}
+                                                        color={'white'}
+                                                        _hover={{
+                                                            bg: 'blue.500',
+                                                        }}
+                                                        type="submit"
+                                                    >
+                                                        Submit
+                                                    </Button>
+                                                </Stack>
+                                            </form>
+                                        </Stack>
+                                    </Flex>
+                                </>
+                                || pageId &&
+                                <Flex flexDir="row">
+                                    <Textarea />
+                                    <LumiumRenderer />
                                 </Flex>
-                            </>
-                            || pageId &&
-                            <Flex flexDir="row">
-                                <Textarea />
-                                <LumiumRenderer />
-                            </Flex>
-                        }
-                        {
-                            workspace?.pages.map((p) => {
-                                return (
-                                    <Button key={p.id} as={NextLink} href={p.id}></Button>
-                                );
-                            })
-                        }
-                    </Box>
-                </Box>
+                            }
+                            {
+                                workspace?.pages.map((p) => {
+                                    return (
+                                        <Button key={p.id} as={NextLink} href={p.id}></Button>
+                                    );
+                                })
+                            }
+                        </Box>
+                    </Flex>
+                </Flex>
             </Authenticator>
         </>
     );

@@ -12,9 +12,10 @@ interface NavBarProps extends FlexProps {
     onOpen: () => void;
     userInfo?: UserDTO;
     workspace?: WorkspaceDTO;
+    pinnedSidebar: boolean;
 }
 
-export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpen, userInfo, workspace, pinnedSidebar, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     let role = ""
@@ -41,13 +42,15 @@ export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) =>
             pt={"1vh"}
             pb={"1vh"}
         >
-            <IconButton
-                display={'flex'}
-                onClick={onOpen}
-                variant="outline"
-                aria-label="open menu"
-                icon={<FiMenu />}
-            />
+            {!pinnedSidebar &&
+                <IconButton
+                    display={'flex'}
+                    onClick={onOpen}
+                    variant="outline"
+                    aria-label="open menu"
+                    icon={<FiMenu />}
+                />
+            }
             <Spacer />
             <HStack>
                 <IconButton

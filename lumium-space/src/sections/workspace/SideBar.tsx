@@ -1,11 +1,12 @@
-import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps } from "@chakra-ui/react";
+import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton } from "@chakra-ui/react";
 import { CreateWorkspace } from "@components/other";
 import { ROOT } from "@routes/space";
 import { WorkspaceDTO, UserDTO } from "@types";
-import Router from "next/router";
 import { ReactElement, ReactText } from "react";
 import { IconType } from "react-icons";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
+import { AiFillPushpin } from "react-icons/ai";
+import { BsFillPinFill } from "react-icons/bs";
 import NextLink from 'next/link';
 
 interface NavItemProps extends FlexProps {
@@ -50,19 +51,27 @@ interface SidebarProps extends BoxProps {
     userInfo: UserDTO | undefined;
     logo: string;
     disclaimerButtonColor: string;
+    setPinnedSideBar: (bool: any) => void;
+    pinnedSideBar: boolean;
+    sidebarWidth: string;
 }
 
-export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
-
+export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-
+    const handlePinned = () => {
+        if (pinnedSideBar) {
+            setPinnedSideBar(false);
+        } else {
+            setPinnedSideBar(true);
+        }
+    }
     return (
         <Flex
             flexDir={"column"}
             transition="3s ease"
-            pos="fixed"
             h="100%"
             width={"100%"}
+            maxW={sidebarWidth}
             {...rest}
             backgroundColor={backgroundColor}
         >
@@ -80,9 +89,13 @@ export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColo
                 <Stack align={'center'} display={'flex'}>
                     <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
                 </Stack>
-                <CloseButton display={'flex'} onClick={onSelfClose} />
+                <Flex flexDirection={"column"}>
+                    {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onSelfClose} />)}
+                    <IconButton aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned}>P</IconButton>
+                </Flex>
             </Flex>
-            {workspace?.name &&
+            {
+                workspace?.name &&
                 <Menu>
                     <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"} justifyContent={{ base: "center", md: "flex-start" }}>
                         {workspace?.name}

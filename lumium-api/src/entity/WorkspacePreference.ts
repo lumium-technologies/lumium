@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { WorkspacePreferenceDTO } from "../../types";
 import { AbstractEntity } from "./AbstractEntity";
 import { Workspace } from "./Workspace";

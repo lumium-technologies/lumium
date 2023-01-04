@@ -91,7 +91,7 @@ export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColo
                 </Stack>
                 <Flex flexDirection={"column"}>
                     {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onSelfClose} />)}
-                    <IconButton aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned}>P</IconButton>
+                    <IconButton aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
                 </Flex>
             </Flex>
             {

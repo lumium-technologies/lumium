@@ -1,3 +1,20 @@
+## **0.13.0** <sub><sup>2023-01-04 ([7e065b5...314ccbc](https://github.com/lumium-technologies/lumium/compare/7e065b5...314ccbc?diff=split))</sup></sub>
+
+### Features
+*  add working workspace switch ([775d3f2](https://github.com/lumium-technologies/lumium/commit/775d3f2))
+*  add profile menu functionality ([ac6f0f7](https://github.com/lumium-technologies/lumium/commit/ac6f0f7))
+
+
+### Bug Fixes
+*  build errors ([379599b](https://github.com/lumium-technologies/lumium/commit/379599b))
+
+
+### Merged Branches
+*  branch 'develop' into r/sidebar ([70bf666](https://github.com/lumium-technologies/lumium/commit/70bf666))
+*  pull request \#246 from lumium\-technologies/r/sidebar ([25ac0ab](https://github.com/lumium-technologies/lumium/commit/25ac0ab))
+*  develop ([2701a32](https://github.com/lumium-technologies/lumium/commit/2701a32))
+
+
 ## **0.12.0** <sub><sup>2023-01-03 ([b8613fc...3f3970c](https://github.com/lumium-technologies/lumium/compare/b8613fc...3f3970c?diff=split))</sup></sub>
 
 ### Features

@@ -21,6 +21,7 @@ import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from '@routes/space';
 import { AuthBox, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
+import NextLink from 'next/link';
 
 const SignUp: React.FC = () => {
     const [api] = useApi();
@@ -142,7 +143,7 @@ const SignUp: React.FC = () => {
                             <Text mb={"0"}>
                                 Already have an account?
                             </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNIN)} data-cy="signInSwitchButton">Login</Link>
+                            <Link color={'blue.400'} data-cy="signInSwitchButton" as={NextLink} href={AUTH_SIGNIN}>Login</Link>
                         </Flex>
                     </Stack>
                 </form>

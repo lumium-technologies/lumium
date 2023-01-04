@@ -35,9 +35,10 @@ import {
 import Router from 'next/router';
 import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 import packageInfo from 'package.json';
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
+import NextLink from 'next/link';
 
 interface NavBarProps {
     logo: string;
@@ -116,7 +117,7 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                     />
                                 </MenuButton>
                                 <MenuList>
-                                    <MenuItem onClick={() => Router.push(ACCOUNT)}>Account</MenuItem>
+                                    <MenuItem as={NextLink} href={ACCOUNT}>Account</MenuItem>
                                     <MenuDivider />
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
@@ -131,7 +132,8 @@ export const NavBar = ({ logo }: NavBarProps) => {
                             <Button
                                 fontSize={'sm'}
                                 fontWeight={400}
-                                onClick={() => Router.push(AUTH_SIGNIN)}
+                                as={NextLink}
+                                href={AUTH_SIGNIN}
                                 data-cy="signInButton"
                             >
                                 Sign In
@@ -140,7 +142,8 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                 fontSize={'sm'}
                                 fontWeight={600}
                                 bg={"blue.400"}
-                                onClick={() => Router.push(AUTH_SIGNUP)}
+                                as={NextLink}
+                                href={AUTH_SIGNUP}
                                 data-cy="signUpButton"
                             >
                                 Sign Up

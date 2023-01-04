@@ -6,6 +6,7 @@ import { ACCOUNT, ROOT } from "@routes/space";
 import { UserDTO, WorkspaceDTO } from "@types";
 import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
+import NextLink from 'next/link';
 
 interface NavBarProps extends FlexProps {
     onOpen: () => void;
@@ -90,8 +91,7 @@ export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) =>
                         <MenuList
                             borderColor={useColorModeValue('gray.200', 'gray.700')}
                         >
-                            <MenuItem>Profile</MenuItem>
-                            <MenuItem onClick={() => { Router.push(ACCOUNT) }}>Settings</MenuItem>
+                            <MenuItem as={NextLink} href={ACCOUNT}>Settings</MenuItem>
                             <MenuDivider />
                             <MenuItem onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}>Sign out</MenuItem>
                         </MenuList>

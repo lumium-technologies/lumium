@@ -20,6 +20,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AuthBox, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
+import NextLink from 'next/link';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -99,7 +100,7 @@ const SignIn: React.FC = () => {
                             <FormErrorMessage data-cy="credentialError">{error?.reason}</FormErrorMessage>
                         </FormControl>
                         <Flex justifyContent="space-between" mt="0">
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_PASSWORD_RESET)} data-cy="forgotPasswordButton">Forgot password?</Link>
+                            <Link color={'blue.400'} data-cy="forgotPasswordButton" as={NextLink} href={AUTH_PASSWORD_RESET}>Forgot password?</Link>
                         </Flex>
                         <Button
                             bg={'blue.400'}
@@ -117,7 +118,7 @@ const SignIn: React.FC = () => {
                             <Text mb={"0"}>
                                 Create a new account?
                             </Text>
-                            <Link color={'blue.400'} onClick={() => Router.push(AUTH_SIGNUP)} data-cy="signUpSwitchButton">Create Account</Link>
+                            <Link color={'blue.400'} data-cy="signUpSwitchButton" as={NextLink} href={AUTH_SIGNUP}>Create Account</Link>
                         </Flex>
                     </Stack>
                 </form>

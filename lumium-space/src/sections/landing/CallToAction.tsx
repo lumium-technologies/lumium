@@ -12,6 +12,7 @@ import { useApi, useUserInfo } from '@hooks/api';
 import { SECURE_PONG } from '@routes/api/v1';
 import { AUTH_SIGNUP, AUTH_SIGNIN, SPACES_CREATE, ROOT } from '@routes/space';
 import Router from 'next/router';
+import NextLink from 'next/link';
 
 export const CallToAction = () => {
     const [api] = useApi();
@@ -60,7 +61,7 @@ export const CallToAction = () => {
                     >
                         Continue
                     </Button>
-                    <Button rounded={'full'} px={6} onClick={() => Router.push(AUTH_SIGNUP)}>
+                    <Button rounded={'full'} px={6} as={NextLink} href={AUTH_SIGNUP}>
                         Sign up
                     </Button>
                 </Stack>

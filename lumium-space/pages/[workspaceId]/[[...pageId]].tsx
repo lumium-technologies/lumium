@@ -16,6 +16,7 @@ import { NavBar, SideBar } from '@sections/workspace';
 import { useFormik } from 'formik';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { PageTitle } from '@components/other';
+import NextLink from 'next/link';
 
 const Workspace: React.FC = () => {
     const router = useRouter();
@@ -138,7 +139,7 @@ const Workspace: React.FC = () => {
                         {
                             workspace?.pages.map((p) => {
                                 return (
-                                    <Button key={p.id} onClick={() => router.push(p.id)}></Button>
+                                    <Button key={p.id} as={NextLink} href={p.id}></Button>
                                 );
                             })
                         }

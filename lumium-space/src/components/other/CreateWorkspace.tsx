@@ -1,6 +1,7 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Flex, Text, Heading, FormControl, FormLabel, Input, InputGroup, InputRightElement, Button, FormErrorMessage, ButtonGroup } from "@chakra-ui/react";
-import { SPACES } from "@routes/space";
+import { useUserInfo } from "@hooks/api";
+import { ROOT, SPACES } from "@routes/space";
 import { useFormik } from 'formik';
 import { create_workspace } from "lumium-renderer";
 import Router from "next/router";
@@ -10,11 +11,12 @@ interface createWorkspaceProps {
     disclaimerButtonColor: string;
 }
 
-const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
+export const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
+    const { refetchUserInfo } = useUserInfo();
 
     const nextStep = () => {
         if (formik.values.password == formik.values.passwordConfirm) {
@@ -37,7 +39,9 @@ const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
 
     const handleDownloadKeys = () => {
         create_workspace(formik.values.password, formik.values.name).then(() => {
-            Router.push(SPACES);
+            refetchUserInfo().then((info) => {
+                Router.push(ROOT + info?.recentWorkspace.id);
+            });
         });
     };
 
@@ -181,4 +185,3 @@ const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
         </Flex>
     )
 }
-export default CreateWorkspace;

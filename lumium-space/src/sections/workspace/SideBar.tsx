@@ -1,11 +1,12 @@
 import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps } from "@chakra-ui/react";
-import CreateWorkspace from "@components/forms/CreateWorkspace";
+import { CreateWorkspace } from "@components/other";
 import { ROOT } from "@routes/space";
 import { WorkspaceDTO, UserDTO } from "@types";
 import Router from "next/router";
 import { ReactElement, ReactText } from "react";
 import { IconType } from "react-icons";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
+import NextLink from 'next/link';
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
@@ -51,7 +52,7 @@ interface SidebarProps extends BoxProps {
     disclaimerButtonColor: string;
 }
 
-const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
+export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, ...rest }: SidebarProps) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -90,7 +91,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -98,7 +99,7 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.administratedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
@@ -106,26 +107,27 @@ const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disc
                         {userInfo?.visitorWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} as={Button} icon={<FiLock />} onClick={() => { Router.push(ROOT + w.id) }}>{w.name}</MenuItem>;
+                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
                                 })}
                                 <Divider />
                             </>
                         }
                         <MenuItem as={Button} onClick={onOpen} icon={<FiPlus />}>New workspace</MenuItem>
                     </MenuList>
-                </Menu>
+                </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
                 New page
             </Button>
             <Divider />
-            {LinkItems.map((link) => (
-                <Button key={link.name} leftIcon={link.icon} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
-                    {link.name}
-                </Button>
-            ))}
-        </Flex>
+            {
+                LinkItems.map((link) => (
+                    <Button key={link.name} leftIcon={link.icon} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
+                        {link.name}
+                    </Button>
+                ))
+            }
+        </Flex >
     );
 };
-export default SideBar;

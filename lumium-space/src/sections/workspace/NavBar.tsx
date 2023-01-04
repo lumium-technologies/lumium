@@ -7,14 +7,17 @@ import { UserDTO, WorkspaceDTO } from "@types";
 import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import NextLink from 'next/link';
+import { RxDoubleArrowUp } from "react-icons/rx";
 
 interface NavBarProps extends FlexProps {
-    onOpen: () => void;
+    onOpenSideBar: () => void;
     userInfo?: UserDTO;
     workspace?: WorkspaceDTO;
+    pinnedSidebar: boolean;
+    setPinnedNavBar: (bool: any) => void;
 }
 
-export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setPinnedNavBar, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     let role = ""
@@ -41,13 +44,15 @@ export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) =>
             pt={"1vh"}
             pb={"1vh"}
         >
-            <IconButton
-                display={'flex'}
-                onClick={onOpen}
-                variant="outline"
-                aria-label="open menu"
-                icon={<FiMenu />}
-            />
+            {!pinnedSidebar &&
+                <IconButton
+                    display={'flex'}
+                    onClick={onOpenSideBar}
+                    variant="outline"
+                    aria-label="open menu"
+                    icon={<FiMenu />}
+                />
+            }
             <Spacer />
             <HStack>
                 <IconButton
@@ -97,6 +102,13 @@ export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) =>
                         </MenuList>
                     </Menu>
                 </Flex>
+                <IconButton
+                    display={'flex'}
+                    onClick={() => (setPinnedNavBar(false))}
+                    variant="outline"
+                    aria-label="open menu"
+                    icon={<RxDoubleArrowUp />}
+                />
             </HStack>
         </Flex >
     );

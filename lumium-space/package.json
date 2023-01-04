@@ -1,6 +1,6 @@
 {
     "name": "lumium-space",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/lumium-technologies/lumium"
@@ -45,7 +45,7 @@
         "nextjs-cors": "^2.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-icons": "^4.4.0",
+        "react-icons": "^4.7.1",
         "react-mt-svg-lines": "^0.9.1",
         "react-query": "^3.39.1",
         "react-redux": "^7.2.8",

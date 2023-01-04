@@ -1,3 +1,19 @@
+## **0.15.0** <sub><sup>2023-01-04 ([ddcd9eb...2a8381e](https://github.com/lumium-technologies/lumium/compare/ddcd9eb...2a8381e?diff=split))</sup></sub>
+
+### Features
+*  add pinnable sidebar ([ff48f41](https://github.com/lumium-technologies/lumium/commit/ff48f41))
+*  add fullscreenmode ([7ce3257](https://github.com/lumium-technologies/lumium/commit/7ce3257))
+
+
+### Bug Fixes
+*  remove pin function for mobile ([e4e236c](https://github.com/lumium-technologies/lumium/commit/e4e236c))
+*  allow fullscreen on mobile ([b416019](https://github.com/lumium-technologies/lumium/commit/b416019))
+
+
+### Merged Branches
+*  pull request \#252 from lumium\-technologies/r/sidebar/pinnable ([b90121f](https://github.com/lumium-technologies/lumium/commit/b90121f))
+
+
 ## **0.14.0** <sub><sup>2023-01-04 ([9711849...632fbaf](https://github.com/lumium-technologies/lumium/compare/9711849...632fbaf?diff=split))</sup></sub>
 
 ### Features

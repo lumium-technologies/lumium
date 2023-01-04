@@ -8,10 +8,30 @@ import {
     Icon,
     IconProps,
 } from '@chakra-ui/react';
-import { SPACES, AUTH_SIGNUP } from '@routes/space';
+import { useApi, useUserInfo } from '@hooks/api';
+import { SECURE_PONG } from '@routes/api/v1';
+import { AUTH_SIGNUP, AUTH_SIGNIN, SPACES_CREATE, ROOT } from '@routes/space';
 import Router from 'next/router';
 
 export const CallToAction = () => {
+    const [api] = useApi();
+    const { refetchUserInfo } = useUserInfo();
+
+    const handleContinue = () => {
+        api.get(SECURE_PONG).then((res) => {
+            if (res.status == 200) {
+                refetchUserInfo().then((info) => {
+                    if (info?.recentWorkspace) {
+                        Router.push(ROOT + info?.recentWorkspace.id);
+                    } else {
+                        Router.push(SPACES_CREATE);
+                    };
+                });
+            } else {
+                Router.push(AUTH_SIGNIN);
+            }
+        });
+    }
     return (
         <Container maxW={'5xl'}>
             <Stack
@@ -36,7 +56,7 @@ export const CallToAction = () => {
                         rounded={'full'}
                         px={6}
                         bg={'blue.400'}
-                        onClick={() => Router.push(SPACES)}
+                        onClick={handleContinue}
                     >
                         Continue
                     </Button>

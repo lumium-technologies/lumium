@@ -4,7 +4,7 @@ import { User } from "./User";
 
 export enum AddressKind {
     RESIDENTIAL = "residential",
-        BILLING = "billing"
+    BILLING = "billing"
 }
 
 // Addresses as specified under 'Generic Formats':
@@ -12,7 +12,7 @@ export enum AddressKind {
 @Entity('adresses')
 @Unique(["user", "kind"])
 export class Address extends AbstractEntity {
-    @ManyToOne(() => User, (user) => user.addresses, {cascade: true, onDelete: 'CASCADE'})
+    @ManyToOne(() => User, (user) => user.addresses, { cascade: true, onDelete: 'CASCADE' })
     user: User
 
     @Column({

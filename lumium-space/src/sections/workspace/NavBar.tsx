@@ -1,11 +1,12 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode, useColorModeValue, Box, Image, Text, FlexProps, Flex, IconButton, Stack, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
+import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
 import { ACCOUNT, ROOT } from "@routes/space";
 import { UserDTO, WorkspaceDTO } from "@types";
 import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
+import NextLink from 'next/link';
 
 interface NavBarProps extends FlexProps {
     onOpen: () => void;
@@ -13,7 +14,7 @@ interface NavBarProps extends FlexProps {
     workspace?: WorkspaceDTO;
 }
 
-const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     let role = ""
@@ -88,9 +89,9 @@ const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            borderColor={useColorModeValue('gray.200', 'gray.700')}>
-                            <MenuItem>Profile</MenuItem>
-                            <MenuItem onClick={() => { Router.push(ACCOUNT) }}>Settings</MenuItem>
+                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                        >
+                            <MenuItem as={NextLink} href={ACCOUNT}>Settings</MenuItem>
                             <MenuDivider />
                             <MenuItem onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}>Sign out</MenuItem>
                         </MenuList>
@@ -100,4 +101,3 @@ const NavBar = ({ onOpen, userInfo, workspace, ...rest }: NavBarProps) => {
         </Flex >
     );
 };
-export default NavBar;

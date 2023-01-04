@@ -35,11 +35,16 @@ import {
 import Router from 'next/router';
 import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
 import packageInfo from 'package.json';
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
+import NextLink from 'next/link';
 
-export const NavBar = (logo) => {
+interface NavBarProps {
+    logo: string;
+}
+
+export const NavBar = ({ logo }: NavBarProps) => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
@@ -112,7 +117,7 @@ export const NavBar = (logo) => {
                                     />
                                 </MenuButton>
                                 <MenuList>
-                                    <MenuItem onClick={() => Router.push(ACCOUNT)}>Account</MenuItem>
+                                    <MenuItem as={NextLink} href={ACCOUNT}>Account</MenuItem>
                                     <MenuDivider />
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
@@ -127,7 +132,8 @@ export const NavBar = (logo) => {
                             <Button
                                 fontSize={'sm'}
                                 fontWeight={400}
-                                onClick={() => Router.push(AUTH_SIGNIN)}
+                                as={NextLink}
+                                href={AUTH_SIGNIN}
                                 data-cy="signInButton"
                             >
                                 Sign In
@@ -136,7 +142,8 @@ export const NavBar = (logo) => {
                                 fontSize={'sm'}
                                 fontWeight={600}
                                 bg={"blue.400"}
-                                onClick={() => Router.push(AUTH_SIGNUP)}
+                                as={NextLink}
+                                href={AUTH_SIGNUP}
                                 data-cy="signUpButton"
                             >
                                 Sign Up

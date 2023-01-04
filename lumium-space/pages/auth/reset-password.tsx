@@ -1,6 +1,6 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Image, Box, Button, Fade, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Link, ScaleFade, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { AuthBox } from "@components/auth/AuthBox";
+import { Box, Button, Fade, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { AuthBox, PageTitle } from "@components/other";
 import { useApi } from "@hooks/api";
 import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
@@ -131,17 +131,17 @@ const ResetPassword: React.FC = () => {
         <Box textAlign="center" py={10} px={6}>
             <InfoIcon boxSize={'50px'} color={'blue.500'} />
             {!emailResent &&
-            <>
-                <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
-                    Check your Email
-                </Heading>
-                <Text color={'gray.500'}>
-                    Check your inbox to reset your password
-                </Text>
-                <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
-                    Resend E-Mail
-                </Button>
-            </>
+                <>
+                    <Heading as="h2" size="xl" mt={6} mb={2} data-cy="emailSentHeader">
+                        Check your Email
+                    </Heading>
+                    <Text color={'gray.500'}>
+                        Check your inbox to reset your password
+                    </Text>
+                    <Button onClick={() => { handleResendEmail() }} data-cy="resendButton">
+                        Resend E-Mail
+                    </Button>
+                </>
                 ||
                 <Heading as="h2" size="xl" mt={6} mb={2} data-cy="resendHeader">
                     E-Mail has been resent
@@ -204,9 +204,12 @@ const ResetPassword: React.FC = () => {
     );
 
     return (
-        <Fade in={true}>
-            {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
-        </Fade>
+        <>
+            <PageTitle title={"Lumium | Reset your password"} />
+            <Fade in={true}>
+                {token && changePassword || emailSent && emailSentPage || resetPasswordEmail}
+            </Fade>
+        </>
     );
 };
 

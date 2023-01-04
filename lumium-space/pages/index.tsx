@@ -1,7 +1,6 @@
-import { useColorModeValue } from "@chakra-ui/react";
-import { CallToAction } from "@sections/landing/CallToAction";
-import { Footer } from "@sections/landing/Footer";
-import { NavBar } from "@sections/landing/NavBar";
+import { Box, useColorModeValue } from "@chakra-ui/react";
+import { PageTitle } from "@components/other/PageTitle";
+import { NavBar, Footer, CallToAction } from "@sections/landing";
 
 const LandingPage = () => {
     const darkLogo = '/logo/svg/Black logo - no background.svg';
@@ -9,8 +8,11 @@ const LandingPage = () => {
     let logo = useColorModeValue(darkLogo, lightLogo);
     return (
         <>
-            <NavBar logo={logo} />
-            <CallToAction />
+            <PageTitle title={"Lumium | Your Collaboration Space"} />
+            <Box mb={"1%"}>
+                <NavBar logo={logo} />
+                <CallToAction />
+            </Box>
             <Footer />
         </>
     );

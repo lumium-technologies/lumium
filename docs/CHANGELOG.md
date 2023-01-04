@@ -1,3 +1,21 @@
+## **0.14.0** <sub><sup>2023-01-04 ([9711849...632fbaf](https://github.com/lumium-technologies/lumium/compare/9711849...632fbaf?diff=split))</sup></sub>
+
+### Features
+*  add page titles to every page ([9711849](https://github.com/lumium-technologies/lumium/commit/9711849))
+*  render buttons as nextlink ([bf02e4a](https://github.com/lumium-technologies/lumium/commit/bf02e4a))
+
+
+### Bug Fixes
+*  add default margin to landing page ([fc19653](https://github.com/lumium-technologies/lumium/commit/fc19653))
+*  remove rerouting to spaces, show password entry in spaces ([cc9e303](https://github.com/lumium-technologies/lumium/commit/cc9e303))
+
+
+### Merged Branches
+*  develop ([1411268](https://github.com/lumium-technologies/lumium/commit/1411268))
+*  branch 'r/pagetitles' of https://github\.com/lumium\-technologies/lumium into r/pagetitles ([408b34b](https://github.com/lumium-technologies/lumium/commit/408b34b))
+*  pull request \#249 from lumium\-technologies/r/pagetitles ([d7ed328](https://github.com/lumium-technologies/lumium/commit/d7ed328))
+
+
 ## **0.13.0** <sub><sup>2023-01-04 ([7e065b5...314ccbc](https://github.com/lumium-technologies/lumium/compare/7e065b5...314ccbc?diff=split))</sup></sub>
 
 ### Features

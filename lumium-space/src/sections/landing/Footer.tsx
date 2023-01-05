@@ -1,36 +1,27 @@
 import {
-    chakra,
-    Container,
-    Stack,
-    Text,
     useColorModeValue,
     Image,
-    VisuallyHidden,
+    Flex,
+    Link,
 } from '@chakra-ui/react';
-import { FaGithub } from 'react-icons/fa';
-import { ReactNode } from 'react';
 import packageInfo from 'package.json';
+import { LOGO_DARK, LOGO_LIGHT } from '@definitions/constants';
 
 export const Footer = () => {
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    const logo = useColorModeValue(darkLogo, lightLogo);
-
     return (
-        <Container
+        <Flex
             pos={"fixed"}
-            as={Stack}
-            bottom={0}
+            bottom={"0"}
             minW={"100%"}
-            py={4}
-            direction={{ base: 'column', md: 'row' }}
-            spacing={4}
-            justify={{ base: 'center', md: 'space-between' }}
-            align={{ base: 'center', md: 'center' }}>
-            <Image maxH={16} src={logo} alt="lumium logo" />
-            <a href={`${packageInfo.repository.url}/releases/${packageInfo.version}`} target="_blank" rel="noreferrer">
-                <Text>v{packageInfo.version}</Text>
-            </a>
-        </Container>
+            flexDirection={{ base: 'column', md: 'row' }}
+            justifyContent={{ base: 'center', md: 'flex-end' }}
+            pb={"2vh"}
+            pr={{ base: "none", md: "2vh" }}
+        >
+            <Image display={{ base: 'flex', md: 'none' }} maxH={16} src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)} alt="lumium logo" />
+            <Link href={`${packageInfo.repository.url}/releases/${packageInfo.version}`} target="_blank" alignSelf={"center"}>
+                v{packageInfo.version}
+            </Link>
+        </Flex>
     );
 }

@@ -9,8 +9,7 @@ import {
     Text,
     FormErrorMessage,
     InputRightElement,
-    InputGroup,
-    useColorModeValue
+    InputGroup
 } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import { useApi, useUserInfo } from '@hooks/api';
@@ -56,14 +55,11 @@ const SignIn: React.FC = () => {
         validateOnChange: (false),
     });
 
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
 
     return (
         <>
             <PageTitle title={"Lumium | Sign In"} />
-            <AuthBox title="Sign in to your account" logo={logo}>
+            <AuthBox title="Sign in to your account">
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_DOES_NOT_EXIST"}>

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue, IconButton, position } from "@chakra-ui/react";
+import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, IconButton } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
-    Box,
     Textarea,
     Flex,
     Drawer,
@@ -24,14 +23,20 @@ const Workspace: React.FC = () => {
     const { workspaceId, pageId } = router.query;
     const workspace = useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
-    const { isOpen: isOpenSideBar, onOpen: onOpenSideBar, onClose: onCloseSideBar } = useDisclosure();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const {
+        isOpen: isOpenSideBar,
+        onOpen: onOpenSideBar,
+        onClose: onCloseSideBar
+    } = useDisclosure();
+
     const handlePasswordEntered = () => {
         setPasswordEntered(true);
     }
+
     const formik = useFormik({
         initialValues: {
             password: "",
@@ -39,14 +44,10 @@ const Workspace: React.FC = () => {
         onSubmit: handlePasswordEntered,
         validateOnChange: (false),
     });
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
-    let backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
-    let disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
+
     return (
         <>
-            <PageTitle title={"Lumium | " + workspace?.name} />
+            <PageTitle title={workspace?.name && "Lumium | " + workspace?.name || "Lumium"} />
             <Authenticator>
                 <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
                     {!pinnedSideBar && (
@@ -61,26 +62,20 @@ const Workspace: React.FC = () => {
                         >
                             <DrawerContent>
                                 <SideBar
-                                    onSelfClose={onCloseSideBar}
+                                    onCloseSideBar={onCloseSideBar}
                                     workspace={workspace}
                                     userInfo={userInfo}
-                                    logo={logo}
-                                    backgroundColor={backgroundColor}
-                                    disclaimerButtonColor={disclaimerButtonColor}
                                     setPinnedSideBar={setPinnedSideBar}
                                     pinnedSideBar={pinnedSideBar}
-                                    sidebarWidth={"100%"}
                                 />
                             </DrawerContent>
                         </Drawer>
                     ) ||
                         (
                             <SideBar
+                                onCloseSideBar={onCloseSideBar}
                                 workspace={workspace}
                                 userInfo={userInfo}
-                                logo={logo}
-                                backgroundColor={backgroundColor}
-                                disclaimerButtonColor={disclaimerButtonColor}
                                 setPinnedSideBar={setPinnedSideBar}
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
@@ -91,13 +86,37 @@ const Workspace: React.FC = () => {
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
                         {
                             pinnedNavBar && (
-                                <NavBar onOpenSideBar={onOpenSideBar} userInfo={userInfo} workspace={workspace} pinnedSidebar={pinnedSideBar} setPinnedNavBar={setPinnedNavBar} />
+                                <NavBar
+                                    onOpenSideBar={onOpenSideBar}
+                                    userInfo={userInfo}
+                                    workspace={workspace}
+                                    pinnedSidebar={pinnedSideBar}
+                                    setPinnedNavBar={setPinnedNavBar}
+                                />
                             )
                         }
-                        <Box p="4">
+                        <Flex
+                            pl={{ base: "4%", md: "2%" }}
+                            pr={{ base: "4%", md: "2%" }}
+                            pt={"2vh"}
+                            pb={"2vh"}
+                            width="auto"
+                            flexDir={"column"}
+                        >
                             {
                                 !pinnedNavBar && (
-                                    <IconButton aria-label="PinIcon" icon={<RxDoubleArrowDown />} onClick={() => { setPinnedNavBar(true) }} size={"sm"} right="5" position={"absolute"} />
+                                    <Flex width="100%" justifyContent={"flex-end"}>
+                                        <IconButton
+                                            aria-label="pin navbar"
+                                            size="md"
+                                            variant="outline"
+                                            icon={<RxDoubleArrowDown />}
+                                            onClick={() => {
+                                                setPinnedNavBar(true)
+                                            }}
+                                            position="absolute"
+                                        />
+                                    </Flex>
                                 )
                             }
                             {
@@ -117,7 +136,8 @@ const Workspace: React.FC = () => {
                                             rounded={'xl'}
                                             boxShadow={'lg'}
                                             p={6}
-                                            my={12}>
+                                            my={12}
+                                        >
                                             <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
                                                 Enter the password for <em>{workspace?.name}</em>
                                             </Heading>
@@ -173,7 +193,7 @@ const Workspace: React.FC = () => {
                                     );
                                 })
                             }
-                        </Box>
+                        </Flex>
                     </Flex>
                 </Flex>
             </Authenticator>

@@ -5,7 +5,7 @@ import { ReactElement, ReactText } from "react";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
 import { AiFillPushpin } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
-import { BACKGROUND_DARK, BACKGROUND_LIGHT, LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
+import { BACKGROUND_DARK, BACKGROUND_LIGHT, BORDER_DARK, BORDER_LIGHT, LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
 
 interface LinkItemProps {
     name: string;
@@ -28,11 +28,8 @@ interface SidebarProps extends BoxProps {
     sidebarWidth?: string;
 }
 
-export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
+export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar, pinnedSideBar, sidebarWidth = "100%", ...rest }: SidebarProps) => {
     const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
-    if (!sidebarWidth) {
-        sidebarWidth = "100%";
-    }
     const {
         isOpen: isOpenModal,
         onOpen: onOpenModal,
@@ -54,16 +51,15 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             maxW={sidebarWidth}
             backgroundColor={backgroundColor}
             borderRightWidth="1px"
-            borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+            borderRightColor={useColorModeValue(BORDER_LIGHT, BORDER_DARK)}
             {...rest}
         >
-            <Modal isOpen={isOpenModal} onClose={onCloseModal}>
+            <Modal isOpen={isOpenModal} onClose={onCloseModal} size={{ base: "full", md: "md" }}>
                 <ModalOverlay />
-                <ModalContent maxW={800} backgroundColor={backgroundColor}>
-                    <ModalHeader>Create a new workspace</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody >
-                        <CreateWorkspace />
+                <ModalContent maxW={{ base: "100%", md: "40%" }} backgroundColor={backgroundColor}>
+                    <ModalBody p={"0px"}>
+                        <ModalCloseButton mt={"9px"} mr={"7px"} />
+                        <CreateWorkspace standalone={false} />
                     </ModalBody>
                 </ModalContent>
             </Modal>

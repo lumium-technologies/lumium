@@ -16,7 +16,7 @@ import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from '@routes/space';
-import { AuthBox, PageTitle } from '@components/other';
+import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
 import NextLink from 'next/link';
@@ -61,7 +61,7 @@ const SignUp: React.FC = () => {
     return (
         <>
             <PageTitle title={"Lumium | Sign Up"} />
-            <AuthBox title="Create your account" >
+            <WidgetCentered title="Create your account" >
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_ALREADY_EXISTS"}>
@@ -141,7 +141,7 @@ const SignUp: React.FC = () => {
                         </Flex>
                     </Stack>
                 </form>
-            </AuthBox>
+            </WidgetCentered>
         </>
     );
 };

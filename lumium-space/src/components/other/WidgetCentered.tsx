@@ -8,13 +8,14 @@ interface WidgetCenteredProps {
     children: React.ReactNode;
     logo?: boolean;
     width?: string;
+    height?: string;
 }
 
-export const WidgetCentered = ({ title, children, logo = true, width = "xl" }: WidgetCenteredProps) => {
+export const WidgetCentered = ({ title, children, logo = true, width = "xl", height = "100vh" }: WidgetCenteredProps) => {
     const logoImg = useColorModeValue(LOGO_DARK, LOGO_LIGHT);
     return (
         <Flex
-            minH={'100vh'}
+            minH={height}
             flexDir="column"
         >
             <Stack

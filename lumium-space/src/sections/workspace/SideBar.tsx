@@ -54,13 +54,12 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             borderRightColor={useColorModeValue(BORDER_LIGHT, BORDER_DARK)}
             {...rest}
         >
-            <Modal isOpen={isOpenModal} onClose={onCloseModal}>
+            <Modal isOpen={isOpenModal} onClose={onCloseModal} size={{ base: "full", md: "md" }}>
                 <ModalOverlay />
-                <ModalContent maxW={800} backgroundColor={backgroundColor}>
-                    <ModalHeader>Create a new workspace</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody >
-                        <CreateWorkspace />
+                <ModalContent maxW={{ base: "100%", md: "40%" }} backgroundColor={backgroundColor}>
+                    <ModalBody p={"0px"}>
+                        <ModalCloseButton mt={"9px"} mr={"7px"} />
+                        <CreateWorkspace standalone={false} />
                     </ModalBody>
                 </ModalContent>
             </Modal>

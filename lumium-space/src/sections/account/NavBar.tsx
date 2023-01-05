@@ -1,5 +1,6 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode, useColorModeValue, Box, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, MenuList, Spacer } from "@chakra-ui/react";
+import { BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
 import { ROOT } from "@routes/space";
@@ -13,10 +14,11 @@ interface NavBarProps extends FlexProps {
 export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
+    const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
     return (
         <Flex
             borderBottomWidth="1px"
-            borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+            borderBottomColor={borderColor}
             pl={{ base: "4%", md: "2%" }}
             pr={{ base: "4%", md: "2%" }}
             pt={"2vh"}
@@ -51,7 +53,7 @@ export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                            borderColor={borderColor}
                             backgroundColor={backgroundColor}
                         >
                             <Button

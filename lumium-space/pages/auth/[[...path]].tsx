@@ -1,4 +1,4 @@
-import { Box, Heading, Button, Text } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import { AUTH_SIGNIN } from "@routes/space";
 import Router from "next/router";
 import { useEffect } from "react";

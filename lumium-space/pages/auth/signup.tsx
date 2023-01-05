@@ -7,11 +7,9 @@ import {
     Link,
     Button,
     Text,
-    useColorModeValue,
     InputGroup,
     InputRightElement,
-    FormErrorMessage,
-    Image
+    FormErrorMessage
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useApi } from "@hooks/api";
@@ -60,14 +58,10 @@ const SignUp: React.FC = () => {
         validateOnChange: (false),
     });
 
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
-
     return (
         <>
             <PageTitle title={"Lumium | Sign Up"} />
-            <AuthBox title="Create your account" logo={logo}>
+            <AuthBox title="Create your account" >
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_ALREADY_EXISTS"}>

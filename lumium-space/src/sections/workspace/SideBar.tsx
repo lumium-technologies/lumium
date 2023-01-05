@@ -5,6 +5,7 @@ import { ReactElement, ReactText } from "react";
 import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
 import { AiFillPushpin } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
+import { BACKGROUND_DARK, BACKGROUND_LIGHT, LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
 
 interface LinkItemProps {
     name: string;
@@ -22,20 +23,21 @@ interface SidebarProps extends BoxProps {
     onCloseSideBar: () => void;
     workspace: WorkspaceDTO | undefined;
     userInfo: UserDTO | undefined;
-    logo: string;
-    disclaimerButtonColor: string;
     setPinnedSideBar: (bool: any) => void;
     pinnedSideBar: boolean;
     sidebarWidth?: string;
 }
 
-export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerButtonColor, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
+export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
+    const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
+    if (!sidebarWidth) {
+        sidebarWidth = "100%";
+    }
     const {
         isOpen: isOpenModal,
         onOpen: onOpenModal,
         onClose: onCloseModal
     } = useDisclosure();
-
     const handlePinned = () => {
         if (pinnedSideBar) {
             setPinnedSideBar(false);
@@ -43,10 +45,6 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerB
             setPinnedSideBar(true);
         }
     }
-    if (!sidebarWidth) {
-        sidebarWidth = "100%";
-    }
-    const backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
     return (
         <Flex
             flexDir={"column"}
@@ -61,18 +59,18 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerB
         >
             <Modal isOpen={isOpenModal} onClose={onCloseModal}>
                 <ModalOverlay />
-                <ModalContent maxW={800}>
+                <ModalContent maxW={800} backgroundColor={backgroundColor}>
                     <ModalHeader>Create a new workspace</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody >
-                        <CreateWorkspace disclaimerButtonColor={disclaimerButtonColor} />
+                        <CreateWorkspace />
                     </ModalBody>
                 </ModalContent>
             </Modal>
             <Flex pt="1vh" pb="1vh" maxH={"9vh"} alignItems="center" justifyContent="center">
                 <Stack align={'center'} maxH="100%" maxW="100%">
                     <Image
-                        src={logo}
+                        src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)}
                         minWidth={"70%"}
                         maxWidth={"80%"}
                         maxH={"9vh"}
@@ -94,7 +92,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerB
                         {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} />;
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>
@@ -102,7 +100,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerB
                         {userInfo?.administratedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} />;
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>
@@ -110,7 +108,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, logo, disclaimerB
                         {userInfo?.visitorWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} />;
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>

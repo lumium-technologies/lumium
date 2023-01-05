@@ -14,7 +14,6 @@ export const WorkspaceSideBarButton = ({ w }: props) => {
             leftIcon={<FiLock />}
             bg="none"
             justifyContent={{ base: "center", md: "flex-start" }}
-            key={w.id}
             as={NextLink}
             href={ROOT + w.id}
         >{w.name}</Button>

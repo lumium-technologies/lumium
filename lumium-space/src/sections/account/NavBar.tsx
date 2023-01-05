@@ -1,13 +1,10 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
+import { useColorMode, useColorModeValue, Box, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, MenuList, Spacer } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
-import { ACCOUNT, ROOT } from "@routes/space";
-import { UserDTO, WorkspaceDTO } from "@types";
+import { ROOT } from "@routes/space";
 import Router from "next/router";
-import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
-import NextLink from 'next/link';
-import { RxDoubleArrowUp } from "react-icons/rx";
+import { FiChevronDown } from "react-icons/fi";
 
 interface NavBarProps extends FlexProps {
     backgroundColor: string;

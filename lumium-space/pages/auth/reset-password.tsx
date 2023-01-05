@@ -6,6 +6,7 @@ import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from 
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 import { useFormik } from 'formik';
+import { BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
 
 const ResetPassword: React.FC = () => {
     const [passwordMatchError, setPasswordMatchError] = useState(false);
@@ -87,16 +88,13 @@ const ResetPassword: React.FC = () => {
         validateOnChange: (false),
     });
 
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
 
     const resetPasswordEmail = (
-        <AuthBox title="Forgot your password" logo={logo}>
+        <AuthBox title="Forgot your password">
             <Stack spacing={4}>
                 <Text
                     fontSize={{ base: 'sm', sm: 'md' }}
-                    color={useColorModeValue('gray.800', 'gray.400')}>
+                    color={useColorModeValue(BORDER_LIGHT, BORDER_DARK)}>
                     You&apos;ll receive an email with a reset link
                 </Text>
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>

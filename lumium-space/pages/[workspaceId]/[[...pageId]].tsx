@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue, IconButton } from "@chakra-ui/react";
+import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, IconButton } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
@@ -19,12 +19,6 @@ import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
 
 const Workspace: React.FC = () => {
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    const logo = useColorModeValue(darkLogo, lightLogo);
-    const backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
-    const disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
-
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
     const workspace = useWorkspace(workspaceId);
@@ -71,8 +65,6 @@ const Workspace: React.FC = () => {
                                     onCloseSideBar={onCloseSideBar}
                                     workspace={workspace}
                                     userInfo={userInfo}
-                                    logo={logo}
-                                    disclaimerButtonColor={disclaimerButtonColor}
                                     setPinnedSideBar={setPinnedSideBar}
                                     pinnedSideBar={pinnedSideBar}
                                 />
@@ -84,8 +76,6 @@ const Workspace: React.FC = () => {
                                 onCloseSideBar={onCloseSideBar}
                                 workspace={workspace}
                                 userInfo={userInfo}
-                                logo={logo}
-                                disclaimerButtonColor={disclaimerButtonColor}
                                 setPinnedSideBar={setPinnedSideBar}
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
@@ -102,7 +92,6 @@ const Workspace: React.FC = () => {
                                     workspace={workspace}
                                     pinnedSidebar={pinnedSideBar}
                                     setPinnedNavBar={setPinnedNavBar}
-                                    backgroundColor={backgroundColor}
                                 />
                             )
                         }

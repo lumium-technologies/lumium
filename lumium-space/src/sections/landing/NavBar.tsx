@@ -33,18 +33,15 @@ import {
     SunIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
-import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
+import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 import NextLink from 'next/link';
+import { LOGO_DARK, LOGO_LIGHT } from '@definitions/constants';
 
-interface NavBarProps {
-    logo: string;
-}
-
-export const NavBar = ({ logo }: NavBarProps) => {
+export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
@@ -86,8 +83,8 @@ export const NavBar = ({ logo }: NavBarProps) => {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <HStack>
-                        <Link display={{ base: 'none', lg: 'flex' }} href="https://lumium.space/" width={"10rem"}>
-                            <Image src={logo} alt="lumium logo" />
+                        <Link display={{ base: 'none', lg: 'flex' }} href={ROOT} width={"10rem"}>
+                            <Image src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)} alt="lumium logo" />
                         </Link>
                         <Spacer />
                         <Flex display={{ base: 'none', lg: 'flex' }} ml={10}>
@@ -284,7 +281,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                             <Link key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Link>
-                    ))}
+                        ))}
                 </Stack>
             </Collapse>
         </Stack>

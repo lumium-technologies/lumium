@@ -1,6 +1,7 @@
 import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { PageTitle } from "@components/other";
 import { Authenticator } from "@components/security/Authenticator";
+import { BACKGROUND_LIGHT, BACKGROUND_DARK } from "@definitions/constants";
 import { useApi, useUserInfo } from "@hooks/api";
 import { SECURE_USER_DELETE } from "@routes/api/v1";
 import { ROOT } from "@routes/space";
@@ -9,10 +10,7 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 
 const Account: React.FC = () => {
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    const logo = useColorModeValue(darkLogo, lightLogo);
-    const backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
+    const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
 
     const [api] = useApi();
     const [email, setEmail] = useState("");
@@ -34,7 +32,6 @@ const Account: React.FC = () => {
             <Authenticator>
                 <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
                     <SideBar
-                        logo={logo}
                         backgroundColor={backgroundColor}
                         setPage={setPage}
                     />

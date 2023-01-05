@@ -1,17 +1,14 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Flex, Text, Heading, FormControl, FormLabel, Input, InputGroup, InputRightElement, Button, FormErrorMessage, ButtonGroup } from "@chakra-ui/react";
+import { Flex, Text, Heading, FormControl, FormLabel, Input, InputGroup, InputRightElement, Button, FormErrorMessage, ButtonGroup, useColorModeValue } from "@chakra-ui/react";
 import { useUserInfo } from "@hooks/api";
-import { ROOT, SPACES } from "@routes/space";
+import { ROOT } from "@routes/space";
 import { useFormik } from 'formik';
 import { create_workspace } from "lumium-renderer";
 import Router from "next/router";
 import { useState } from "react";
 
-interface createWorkspaceProps {
-    disclaimerButtonColor: string;
-}
-
-export const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps) => {
+export const CreateWorkspace = () => {
+    const buttonBackground = useColorModeValue("green.200", "green.900");
     const [showPassword, setShowPassword] = useState(false);
     const [credentialsMatchError, setCredentialsMatchError] = useState(false);
     const [step, setStep] = useState(1);
@@ -147,7 +144,7 @@ export const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps)
                                 lumium cannot read your workspace content, except for some metadata (information like which users have access to which workspace, your workspace title, which page was created by which user, when was the last time a user has logged in etc.). We cannot read data like the titles/content of pages in your workspace.
                             </Text>
                             <Flex w="100%" mt={"5"} justifyContent="center">
-                                <Button backgroundColor={disclaimerButtonColor} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my own responsibility</Button>
+                                <Button backgroundColor={buttonBackground} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my own responsibility</Button>
                             </Flex>
                         </>
                     )}
@@ -160,8 +157,6 @@ export const CreateWorkspace = ({ disclaimerButtonColor }: createWorkspaceProps)
                                     setProgress(progress - 50);
                                 }}
                                 isDisabled={step == 1}
-                                colorScheme="teal"
-                                variant="solid"
                                 w="7rem"
                                 mr="5%"
                                 data-cy={"backButton"}

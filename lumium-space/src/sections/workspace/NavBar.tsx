@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuItem, MenuDivider, Spacer } from "@chakra-ui/react";
+import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuDivider, Spacer } from "@chakra-ui/react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
 import { ACCOUNT, ROOT } from "@routes/space";
@@ -8,6 +8,7 @@ import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import NextLink from 'next/link';
 import { RxDoubleArrowUp } from "react-icons/rx";
+import { BACKGROUND_LIGHT, BACKGROUND_DARK, BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
 
 interface NavBarProps extends FlexProps {
     onOpenSideBar: () => void;
@@ -15,10 +16,11 @@ interface NavBarProps extends FlexProps {
     workspace?: WorkspaceDTO;
     pinnedSidebar: boolean;
     setPinnedNavBar: (bool: any) => void;
-    backgroundColor: string;
 }
 
-export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setPinnedNavBar, backgroundColor, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setPinnedNavBar, ...rest }: NavBarProps) => {
+    const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
+    const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     let role = ""
@@ -37,7 +39,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
     return (
         <Flex
             borderBottomWidth="1px"
-            borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+            borderBottomColor={borderColor}
             pl={{ base: "4%", md: "2%" }}
             pr={{ base: "4%", md: "2%" }}
             pt={"2vh"}
@@ -47,13 +49,13 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
             {...rest}
         >
             {!pinnedSidebar &&
-            <IconButton
-                display={'flex'}
-                variant="outline"
-                aria-label="open menu"
-                icon={<FiMenu />}
-                onClick={onOpenSideBar}
-            />
+                <IconButton
+                    display={'flex'}
+                    variant="outline"
+                    aria-label="open menu"
+                    icon={<FiMenu />}
+                    onClick={onOpenSideBar}
+                />
             }
             <Spacer />
             <HStack>
@@ -86,7 +88,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                     spacing="1px"
                                     ml="2">
                                     <Text fontSize="sm">{userInfo?.nickName}</Text>
-                                    <Text fontSize="xs" color="gray.600">
+                                    <Text fontSize="xs" color="gray.400">
                                         {role}
                                     </Text>
                                 </VStack>
@@ -96,7 +98,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                            borderColor={borderColor}
                             backgroundColor={backgroundColor}
                         >
                             <Button

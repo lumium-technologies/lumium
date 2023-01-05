@@ -12,6 +12,7 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 
 const Account: React.FC = () => {
+    const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
     const [showPassword, setShowPassword] = useState(false);
     const [passwordMatchError, setPasswordMatchError] = useState(false);
     const [api] = useApi();
@@ -54,7 +55,7 @@ const Account: React.FC = () => {
                             {
                                 page == "personalInfo" && (
                                     <WidgetCentered title="Personal Information" logo={false} width="70%">
-                                        <Stack divider={<StackDivider borderColor={useColorModeValue(BORDER_LIGHT, BORDER_DARK)} />}>
+                                        <Stack divider={<StackDivider borderColor={borderColor} />}>
                                             <Stack direction={"row"} >
                                                 <Text fontSize="lg" ml={"2vh"} width={"20vh"}>Username</Text>
                                                 <Text fontSize="lg" >{userInfo?.nickName}</Text>

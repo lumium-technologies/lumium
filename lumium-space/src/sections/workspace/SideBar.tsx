@@ -1,23 +1,11 @@
 import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton, useColorModeValue } from "@chakra-ui/react";
 import { CreateWorkspace, WorkspaceSideBarButton } from "@components/other";
 import { WorkspaceDTO, UserDTO } from "@types";
-import { ReactElement, ReactText } from "react";
-import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
-import { AiFillPushpin } from "react-icons/ai";
+import { FiChevronDown, FiPlus } from "react-icons/fi";
+import { AiFillPushpin, AiFillStar } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
 import { BACKGROUND_DARK, BACKGROUND_LIGHT, BORDER_DARK, BORDER_LIGHT, LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
-
-interface LinkItemProps {
-    name: string;
-    icon: ReactElement;
-}
-const LinkItems: Array<LinkItemProps> = [
-    { name: 'Home', icon: <FiHome /> },
-    { name: 'Trending', icon: <FiTrendingUp /> },
-    { name: 'Explore', icon: <FiCompass /> },
-    { name: 'Favourites', icon: <FiStar /> },
-    { name: 'Settings', icon: <FiSettings /> },
-];
+import Router from "next/router";
 
 interface SidebarProps extends BoxProps {
     onCloseSideBar: () => void;
@@ -121,9 +109,9 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             </Button>
             <Divider />
             {
-                LinkItems.map((link) => (
-                    <Button leftIcon={link.icon} bg="none" justifyContent={{ base: "center", md: "flex-start" }} key={link.name} as={Button}>
-                        {link.name}
+                workspace?.pages.map((page) => (
+                    <Button leftIcon={<AiFillStar />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} key={page.name} as={Button} onClick={() => Router.push(`${workspace?.id}/${page.id}`)}>
+                        {page.name}
                     </Button>
                 ))
             }

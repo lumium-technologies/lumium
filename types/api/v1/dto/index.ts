@@ -1,11 +1,9 @@
 export type {
     AddressDTO,
-    ContentElementDTO,
     E2EKeyDTO,
     E2EKeyVariantDTO,
     EmailDTO,
     PageDTO,
-    PageContentDTO,
     UserDTO,
     UserPreferenceDTO,
     WorkspaceDTO,

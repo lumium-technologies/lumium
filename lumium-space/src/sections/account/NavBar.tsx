@@ -1,20 +1,29 @@
+
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode, useColorModeValue, Box, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, MenuList, Spacer } from "@chakra-ui/react";
-import { BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
-import { useApi } from "@hooks/api";
+import { useColorMode, useColorModeValue, Box, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, MenuList, Spacer, MenuDivider } from "@chakra-ui/react";
+import { BACKGROUND_DARK, BACKGROUND_LIGHT, BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
+import { useApi, useUserInfo } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
-import { ROOT } from "@routes/space";
+import { ROOT, SPACES_CREATE } from "@routes/space";
 import Router from "next/router";
 import { FiChevronDown } from "react-icons/fi";
 
-interface NavBarProps extends FlexProps {
-    backgroundColor: string;
-}
 
-export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
+export const NavBar = () => {
+    const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
     const { colorMode, toggleColorMode } = useColorMode();
     const [api] = useApi();
     const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
+    const { refetchUserInfo } = useUserInfo();
+    const handleMySpace = () => {
+        refetchUserInfo().then((info) => {
+            if (info?.recentWorkspace) {
+                Router.push(ROOT + info?.recentWorkspace.id);
+            } else {
+                Router.push(SPACES_CREATE);
+            };
+        });
+    }
     return (
         <Flex
             borderBottomWidth="1px"
@@ -25,7 +34,6 @@ export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
             pb={"2vh"}
             maxH={"9vh"}
             alignItems={"Center"}
-            {...rest}
             width={"100%"}
         >
             <Spacer />
@@ -56,6 +64,13 @@ export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
                             borderColor={borderColor}
                             backgroundColor={backgroundColor}
                         >
+                            <Button
+                                justifyContent={{ base: "center", md: "flex-start" }}
+                                bg="None"
+                                width={"100%"}
+                                onClick={handleMySpace}
+                            >My Space</Button>
+                            <MenuDivider />
                             <Button
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None"

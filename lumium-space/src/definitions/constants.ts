@@ -6,4 +6,4 @@ export const BACKGROUND_LIGHT = '#ffffff';
 export const BACKGROUND_DARK = '#1a1a1a';
 
 export const BORDER_LIGHT = 'gray.300';
-export const BORDER_DARK = 'gray.700';
+export const BORDER_DARK = '#404040';

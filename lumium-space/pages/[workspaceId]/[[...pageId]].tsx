@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, IconButton } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
@@ -27,6 +27,7 @@ const Workspace: React.FC = () => {
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [mount, didMount] = useState(false);
     const {
         isOpen: isOpenSideBar,
         onOpen: onOpenSideBar,
@@ -36,7 +37,17 @@ const Workspace: React.FC = () => {
     const handlePasswordEntered = () => {
         setPasswordEntered(true);
     }
-
+    useEffect(() => {
+        const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
+        const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
+        if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
+            setPinnedSideBar(JSON.parse(localPinnedSideBar));
+            setPinnedNavBar(JSON.parse(localPinnedNavBar));
+            didMount(true);
+        }
+        localStorage.setItem('pinnedSideBar', JSON.stringify(pinnedSideBar));
+        localStorage.setItem('pinnedNavBar', JSON.stringify(pinnedNavBar));
+    }, [pinnedSideBar, pinnedNavBar]);
     const formik = useFormik({
         initialValues: {
             password: "",

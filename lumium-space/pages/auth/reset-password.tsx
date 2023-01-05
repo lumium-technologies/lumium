@@ -1,6 +1,6 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Fade, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { AuthBox, PageTitle } from "@components/other";
+import { WidgetCentered, PageTitle } from "@components/other";
 import { useApi } from "@hooks/api";
 import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
@@ -90,7 +90,7 @@ const ResetPassword: React.FC = () => {
 
 
     const resetPasswordEmail = (
-        <AuthBox title="Forgot your password">
+        <WidgetCentered title="Forgot your password">
             <Stack spacing={4}>
                 <Text
                     fontSize={{ base: 'sm', sm: 'md' }}
@@ -122,7 +122,7 @@ const ResetPassword: React.FC = () => {
                     </Button>
                 </form>
             </Stack>
-        </AuthBox>
+        </WidgetCentered>
     );
 
     const emailSentPage = (
@@ -149,7 +149,7 @@ const ResetPassword: React.FC = () => {
     );
 
     const changePassword = (
-        <AuthBox title="Enter new password">
+        <WidgetCentered title="Enter new password">
             <Stack spacing={4}>
                 <form onSubmit={formik.handleSubmit}>
                     <FormControl id="password" isRequired >
@@ -198,7 +198,7 @@ const ResetPassword: React.FC = () => {
                     </Stack>
                 </form>
             </Stack>
-        </AuthBox>
+        </WidgetCentered>
     );
 
     return (

@@ -1,5 +1,5 @@
 import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { PageTitle } from "@components/other";
+import { PageTitle, WidgetCentered } from "@components/other";
 import { Authenticator } from "@components/security/Authenticator";
 import { BACKGROUND_LIGHT, BACKGROUND_DARK } from "@definitions/constants";
 import { useApi, useUserInfo } from "@hooks/api";
@@ -40,37 +40,27 @@ const Account: React.FC = () => {
                         <Flex flexDirection={"column"} alignContent={"center"} height={"100%"} ml={"1vh"}>
                             {
                                 page == "personalInfo" && (
-                                    <>
-                                        <Heading>Personal Information</Heading>
-                                        <Flex flexDirection={"column"}>
-                                            <Stack direction={"row"}>
-                                                <Text fontSize="sm" width={"10vh"}>Username</Text>
-                                                <Text fontSize="sm" >{userInfo?.nickName}</Text>
-                                            </Stack>
-                                            <Stack direction={"row"}>
-                                                <Text fontSize="sm" width={"10vh"}>E-Mail</Text>
-                                                <Text fontSize="sm">{email}</Text>
-                                            </Stack>
-                                        </Flex>
-                                    </>
+                                    <WidgetCentered title="Personal Information" logo={false} width="70%">
+                                        <Stack direction={"row"}>
+                                            <Text fontSize="sm" width={"10vh"}>Username</Text>
+                                            <Text fontSize="sm" >{userInfo?.nickName}</Text>
+                                        </Stack>
+                                        <Stack direction={"row"}>
+                                            <Text fontSize="sm" width={"10vh"}>E-Mail</Text>
+                                            <Text fontSize="sm">{email}</Text>
+                                        </Stack>
+                                    </WidgetCentered>
                                 ) ||
                                 page == "security" && (
-                                    <>
-                                        <Heading>Security</Heading>
-                                        <Flex>
-                                            <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy={"deleteAccount"}>
-                                                Delete Account
-                                            </Button>
-                                        </Flex>
-                                    </>
+                                    <WidgetCentered title="Security" logo={false} width="70%">
+                                        <Button backgroundColor={"darkred"} onClick={handleDelete} data-cy={"deleteAccount"}>
+                                            Delete Account
+                                        </Button>
+                                    </WidgetCentered>
                                 ) ||
                                 page == "payments" && (
-                                    <>
-                                        <Heading>Payments and Subscribtions</Heading>
-                                        <Flex>
-
-                                        </Flex>
-                                    </>
+                                    <WidgetCentered title="Payments and Subscribtions" logo={false} width="70%">
+                                    </WidgetCentered>
                                 )
                             }
                         </Flex>

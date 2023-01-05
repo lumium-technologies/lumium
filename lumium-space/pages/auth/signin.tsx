@@ -16,7 +16,7 @@ import { useApi, useUserInfo } from '@hooks/api';
 import Router from 'next/router';
 import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_CREATE } from '@routes/space';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AuthBox, PageTitle } from '@components/other';
+import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import { ReasonDTO } from '@types';
 import NextLink from 'next/link';
@@ -59,7 +59,7 @@ const SignIn: React.FC = () => {
     return (
         <>
             <PageTitle title={"Lumium | Sign In"} />
-            <AuthBox title="Sign in to your account">
+            <WidgetCentered title="Sign in to your account">
                 <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                     <Stack spacing={4}>
                         <FormControl id="email" isRequired isInvalid={error?.status == "EMAIL_DOES_NOT_EXIST"}>
@@ -118,7 +118,7 @@ const SignIn: React.FC = () => {
                         </Flex>
                     </Stack>
                 </form>
-            </AuthBox>
+            </WidgetCentered>
         </>
     );
 };

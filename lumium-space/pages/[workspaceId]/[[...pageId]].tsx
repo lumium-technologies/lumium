@@ -14,7 +14,7 @@ import { LumiumRenderer } from '@components/rendering';
 import { NavBar, SideBar } from '@sections/workspace';
 import { useFormik } from 'formik';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { PageTitle } from '@components/other';
+import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
 
@@ -82,7 +82,6 @@ const Workspace: React.FC = () => {
                             />
                         )
                     }
-                    {/* mobilenav */}
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
                         {
                             pinnedNavBar && (
@@ -125,60 +124,45 @@ const Workspace: React.FC = () => {
                                     <Heading>
                                         Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
                                     </Heading>
-                                    <Flex
-                                        align={'center'}
-                                        justify={'center'}
-                                    >
-                                        <Stack
-                                            spacing={4}
-                                            w={'full'}
-                                            maxW={'md'}
-                                            rounded={'xl'}
-                                            boxShadow={'lg'}
-                                            p={6}
-                                            my={12}
-                                        >
-                                            <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                                Enter the password for <em>{workspace?.name}</em>
-                                            </Heading>
-                                            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                                <FormControl id="password" isRequired>
-                                                    <FormLabel>Password</FormLabel>
-                                                    <InputGroup>
-                                                        <Input
-                                                            name={"password"}
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            onChange={formik.handleChange}
-                                                            value={formik.values.password}
-                                                            data-cy="passwordInput"
-                                                        />
-                                                        <InputRightElement h={'full'}>
-                                                            <Button
-                                                                variant={'ghost'}
-                                                                onClick={() =>
-                                                                    setShowPassword((showPassword) => !showPassword)
-                                                                }>
-                                                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                            </Button>
-                                                        </InputRightElement>
-                                                    </InputGroup>
-                                                    <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
-                                                </FormControl>
-                                                <Stack spacing={6} mt={"2%"}>
-                                                    <Button
-                                                        bg={'blue.400'}
-                                                        color={'white'}
-                                                        _hover={{
-                                                            bg: 'blue.500',
-                                                        }}
-                                                        type="submit"
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                                </Stack>
-                                            </form>
-                                        </Stack>
-                                    </Flex>
+
+                                    <WidgetCentered title={"Enter the workspace password"} logo={false}>
+                                        <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                                            <FormControl id="password" isRequired>
+                                                <FormLabel>Password</FormLabel>
+                                                <InputGroup>
+                                                    <Input
+                                                        name={"password"}
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        onChange={formik.handleChange}
+                                                        value={formik.values.password}
+                                                        data-cy="passwordInput"
+                                                    />
+                                                    <InputRightElement h={'full'}>
+                                                        <Button
+                                                            variant={'ghost'}
+                                                            onClick={() =>
+                                                                setShowPassword((showPassword) => !showPassword)
+                                                            }>
+                                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                        </Button>
+                                                    </InputRightElement>
+                                                </InputGroup>
+                                                <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
+                                            </FormControl>
+                                            <Stack spacing={6} mt={"2%"}>
+                                                <Button
+                                                    bg={'blue.400'}
+                                                    color={'white'}
+                                                    _hover={{
+                                                        bg: 'blue.500',
+                                                    }}
+                                                    type="submit"
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Stack>
+                                        </form>
+                                    </WidgetCentered>
                                 </>
                                 || pageId &&
                                 <Flex flexDir="row">

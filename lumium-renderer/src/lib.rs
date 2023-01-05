@@ -55,12 +55,7 @@ pub async fn sync_page(id: String, name: String, content: String) -> Result<JsVa
     let nonce = generate_random_nonce();
     let content = encrypt(nonce, content.as_bytes().to_vec())?;
     let name = encrypt(nonce, name.as_bytes().to_vec())?;
-    let page_dto = PageDTO {
-        id,
-        name,
-        content,
-        nonce: nonce.to_vec(),
-    };
+    let page_dto = PageDTO { id, name, content };
     let mut opts = RequestInit::new();
     opts.method("PATCH");
     opts.credentials(RequestCredentials::Include);

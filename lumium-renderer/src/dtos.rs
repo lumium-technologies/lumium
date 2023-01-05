@@ -60,12 +60,10 @@ pub struct E2EKeyDTO {
 #[serde(rename_all = "camelCase")]
 pub struct PageDTO {
     pub id: String,
-    #[serde(with = "base64")]
+    #[serde(with = "crypt")]
     pub name: Vec<u8>,
-    #[serde(with = "base64")]
+    #[serde(with = "crypt")]
     pub content: Vec<u8>,
-    #[serde(with = "base64")]
-    pub nonce: Vec<u8>,
 }
 
 mod base64 {

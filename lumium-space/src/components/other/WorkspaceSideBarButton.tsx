@@ -8,6 +8,10 @@ interface props {
     w: WorkspaceDTO;
 }
 export const WorkspaceSideBarButton = ({ w }: props) => {
+    const clearWorkspacePassword = () => {
+        localStorage.removeItem('workspacePassword');
+    };
+
     return (
         <Button
             width={"100%"}
@@ -16,6 +20,7 @@ export const WorkspaceSideBarButton = ({ w }: props) => {
             justifyContent={{ base: "center", md: "flex-start" }}
             as={NextLink}
             href={ROOT + w.id}
+            onClick={clearWorkspacePassword}
         >{w.name}</Button>
     )
 }

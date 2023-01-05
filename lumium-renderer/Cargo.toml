@@ -36,6 +36,7 @@ features = [
     'HtmlParagraphElement',
     'Node',
     'Window',
+    'Storage',
     'console',
     'Headers',
     'Request',

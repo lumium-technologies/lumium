@@ -13,6 +13,7 @@ use ring::aead::{
 };
 use ring::error;
 use ring::rand::{SecureRandom, SystemRandom};
+use std::cell::RefCell;
 use std::convert::TryInto;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -27,9 +28,9 @@ const NUM_RECOVERY_CODES: usize = 16;
 const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
 lazy_static! {
-    static ref MASTER_KEY: Arc<Mutex<([u8; MASTER_KEY_BYTE_LENGTH], bool)>> =
-        Arc::new(Mutex::new(([0; MASTER_KEY_BYTE_LENGTH], false)));
-    static ref PASSWORD: Arc<Mutex<String>> = Arc::new(Mutex::new("".to_string()));
+    static ref MASTER_KEY: Arc<Mutex<RefCell<([u8; MASTER_KEY_BYTE_LENGTH], bool)>>> = Arc::new(
+        Mutex::new(RefCell::new(([0; MASTER_KEY_BYTE_LENGTH], false)))
+    );
 }
 
 #[wasm_bindgen(module = "/js/download.js")]
@@ -103,7 +104,9 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
         recovery_codes.join("\n"),
     );
 
-    let mut key = MASTER_KEY.lock().unwrap();
+    let key = Arc::clone(&MASTER_KEY);
+    let key = key.lock().unwrap();
+    let mut key = key.borrow_mut();
     *key = (master_key, true);
 
     Ok(key_create_dto)
@@ -138,14 +141,19 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     }
 
     let json = JsFuture::from(resp.json()?).await?;
-    let password = PASSWORD.lock().unwrap().to_string();
+    let password = window
+        .local_storage()?
+        .unwrap()
+        .get_item("workspacePassword")?
+        .unwrap();
     let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
 
     for variant_dto in workspace_dto.key.keys {
-        if encrypt(
+        if encrypt_data(
+            password.as_bytes(),
             variant_dto.activator_nonce.clone().try_into().unwrap(),
             workspace_dto.key.activator.clone(),
-        )? == variant_dto.activator
+        ) == variant_dto.activator
         {
             return Ok(decrypt_data(
                 password.as_bytes(),
@@ -161,11 +169,18 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
 }
 
 fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
-    let mut key = MASTER_KEY.lock().unwrap();
+    let key = MASTER_KEY.lock().unwrap().borrow().clone();
+
     if !key.1 {
         let decrypted = futures::executor::block_on(decrypt_key())?;
+        let key = Arc::clone(&MASTER_KEY);
+        let key = key.lock().unwrap();
+        let mut key = key.borrow_mut();
         *key = (decrypted, true);
+
+        return Ok(decrypted);
     }
+
     Ok(key.0)
 }
 

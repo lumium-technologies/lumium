@@ -35,6 +35,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
         onOpen: onOpenModal,
         onClose: onCloseModal
     } = useDisclosure();
+
     const handlePinned = () => {
         if (pinnedSideBar) {
             setPinnedSideBar(false);
@@ -42,6 +43,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             setPinnedSideBar(true);
         }
     }
+
     return (
         <Flex
             flexDir={"column"}
@@ -80,38 +82,38 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             </Flex>
             {
                 workspace?.name &&
-                <Menu matchWidth={true}>
-                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
-                        {workspace?.name}
-                    </MenuButton>
-                    <MenuList bg={backgroundColor} overflow={"hidden"}>
-                        {userInfo?.ownedWorkspaces?.length != 0 &&
+                    <Menu matchWidth={true}>
+                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                            {workspace?.name}
+                        </MenuButton>
+                        <MenuList bg={backgroundColor} overflow={"hidden"}>
+                            {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
                                     return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>
-                        }
-                        {userInfo?.administratedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        {userInfo?.visitorWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
-                    </MenuList>
-                </Menu >
+                            }
+                            {userInfo?.administratedWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.administratedWorkspaces.map((w) => {
+                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            {userInfo?.visitorWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.visitorWorkspaces.map((w) => {
+                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
+                        </MenuList>
+                    </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>

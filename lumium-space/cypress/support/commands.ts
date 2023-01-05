@@ -1,4 +1,4 @@
-import { ACCOUNT, AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from "@routes/space";
+import { ACCOUNT, AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE, ROOT } from "@routes/space";
 import { makeid } from "./makeid"
 
 declare global {
@@ -55,16 +55,23 @@ Cypress.Commands.add("signIn", (email: string, password: string) => {
 });
 
 Cypress.Commands.add("signOut", () => {
-    cy.visit(ACCOUNT);
-    cy.dataCy("signOut").should("be.visible").click().then(() => {
-        cy.wait(3000);
-        cy.getCookie('accessToken').should("be.null");
+    cy.visit(ROOT);
+    cy.dataCy("profileDropDownMenu").should("be.visible").click().then(() => {
+        cy.dataCy("signOut").should("be.visible").click().then(() => {
+            cy.wait(3000);
+            cy.getCookie('accessToken').should("be.null");
+        });
     });
 });
 
 Cypress.Commands.add("deleteAccount", () => {
     cy.visit(ACCOUNT);
-    cy.dataCy("deleteAccount").should("be.visible").click();
+    cy.dataCy("securityTab").should("be.visible").click().then(() => {
+        cy.dataCy("deleteAccount").should("be.visible").click().then(() => {
+            cy.wait(3000);
+            cy.getCookie('accessToken').should("be.null");
+        });
+    });
 });
 
 Cypress.Commands.add("requestReset", (email: string) => {

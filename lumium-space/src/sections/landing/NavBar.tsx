@@ -33,18 +33,15 @@ import {
     SunIcon,
 } from '@chakra-ui/icons';
 import Router from 'next/router';
-import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP } from '@routes/space';
+import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 import NextLink from 'next/link';
+import { LOGO_DARK, LOGO_LIGHT } from '@definitions/constants';
 
-interface NavBarProps {
-    logo: string;
-}
-
-export const NavBar = ({ logo }: NavBarProps) => {
+export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
@@ -86,8 +83,8 @@ export const NavBar = ({ logo }: NavBarProps) => {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <HStack>
-                        <Link display={{ base: 'none', lg: 'flex' }} href="https://lumium.space/" width={"10rem"}>
-                            <Image src={logo} alt="lumium logo" />
+                        <Link display={{ base: 'none', lg: 'flex' }} href={ROOT} width={"10rem"}>
+                            <Image src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)} alt="lumium logo" />
                         </Link>
                         <Spacer />
                         <Flex display={{ base: 'none', lg: 'flex' }} ml={10}>
@@ -107,6 +104,7 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                     rounded={'full'}
                                     variant={'link'}
                                     cursor={'pointer'}
+                                    data-cy={'profileDropDownMenu'}
                                     minW={0}
                                 >
                                     <Avatar
@@ -119,7 +117,7 @@ export const NavBar = ({ logo }: NavBarProps) => {
                                 <MenuList>
                                     <MenuItem as={NextLink} href={ACCOUNT}>Account</MenuItem>
                                     <MenuDivider />
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    <MenuItem data-cy={'signOut'} onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
                         </Flex>

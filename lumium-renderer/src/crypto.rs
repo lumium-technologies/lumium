@@ -1,4 +1,4 @@
-use async_recursion::async_recursion;
+use futures;
 use ring::aead::UnboundKey;
 use ring::digest;
 use ring::digest::digest;
@@ -109,7 +109,6 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
     Ok(key_create_dto)
 }
 
-#[async_recursion(?Send)]
 async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
@@ -146,9 +145,7 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
         if encrypt(
             variant_dto.activator_nonce.clone().try_into().unwrap(),
             workspace_dto.key.activator.clone(),
-        )
-        .await?
-            == variant_dto.activator
+        )? == variant_dto.activator
         {
             return Ok(decrypt_data(
                 password.as_bytes(),
@@ -163,23 +160,21 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     Err(JsValue::from("failed to decrypt workspace key"))
 }
 
-#[async_recursion(?Send)]
-async fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
+fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let mut key = MASTER_KEY.lock().unwrap();
     if !key.1 {
-        *key = (decrypt_key().await?, true);
+        let decrypted = futures::executor::block_on(decrypt_key())?;
+        *key = (decrypted, true);
     }
     Ok(key.0)
 }
 
-#[async_recursion(?Send)]
-pub async fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
-    Ok(encrypt_data(&get_key().await?, nonce, data))
+pub fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(encrypt_data(&get_key()?, nonce, data))
 }
 
-#[async_recursion(?Send)]
-pub async fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
-    Ok(decrypt_data(&get_key().await?, nonce, data))
+pub fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(decrypt_data(&get_key()?, nonce, data))
 }
 
 pub fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {

@@ -82,3 +82,32 @@ mod base64 {
         base64::decode(base64.as_bytes()).map_err(|e| serde::de::Error::custom(e))
     }
 }
+
+mod crypt {
+    use ring::aead::NONCE_LEN;
+    use serde::{Deserialize, Serialize};
+    use serde::{Deserializer, Serializer};
+
+    use crate::crypto::{decrypt, encrypt, generate_random_nonce};
+
+    pub fn serialize<S: Serializer>(v: &Vec<u8>, s: S) -> Result<S::Ok, S::Error> {
+        let nonce = generate_random_nonce();
+        let encrypt = base64::encode(encrypt(nonce, v.to_vec()).unwrap());
+        let nonce = base64::encode(nonce);
+        String::serialize(&format!("{}.{}", &nonce, &encrypt), s)
+    }
+
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
+        let base64 = String::deserialize(d)?;
+        let parts = base64.split(".");
+        let parts: Vec<Vec<u8>> = parts
+            .map(|p| base64::decode(p.as_bytes()).unwrap())
+            .collect();
+        if parts.len() != 2 {
+            return Err(serde::de::Error::custom("failed to parse nonce"));
+        }
+        let nonce: [u8; NONCE_LEN] = parts.get(0).unwrap().clone().try_into().unwrap();
+        let data = parts.get(1).unwrap().to_vec();
+        Ok(decrypt(nonce, data).unwrap())
+    }
+}

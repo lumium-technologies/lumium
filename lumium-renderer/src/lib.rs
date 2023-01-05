@@ -53,8 +53,8 @@ pub async fn create_workspace(password: String, name: String) -> Result<JsValue,
 #[wasm_bindgen]
 pub async fn sync_page(id: String, name: String, content: String) -> Result<JsValue, JsValue> {
     let nonce = generate_random_nonce();
-    let content = encrypt(nonce, content.as_bytes().to_vec()).await?;
-    let name = encrypt(nonce, name.as_bytes().to_vec()).await?;
+    let content = encrypt(nonce, content.as_bytes().to_vec())?;
+    let name = encrypt(nonce, name.as_bytes().to_vec())?;
     let page_dto = PageDTO {
         id,
         name,

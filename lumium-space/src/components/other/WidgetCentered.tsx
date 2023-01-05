@@ -11,6 +11,7 @@ interface WidgetCenteredProps {
 }
 
 export const WidgetCentered = ({ title, children, logo = true, width = "xl" }: WidgetCenteredProps) => {
+    const logoImg = useColorModeValue(LOGO_DARK, LOGO_LIGHT);
     return (
         <Flex
             minH={'100vh'}
@@ -29,7 +30,7 @@ export const WidgetCentered = ({ title, children, logo = true, width = "xl" }: W
                     <Stack align={'center'}>
                         <Link as={NextLink} href={ROOT}>
                             <Center>
-                                <Image src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)} minWidth={"70%"} maxWidth={"80%"} alt="lumium logo" />
+                                <Image src={logoImg} minWidth={"70%"} maxWidth={"80%"} alt="lumium logo" />
                             </Center>
                         </Link>
                     </Stack>

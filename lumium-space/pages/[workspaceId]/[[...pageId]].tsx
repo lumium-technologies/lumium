@@ -47,7 +47,7 @@ const Workspace: React.FC = () => {
         }
         localStorage.setItem('pinnedSideBar', JSON.stringify(pinnedSideBar));
         localStorage.setItem('pinnedNavBar', JSON.stringify(pinnedNavBar));
-    }, [pinnedSideBar, pinnedNavBar]);
+    }, [pinnedSideBar, pinnedNavBar, mount]);
     const formik = useFormik({
         initialValues: {
             password: "",

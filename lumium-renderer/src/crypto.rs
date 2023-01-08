@@ -1,11 +1,9 @@
-use futures;
+use crate::JsFuture;
 use ring::aead::UnboundKey;
 use ring::digest;
 use ring::digest::digest;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-
-use crate::JsFuture;
 
 use passwords::PasswordGenerator;
 use ring::aead::{
@@ -168,11 +166,11 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     Err(JsValue::from("failed to decrypt workspace key"))
 }
 
-fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
+async fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let key = MASTER_KEY.lock().unwrap().borrow().clone();
 
     if !key.1 {
-        let decrypted = futures::executor::block_on(decrypt_key())?;
+        let decrypted = decrypt_key().await?;
         let key = Arc::clone(&MASTER_KEY);
         let key = key.lock().unwrap();
         let mut key = key.borrow_mut();
@@ -184,12 +182,12 @@ fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     Ok(key.0)
 }
 
-pub fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
-    Ok(encrypt_data(&get_key()?, nonce, data))
+pub async fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(encrypt_data(&get_key().await?, nonce, data))
 }
 
-pub fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
-    Ok(decrypt_data(&get_key()?, nonce, data))
+pub async fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
+    Ok(decrypt_data(&get_key().await?, nonce, data))
 }
 
 pub fn encrypt_data(key: &[u8], nonce: [u8; NONCE_LEN], mut data: Vec<u8>) -> Vec<u8> {

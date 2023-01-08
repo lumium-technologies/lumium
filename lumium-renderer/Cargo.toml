@@ -23,7 +23,6 @@ ring = { version = "0.16.8", features = ["wasm32_c"] }
 passwords = "3.1.9"
 base64 = "0.20.0"
 lazy_static = "1.4.0"
-futures = "0.3.25"
 
 [dependencies.web-sys]
 version = "0.3.4"

@@ -21,7 +21,7 @@ import { RxDoubleArrowDown } from "react-icons/rx";
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
-    const workspace = useWorkspace(workspaceId);
+    const { workspace, refetchWorkspace }= useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
@@ -37,13 +37,12 @@ const Workspace: React.FC = () => {
     const handlePasswordEntered = () => {
         localStorage.setItem('workspacePassword', formik.values.password);
         setPasswordEntered(true);
+        refetchWorkspace();
     }
 
     useEffect(() => {
         const workspacePassword = localStorage.getItem('workspacePassword');
-        if (workspacePassword !== null) {
-            setPasswordEntered(true);
-        }
+        setPasswordEntered(workspacePassword != null);
         const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
         const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
         if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
@@ -137,12 +136,14 @@ const Workspace: React.FC = () => {
                                 )
                             }
                             {
-                                (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
+                                (workspace?.name && userInfo?.nickName && !pageId) &&
+                                    <Heading>
+                                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                                    </Heading>
+                            }
+                            {
+                                !passwordEntered &&
                                     <>
-                                        <Heading>
-                                            Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                        </Heading>
-
                                         <WidgetCentered title={"Enter the workspace password"} logo={false}>
                                             <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                                                 <FormControl id="password" isRequired>

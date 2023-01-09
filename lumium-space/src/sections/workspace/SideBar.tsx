@@ -53,7 +53,7 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            <Flex pt="1vh" pb="1vh" maxH={"9vh"} alignItems="center" justifyContent="center">
+            <Flex p="1vh 1vh 1vh 0vh" maxH={"9vh"} alignItems="center" justifyContent="center">
                 <Stack align={'center'} maxH="100%" maxW="100%">
                     <Image
                         src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)}
@@ -70,38 +70,38 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             </Flex>
             {
                 workspace?.name &&
-                    <Menu matchWidth={true}>
-                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
-                            {workspace?.name}
-                        </MenuButton>
-                        <MenuList bg={backgroundColor} overflow={"hidden"}>
-                            {userInfo?.ownedWorkspaces?.length != 0 &&
+                <Menu matchWidth={true}>
+                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                        {workspace?.name}
+                    </MenuButton>
+                    <MenuList bg={backgroundColor} overflow={"hidden"}>
+                        {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
                                     return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>
-                            }
-                            {userInfo?.administratedWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.administratedWorkspaces.map((w) => {
-                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            {userInfo?.visitorWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.visitorWorkspaces.map((w) => {
-                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
-                        </MenuList>
-                    </Menu >
+                        }
+                        {userInfo?.administratedWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.administratedWorkspaces.map((w) => {
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        {userInfo?.visitorWorkspaces?.length != 0 &&
+                            <>
+                                {userInfo?.visitorWorkspaces.map((w) => {
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                })}
+                                <Divider />
+                            </>
+                        }
+                        <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
+                    </MenuList>
+                </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>

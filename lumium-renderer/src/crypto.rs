@@ -117,11 +117,11 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     opts.mode(RequestMode::Cors);
 
     let window = web_sys::window().unwrap();
-    let workspace_id = window.location().pathname()?;
+    let workspace_id = window.location().pathname()?.split_off(1);
     let origin = format!(
         "{}/{}/{}",
         env!("RENDERER_API_HOST").to_string(),
-        "v1/secure/workspace",
+        "v1/secure/workspace/",
         workspace_id
     );
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
@@ -142,7 +142,7 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let password = window
         .local_storage()?
         .unwrap()
-        .get_item(workspace_id)?
+        .get_item(workspace_id.as_str())?
         .unwrap();
     let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
 

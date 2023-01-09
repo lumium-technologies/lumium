@@ -31,8 +31,8 @@ if (process.env.NODE_ENV === 'production' &&
         if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`, 301);
         } else {
-                next();
-            }
+            next();
+        }
     });
 }
 
@@ -159,4 +159,10 @@ app.use(V1 + SECURE, authenticateAccessToken, v1sec);
 
 app.get('/', (req, res) => {
     res.redirect('/docs/');
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500);
+    res.render('render', { error: err });
 });

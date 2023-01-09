@@ -142,7 +142,7 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let password = window
         .local_storage()?
         .unwrap()
-        .get_item("workspacePassword")?
+        .get_item(workspace_id)?
         .unwrap();
     let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
 

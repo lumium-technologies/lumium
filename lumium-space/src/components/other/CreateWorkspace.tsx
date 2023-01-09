@@ -40,7 +40,7 @@ export const CreateWorkspace = ({ standalone = true }: CreateWorkspaceProps) => 
     const handleDownloadKeys = () => {
         create_workspace(formik.values.password, formik.values.name).then(() => {
             refetchUserInfo().then((info) => {
-                localStorage.setItem('workspacePassword', formik.values.password);
+                if (info) localStorage.setItem(info?.recentWorkspace.id, formik.values.password);
                 Router.push(ROOT + info?.recentWorkspace.id);
             });
         });
@@ -126,37 +126,37 @@ export const CreateWorkspace = ({ standalone = true }: CreateWorkspaceProps) => 
                                 </FormControl>
                             </WidgetCentered>
                         ) ||
-                            step === 2 && (
-                                <Flex
-                                    py={"3%"}
-                                    px={"5%"}
-                                    flexDirection={"column"}
-                                >
-                                    <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-                                        Download Recovery Keys
-                                    </Heading>
-                                    <Heading textAlign={'center'}>
-                                        DISCLAIMER
-                                    </Heading>
-                                    <Text w="100%" mt={"5"}>
-                                        Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
-                                    </Text>
-                                    <Text w="100%" mt={"5"}>
-                                        If you do not have access to your password or your recovery codes, you will not be able to decrypt the content in your workspace. We at lumium will not be able to help you recover your data.
-                                    </Text>
-                                    <Text w="100%" mt={"5"}>
-                                        As your data is fully end-to-end encrypted, key management is your sole responsibility. You will be able to generate additional codes and invalidate existing codes later on.
-                                    </Text>
-                                    <Text w="100%" mt={"5"}>
-                                        As soon as you click the button below, your workspace will be created and you will be prompted to download your recovery keys. The downloaded file will be named `lumium_recovery_keys.txt` and will contain one key per line.
-                                    </Text>
-                                    <Text w="100%" mt={"5"}>
-                                        lumium cannot read your workspace content, except for some metadata (information like which users have access to which workspace, your workspace title, which page was created by which user, when was the last time a user has logged in etc.). We cannot read data like the titles/content of pages in your workspace.
-                                    </Text>
-                                    <Flex w="100%" mt={"5"} justifyContent="center">
-                                        <Button backgroundColor={buttonBackground} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my responsibility</Button>
-                                    </Flex>
+                        step === 2 && (
+                            <Flex
+                                py={"3%"}
+                                px={"5%"}
+                                flexDirection={"column"}
+                            >
+                                <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
+                                    Download Recovery Keys
+                                </Heading>
+                                <Heading textAlign={'center'}>
+                                    DISCLAIMER
+                                </Heading>
+                                <Text w="100%" mt={"5"}>
+                                    Download your recovery keys and secure them in a safe location. These will be needed in case you forget your password.
+                                </Text>
+                                <Text w="100%" mt={"5"}>
+                                    If you do not have access to your password or your recovery codes, you will not be able to decrypt the content in your workspace. We at lumium will not be able to help you recover your data.
+                                </Text>
+                                <Text w="100%" mt={"5"}>
+                                    As your data is fully end-to-end encrypted, key management is your sole responsibility. You will be able to generate additional codes and invalidate existing codes later on.
+                                </Text>
+                                <Text w="100%" mt={"5"}>
+                                    As soon as you click the button below, your workspace will be created and you will be prompted to download your recovery keys. The downloaded file will be named `lumium_recovery_keys.txt` and will contain one key per line.
+                                </Text>
+                                <Text w="100%" mt={"5"}>
+                                    lumium cannot read your workspace content, except for some metadata (information like which users have access to which workspace, your workspace title, which page was created by which user, when was the last time a user has logged in etc.). We cannot read data like the titles/content of pages in your workspace.
+                                </Text>
+                                <Flex w="100%" mt={"5"} justifyContent="center">
+                                    <Button backgroundColor={buttonBackground} onClick={handleDownloadKeys} data-cy={"downloadButton"}>I have read the above disclaimer and understand my responsibility</Button>
                                 </Flex>
+                            </Flex>
                         )}
                     <ButtonGroup w="100%" mt="5">
                         <Flex w="100%" justifyContent="space-between">

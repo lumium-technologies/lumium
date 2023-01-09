@@ -17,7 +17,6 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
-import { WorkspaceDTO } from '@types';
 
 const Workspace: React.FC = () => {
     const router = useRouter();
@@ -37,21 +36,25 @@ const Workspace: React.FC = () => {
     } = useDisclosure();
 
     const handlePasswordEntered = () => {
-        if (formik.values.password) {
-            localStorage.setItem('workspacePassword', formik.values.password);
+        if (workspaceId) {
+            const id = workspaceId.toString();
+            if (formik.values.password) {
+                localStorage.setItem(id, formik.values.password);
+            }
+            refetchWorkspace().then((p) => {
+                setPasswordEntered(true);
+            }).catch(() => {
+                localStorage.removeItem(id);
+                setPasswordError('Password is incorrect');
+            })
         }
-        refetchWorkspace().then((p) => {
-            setPasswordEntered(true);
-        }).catch((error) => {
-            localStorage.removeItem('workspacePassword');
-            setPasswordError('Password is incorrect');
-        })
     }
 
     useEffect(() => {
         const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
         const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
-        if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
+        if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount && workspaceId) {
+            handlePasswordEntered();
             setPinnedSideBar(JSON.parse(localPinnedSideBar));
             setPinnedNavBar(JSON.parse(localPinnedNavBar));
             didMount(true);

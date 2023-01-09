@@ -18,7 +18,7 @@ export const useWorkspace = (workspaceId: any) => {
     };
 
     useEffect(() => {
-        if (!workspaceId || !localStorage.getItem("workspacePassword")) return;
+        if (!workspaceId || !localStorage.getItem(workspaceId)) return;
         api.get<WorkspaceDTO>(SECURE_WORKSPACE_WORKSPACEID_GET.replace(':workspaceId', workspaceId)).then(async (res) => {
             let wrk = res.data;
             wrk.name = await dec(wrk?.name);

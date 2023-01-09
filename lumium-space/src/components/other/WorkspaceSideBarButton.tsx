@@ -3,13 +3,17 @@ import { ROOT } from "@routes/space";
 import { WorkspaceDTO } from "@types"
 import { FiLock } from "react-icons/fi";
 import NextLink from 'next/link';
+import { useRouter } from "next/router";
 
 interface props {
     w: WorkspaceDTO;
 }
 export const WorkspaceSideBarButton = ({ w }: props) => {
+    const router = useRouter();
+    const { workspaceId } = router.query;
+
     const clearWorkspacePassword = () => {
-        localStorage.removeItem('workspacePassword');
+        if (workspaceId) localStorage.removeItem(workspaceId.toString());
     };
 
     return (

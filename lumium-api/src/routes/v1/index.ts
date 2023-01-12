@@ -185,3 +185,20 @@ export { sec } from './secure';
  * @property {string} status - The short status code
  * @property {string} reason - A more detailed reason
  */
+
+/**
+ * @typedef {object} PageCreateDTO
+ * @property {string} name - The encrypted name of the page
+ * @property {string} workspaceId - The workspace to create the page in
+ */
+
+/**
+ * @typedef {object} PageUpdateDTO
+ * @property {string} id - The page id
+ * @property {string} name - The encrypted name of the page
+ * @property {string} content - The encrypted content of the page
+ * @property {string} ownerId - The id of the owner of the page
+ * @property {array<string>} adminIds - The ids of users with admin access to this page
+ * @property {array<string>} memberIds - The ids of users with member access to this page
+ * @property {array<string>} visitorIds - The ids of users with visitor access to this page
+ */

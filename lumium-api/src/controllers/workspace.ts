@@ -50,7 +50,7 @@ export const create = async (req: express.Request<WorkspaceCreateDTO>, res: expr
     return res.status(200).send(mapToWorkspaceDTO(newWorkspace));
 };
 
-export const remove = async (req: express.Request, res: express.Response<WorkspaceDTO>) => {
+export const remove = async (req: express.Request, res: express.Response) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
         relations: {
             owner: true
@@ -67,7 +67,7 @@ export const remove = async (req: express.Request, res: express.Response<Workspa
         return res.status(401).send();
     }
     await dataSource.getRepository(Workspace).delete({ id: req.params.workspaceId });
-    return res.status(200).send(mapToWorkspaceDTO(workspace));
+    return res.status(204).send();
 };
 
 export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: express.Response<WorkspaceDTO>) => {

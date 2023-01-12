@@ -14,5 +14,7 @@ export type {
     E2EKeyCreateDTO,
     E2EKeyVariantDTO,
     E2EKeyVariantCreateDTO,
-    ReasonDTO
+    ReasonDTO,
+    PageCreateDTO,
+    PageUpdateDTO
 } from './dto';

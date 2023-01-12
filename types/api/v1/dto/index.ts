@@ -16,7 +16,9 @@ export type {
     E2EKeyCreateDTO,
     E2EKeyVariantCreateDTO,
     WorkspaceCreateDTO,
-    WorkspaceUpdateDTO
+    WorkspaceUpdateDTO,
+    PageCreateDTO,
+    PageUpdateDTO
 } from './request';
 
 export type {

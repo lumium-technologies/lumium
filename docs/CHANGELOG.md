@@ -1,3 +1,9 @@
+## **0.16.0** <sub><sup>2023-01-05 ([bc0158d...65bf135](https://github.com/lumium-technologies/lumium/compare/bc0158d...65bf135?diff=split))</sup></sub>
+
+### Features
+*  overhaul account page ([48dae5e](https://github.com/lumium-technologies/lumium/commit/48dae5e))
+
+
 ## **0.15.0** <sub><sup>2023-01-04 ([ddcd9eb...2a8381e](https://github.com/lumium-technologies/lumium/compare/ddcd9eb...2a8381e?diff=split))</sup></sub>
 
 ### Features

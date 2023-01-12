@@ -1,11 +1,9 @@
-use async_recursion::async_recursion;
+use crate::JsFuture;
 use ring::aead::UnboundKey;
 use ring::digest;
 use ring::digest::digest;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-
-use crate::JsFuture;
 
 use passwords::PasswordGenerator;
 use ring::aead::{
@@ -13,6 +11,7 @@ use ring::aead::{
 };
 use ring::error;
 use ring::rand::{SecureRandom, SystemRandom};
+use std::cell::RefCell;
 use std::convert::TryInto;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -27,9 +26,9 @@ const NUM_RECOVERY_CODES: usize = 16;
 const RECOVERY_CODES_FILE_NAME: &str = "lumium_recovery_codes.txt";
 
 lazy_static! {
-    static ref MASTER_KEY: Arc<Mutex<([u8; MASTER_KEY_BYTE_LENGTH], bool)>> =
-        Arc::new(Mutex::new(([0; MASTER_KEY_BYTE_LENGTH], false)));
-    static ref PASSWORD: Arc<Mutex<String>> = Arc::new(Mutex::new("".to_string()));
+    static ref MASTER_KEY: Arc<Mutex<RefCell<([u8; MASTER_KEY_BYTE_LENGTH], bool)>>> = Arc::new(
+        Mutex::new(RefCell::new(([0; MASTER_KEY_BYTE_LENGTH], false)))
+    );
 }
 
 #[wasm_bindgen(module = "/js/download.js")]
@@ -103,13 +102,14 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
         recovery_codes.join("\n"),
     );
 
-    let mut key = MASTER_KEY.lock().unwrap();
+    let key = Arc::clone(&MASTER_KEY);
+    let key = key.lock().unwrap();
+    let mut key = key.borrow_mut();
     *key = (master_key, true);
 
     Ok(key_create_dto)
 }
 
-#[async_recursion(?Send)]
 async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
@@ -139,16 +139,19 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     }
 
     let json = JsFuture::from(resp.json()?).await?;
-    let password = PASSWORD.lock().unwrap().to_string();
+    let password = window
+        .local_storage()?
+        .unwrap()
+        .get_item("workspacePassword")?
+        .unwrap();
     let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
 
     for variant_dto in workspace_dto.key.keys {
-        if encrypt(
+        if encrypt_data(
+            password.as_bytes(),
             variant_dto.activator_nonce.clone().try_into().unwrap(),
             workspace_dto.key.activator.clone(),
-        )
-        .await?
-            == variant_dto.activator
+        ) == variant_dto.activator
         {
             return Ok(decrypt_data(
                 password.as_bytes(),
@@ -163,21 +166,26 @@ async fn decrypt_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
     Err(JsValue::from("failed to decrypt workspace key"))
 }
 
-#[async_recursion(?Send)]
 async fn get_key() -> Result<[u8; MASTER_KEY_BYTE_LENGTH], JsValue> {
-    let mut key = MASTER_KEY.lock().unwrap();
+    let key = MASTER_KEY.lock().unwrap().borrow().clone();
+
     if !key.1 {
-        *key = (decrypt_key().await?, true);
+        let decrypted = decrypt_key().await?;
+        let key = Arc::clone(&MASTER_KEY);
+        let key = key.lock().unwrap();
+        let mut key = key.borrow_mut();
+        *key = (decrypted, true);
+
+        return Ok(decrypted);
     }
+
     Ok(key.0)
 }
 
-#[async_recursion(?Send)]
 pub async fn encrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
     Ok(encrypt_data(&get_key().await?, nonce, data))
 }
 
-#[async_recursion(?Send)]
 pub async fn decrypt(nonce: [u8; NONCE_LEN], data: Vec<u8>) -> Result<Vec<u8>, JsValue> {
     Ok(decrypt_data(&get_key().await?, nonce, data))
 }

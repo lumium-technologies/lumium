@@ -1,63 +1,29 @@
-import { BoxProps, Link, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton } from "@chakra-ui/react";
-import { CreateWorkspace } from "@components/other";
-import { ROOT } from "@routes/space";
+import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton, useColorModeValue } from "@chakra-ui/react";
+import { CreateWorkspace, WorkspaceSideBarButton } from "@components/other";
 import { WorkspaceDTO, UserDTO } from "@types";
-import { ReactElement, ReactText } from "react";
-import { IconType } from "react-icons";
-import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiChevronDown, FiLock, FiPlus } from "react-icons/fi";
-import { AiFillPushpin } from "react-icons/ai";
+import { FiChevronDown, FiPlus } from "react-icons/fi";
+import { AiFillPushpin, AiFillStar } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
-import NextLink from 'next/link';
-
-interface NavItemProps extends FlexProps {
-    icon: IconType;
-    children: ReactText;
-}
-
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
-    return (
-        <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
-            <Flex
-                p="4"
-                {...rest}>
-                {icon && (
-                    <Icon
-                        mr="4"
-                        fontSize="16"
-                        as={icon}
-                    />
-                )}
-                {children}
-            </Flex>
-        </Link>
-    );
-};
-
-interface LinkItemProps {
-    name: string;
-    icon: ReactElement;
-}
-const LinkItems: Array<LinkItemProps> = [
-    { name: 'Home', icon: <FiHome /> },
-    { name: 'Trending', icon: <FiTrendingUp /> },
-    { name: 'Explore', icon: <FiCompass /> },
-    { name: 'Favourites', icon: <FiStar /> },
-    { name: 'Settings', icon: <FiSettings /> },
-];
+import { BACKGROUND_DARK, BACKGROUND_LIGHT, BORDER_DARK, BORDER_LIGHT, LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
+import Router from "next/router";
 
 interface SidebarProps extends BoxProps {
-    onSelfClose?: () => void;
+    onCloseSideBar: () => void;
     workspace: WorkspaceDTO | undefined;
     userInfo: UserDTO | undefined;
-    logo: string;
-    disclaimerButtonColor: string;
     setPinnedSideBar: (bool: any) => void;
     pinnedSideBar: boolean;
-    sidebarWidth: string;
+    sidebarWidth?: string;
 }
 
-export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColor, disclaimerButtonColor, setPinnedSideBar, pinnedSideBar, sidebarWidth, ...rest }: SidebarProps) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar, pinnedSideBar, sidebarWidth = "100%", ...rest }: SidebarProps) => {
+    const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
+    const {
+        isOpen: isOpenModal,
+        onOpen: onOpenModal,
+        onClose: onCloseModal
+    } = useDisclosure();
+
     const handlePinned = () => {
         if (pinnedSideBar) {
             setPinnedSideBar(false);
@@ -65,79 +31,87 @@ export const SideBar = ({ onSelfClose, workspace, userInfo, logo, backgroundColo
             setPinnedSideBar(true);
         }
     }
+
     return (
         <Flex
             flexDir={"column"}
-            transition="3s ease"
-            h="100%"
+            h="auto"
+            minH={"100%"}
             width={"100%"}
             maxW={sidebarWidth}
-            {...rest}
             backgroundColor={backgroundColor}
+            borderRightWidth="1px"
+            borderRightColor={useColorModeValue(BORDER_LIGHT, BORDER_DARK)}
+            {...rest}
         >
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpenModal} onClose={onCloseModal} size={{ base: "full", md: "md" }}>
                 <ModalOverlay />
-                <ModalContent maxW={800}>
-                    <ModalHeader>Create a new workspace</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody >
-                        <CreateWorkspace disclaimerButtonColor={disclaimerButtonColor} />
+                <ModalContent maxW={{ base: "100%", md: "40%" }} backgroundColor={backgroundColor}>
+                    <ModalBody p={"0px"}>
+                        <ModalCloseButton mt={"9px"} mr={"7px"} />
+                        <CreateWorkspace standalone={false} />
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            <Flex h="20" alignItems="center" justifyContent="center">
-                <Stack align={'center'} display={'flex'}>
-                    <Image src={logo} minWidth={"70%"} maxWidth={"80%"} maxH={20} alt="lumium logo" />
+            <Flex pt="1vh" pb="1vh" maxH={"9vh"} alignItems="center" justifyContent="center">
+                <Stack align={'center'} maxH="100%" maxW="100%">
+                    <Image
+                        src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)}
+                        minWidth={"70%"}
+                        maxWidth={"80%"}
+                        maxH={"9vh"}
+                        alt="lumium logo"
+                    />
                 </Stack>
                 <Flex flexDirection={"column"}>
-                    {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onSelfClose} />)}
-                    <IconButton aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
+                    {!pinnedSideBar && (<CloseButton display={'flex'} onClick={onCloseSideBar} />)}
+                    <IconButton bg={"none"} aria-label="PinIcon" icon={!pinnedSideBar && <AiFillPushpin /> || <BsFillPinFill />} onClick={handlePinned} size={"sm"} display={{ base: "none", md: "flex" }} />
                 </Flex>
             </Flex>
             {
                 workspace?.name &&
-                <Menu>
-                    <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} overflow={"hidden"} justifyContent={{ base: "center", md: "flex-start" }}>
-                        {workspace?.name}
-                    </MenuButton>
-                    <MenuList>
-                        {userInfo?.ownedWorkspaces?.length != 0 &&
+                    <Menu matchWidth={true}>
+                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                            {workspace?.name}
+                        </MenuButton>
+                        <MenuList bg={backgroundColor} overflow={"hidden"}>
+                            {userInfo?.ownedWorkspaces?.length != 0 &&
                             <>
                                 {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
+                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
                                 })}
                                 <Divider />
                             </>
-                        }
-                        {userInfo?.administratedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.administratedWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        {userInfo?.visitorWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.visitorWorkspaces.map((w) => {
-                                    return <MenuItem key={w.id} icon={<FiLock />} as={NextLink} href={ROOT + w.id}>{w.name}</MenuItem>;
-                                })}
-                                <Divider />
-                            </>
-                        }
-                        <MenuItem as={Button} onClick={onOpen} icon={<FiPlus />}>New workspace</MenuItem>
-                    </MenuList>
-                </Menu >
+                            }
+                            {userInfo?.administratedWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.administratedWorkspaces.map((w) => {
+                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            {userInfo?.visitorWorkspaces?.length != 0 &&
+                                <>
+                                    {userInfo?.visitorWorkspaces.map((w) => {
+                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
+                                    })}
+                                    <Divider />
+                                </>
+                            }
+                            <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
+                        </MenuList>
+                    </Menu >
             }
             <Divider />
-            <Button leftIcon={<FiPlus />} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
+            <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>
                 New page
             </Button>
             <Divider />
             {
-                LinkItems.map((link) => (
-                    <Button key={link.name} leftIcon={link.icon} as={Button} bg="none" justifyContent={{ base: "center", md: "flex-start" }}>
-                        {link.name}
+                workspace?.pages.map((page) => (
+                    <Button leftIcon={<AiFillStar />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} key={page.name} as={Button} onClick={() => Router.push(`${workspace?.id}/${page.id}`)}>
+                        {page.name}
                     </Button>
                 ))
             }

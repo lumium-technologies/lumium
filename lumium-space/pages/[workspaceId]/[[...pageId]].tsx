@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, useColorModeValue, IconButton, position } from "@chakra-ui/react";
+import React, { useEffect, useState } from 'react';
+import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, IconButton } from "@chakra-ui/react";
 import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
-    Box,
     Textarea,
     Flex,
     Drawer,
@@ -15,23 +14,46 @@ import { LumiumRenderer } from '@components/rendering';
 import { NavBar, SideBar } from '@sections/workspace';
 import { useFormik } from 'formik';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { PageTitle } from '@components/other';
+import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
 
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
-    const workspace = useWorkspace(workspaceId);
+    const { workspace, refetchWorkspace }= useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
-    const { isOpen: isOpenSideBar, onOpen: onOpenSideBar, onClose: onCloseSideBar } = useDisclosure();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [mount, didMount] = useState(false);
+    const {
+        isOpen: isOpenSideBar,
+        onOpen: onOpenSideBar,
+        onClose: onCloseSideBar
+    } = useDisclosure();
+
     const handlePasswordEntered = () => {
+        localStorage.setItem('workspacePassword', formik.values.password);
         setPasswordEntered(true);
+        refetchWorkspace();
     }
+
+    useEffect(() => {
+        const workspacePassword = localStorage.getItem('workspacePassword');
+        setPasswordEntered(workspacePassword != null);
+        const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
+        const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
+        if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
+            setPinnedSideBar(JSON.parse(localPinnedSideBar));
+            setPinnedNavBar(JSON.parse(localPinnedNavBar));
+            didMount(true);
+        }
+        localStorage.setItem('pinnedSideBar', JSON.stringify(pinnedSideBar));
+        localStorage.setItem('pinnedNavBar', JSON.stringify(pinnedNavBar));
+    }, [pinnedSideBar, pinnedNavBar, mount]);
+
     const formik = useFormik({
         initialValues: {
             password: "",
@@ -39,14 +61,10 @@ const Workspace: React.FC = () => {
         onSubmit: handlePasswordEntered,
         validateOnChange: (false),
     });
-    const darkLogo = '/logo/svg/Black logo - no background.svg';
-    const lightLogo = '/logo/svg/White logo - no background.svg';
-    let logo = useColorModeValue(darkLogo, lightLogo);
-    let backgroundColor = useColorModeValue('#ffffff', '#1a1a1a');
-    let disclaimerButtonColor = useColorModeValue('green', 'darkgreen');
+
     return (
         <>
-            <PageTitle title={"Lumium | " + workspace?.name} />
+            <PageTitle title={workspace?.name && "Lumium | " + workspace?.name || "Lumium"} />
             <Authenticator>
                 <Flex width={"100%"} minHeight={"100vh"} flexDirection={"row"}>
                     {!pinnedSideBar && (
@@ -61,66 +79,72 @@ const Workspace: React.FC = () => {
                         >
                             <DrawerContent>
                                 <SideBar
-                                    onSelfClose={onCloseSideBar}
+                                    onCloseSideBar={onCloseSideBar}
                                     workspace={workspace}
                                     userInfo={userInfo}
-                                    logo={logo}
-                                    backgroundColor={backgroundColor}
-                                    disclaimerButtonColor={disclaimerButtonColor}
                                     setPinnedSideBar={setPinnedSideBar}
                                     pinnedSideBar={pinnedSideBar}
-                                    sidebarWidth={"100%"}
                                 />
                             </DrawerContent>
                         </Drawer>
                     ) ||
                         (
                             <SideBar
+                                onCloseSideBar={onCloseSideBar}
                                 workspace={workspace}
                                 userInfo={userInfo}
-                                logo={logo}
-                                backgroundColor={backgroundColor}
-                                disclaimerButtonColor={disclaimerButtonColor}
                                 setPinnedSideBar={setPinnedSideBar}
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
                             />
-                        )
+                    )
                     }
-                    {/* mobilenav */}
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
                         {
                             pinnedNavBar && (
-                                <NavBar onOpenSideBar={onOpenSideBar} userInfo={userInfo} workspace={workspace} pinnedSidebar={pinnedSideBar} setPinnedNavBar={setPinnedNavBar} />
+                                <NavBar
+                                    onOpenSideBar={onOpenSideBar}
+                                    userInfo={userInfo}
+                                    workspace={workspace}
+                                    pinnedSidebar={pinnedSideBar}
+                                    setPinnedNavBar={setPinnedNavBar}
+                                />
                             )
                         }
-                        <Box p="4">
+                        <Flex
+                            pl={{ base: "4%", md: "2%" }}
+                            pr={{ base: "4%", md: "2%" }}
+                            pt={"2vh"}
+                            pb={"2vh"}
+                            width="auto"
+                            flexDir={"column"}
+                        >
                             {
                                 !pinnedNavBar && (
-                                    <IconButton aria-label="PinIcon" icon={<RxDoubleArrowDown />} onClick={() => { setPinnedNavBar(true) }} size={"sm"} right="5" position={"absolute"} />
+                                    <Flex width="100%" justifyContent={"flex-end"}>
+                                        <IconButton
+                                            aria-label="pin navbar"
+                                            size="md"
+                                            variant="outline"
+                                            icon={<RxDoubleArrowDown />}
+                                            onClick={() => {
+                                                setPinnedNavBar(true)
+                                            }}
+                                            position="absolute"
+                                        />
+                                    </Flex>
                                 )
                             }
                             {
-                                (workspace?.name && userInfo?.nickName && !pageId && !passwordEntered) &&
-                                <>
+                                (workspace?.name && userInfo?.nickName && !pageId) &&
                                     <Heading>
                                         Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
                                     </Heading>
-                                    <Flex
-                                        align={'center'}
-                                        justify={'center'}
-                                    >
-                                        <Stack
-                                            spacing={4}
-                                            w={'full'}
-                                            maxW={'md'}
-                                            rounded={'xl'}
-                                            boxShadow={'lg'}
-                                            p={6}
-                                            my={12}>
-                                            <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                                                Enter the password for <em>{workspace?.name}</em>
-                                            </Heading>
+                            }
+                            {
+                                !passwordEntered &&
+                                    <>
+                                        <WidgetCentered title={"Enter the workspace password"} logo={false}>
                                             <form onSubmit={formik.handleSubmit} data-cy={"form"}>
                                                 <FormControl id="password" isRequired>
                                                     <FormLabel>Password</FormLabel>
@@ -157,14 +181,13 @@ const Workspace: React.FC = () => {
                                                     </Button>
                                                 </Stack>
                                             </form>
-                                        </Stack>
-                                    </Flex>
-                                </>
-                                || pageId &&
-                                <Flex flexDir="row">
-                                    <Textarea />
-                                    <LumiumRenderer />
-                                </Flex>
+                                        </WidgetCentered>
+                                    </>
+                                        || pageId &&
+                                        <Flex flexDir="row">
+                                            <Textarea />
+                                            <LumiumRenderer />
+                                        </Flex>
                             }
                             {
                                 workspace?.pages.map((p) => {
@@ -173,7 +196,7 @@ const Workspace: React.FC = () => {
                                     );
                                 })
                             }
-                        </Box>
+                        </Flex>
                     </Flex>
                 </Flex>
             </Authenticator>

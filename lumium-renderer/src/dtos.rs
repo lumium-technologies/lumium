@@ -56,18 +56,6 @@ pub struct E2EKeyDTO {
     pub activator: Vec<u8>,
 }
 
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct PageDTO {
-    pub id: String,
-    #[serde(with = "base64")]
-    pub name: Vec<u8>,
-    #[serde(with = "base64")]
-    pub content: Vec<u8>,
-    #[serde(with = "base64")]
-    pub nonce: Vec<u8>,
-}
-
 mod base64 {
     use serde::{Deserialize, Serialize};
     use serde::{Deserializer, Serializer};

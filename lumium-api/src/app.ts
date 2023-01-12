@@ -11,6 +11,8 @@ import { v1sec } from './routes';
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 import { SECURE, V1 } from '../routes/api/v1';
 import { authenticateAccessToken } from './crypto';
+import { version } from 'pkginfo';
+import { ACCESS_TOKEN_COOKIE } from '../routes/constants';
 
 const initDataSource = async () => {
     try {
@@ -31,8 +33,8 @@ if (process.env.NODE_ENV === 'production' &&
         if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`, 301);
         } else {
-                next();
-            }
+            next();
+        }
     });
 }
 
@@ -48,11 +50,11 @@ if (!process.env.NODE_JEST) {
 
 const options = {
     info: {
-        version: '1.0.0',
+        version: version,
         title: 'Lumium API',
         license: {
             name: 'GPLV3',
-            url: 'https://github.com/d3psi/lumium',
+            url: 'https://github.com/lumium-technologies/lumium',
         },
         description: 'API description',
         contact: {
@@ -62,42 +64,9 @@ const options = {
     },
     servers: [
         {
-            url: 'http://localhost:5000/{Base Path}',
-            description: 'Local API server',
+            url: process.env.API_HOST,
+            description: 'Generated server URL',
             variables: {
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
-            url: 'https://api.staging.lumium.space/{Base Path}',
-            description: 'Staging API server',
-            variables: {
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
-            url: 'https://pr-{Pull Request}.api.review.lumium.space/{Base Path}',
-            description: 'Pull request API server (Cloudflare DNS)',
-            variables: {
-                'Pull Request': {
-                    default: '0',
-                },
-                'Base Path': {
-                    default: 'v1',
-                },
-            },
-        },
-        {
-            url: 'https://lumium-api-pr-{Pull Request}.herokuapp.com/{Base Path}',
-            description: 'Pull request API server (Heroku DNS)',
-            variables: {
-                'Pull Request': {
-                    default: '0',
-                },
                 'Base Path': {
                     default: 'v1',
                 },
@@ -109,7 +78,7 @@ const options = {
             type: 'apiKey',
             scheme: 'cookie',
             name: 'test',
-            in: 'accessToken'
+            in: ACCESS_TOKEN_COOKIE
         },
     },
     filesPattern: './routes/**/*.ts',

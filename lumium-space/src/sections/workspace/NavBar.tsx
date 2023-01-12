@@ -3,7 +3,8 @@ import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton
 import { useApi } from "@hooks/api";
 import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
 import { ACCOUNT, ROOT } from "@routes/space";
-import { UserDTO, WorkspaceDTO } from "@types";
+import { UserDTO } from "../../../types/api/v1/response/UserDTO";
+import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
 import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import NextLink from 'next/link';
@@ -49,13 +50,13 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
             {...rest}
         >
             {!pinnedSidebar &&
-                <IconButton
-                    display={'flex'}
-                    variant="outline"
-                    aria-label="open menu"
-                    icon={<FiMenu />}
-                    onClick={onOpenSideBar}
-                />
+            <IconButton
+                display={'flex'}
+                variant="outline"
+                aria-label="open menu"
+                icon={<FiMenu />}
+                onClick={onOpenSideBar}
+            />
             }
             <Spacer />
             <HStack>

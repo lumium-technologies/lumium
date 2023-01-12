@@ -1,12 +1,13 @@
 import express from 'express';
 import { dataSource, error } from "../data-source";
-import { mapToWorkspace, mapToWorkspaceDTO, Workspace } from "../entity/Workspace";
-import type { WorkspaceDTO, WorkspaceUpdateDTO } from '../../../types';
+import { mapCreateToWorkspace, mapToWorkspaceDTO, Workspace } from "../entity/Workspace";
 import { User } from "../entity/User";
-import { AuditEntryEvent } from "../entity/Audit";
-import { WorkspaceCreateDTO } from "../../../types/api/v1/dto/request/WorkspaceCreateDTO";
+import { AuditEntryEvent } from "../entity/AuditEntry";
+import { WorkspaceCreateDTO } from "../../../types/api/v1/create/WorkspaceCreateDTO";
 import { E2EKey } from '../entity/E2EKey';
-import { E2EKeyVariant, mapToE2EKeyVariant } from '../entity/E2EKeyVariant';
+import { E2EKeyVariant, mapCreateToE2EKeyVariant } from '../entity/E2EKeyVariant';
+import { WorkspaceDTO } from '../../types/api/v1/response/WorkspaceDTO';
+import { WorkspaceUpdateDTO } from '../../types/api/v1/update/WorkspaceUpdateDTO';
 
 export const info = async (req: express.Request, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
@@ -38,9 +39,9 @@ export const create = async (req: express.Request<WorkspaceCreateDTO>, res: expr
     const user = await dataSource.getRepository(User).findOne({ where: { id: req.user! } });
     const key = req.body.key;
     let newKey = await dataSource.getRepository(E2EKey).save(key);
-    newKey.keys = await dataSource.getRepository(E2EKeyVariant).save(req.body.key.keys.map(mapToE2EKeyVariant));
+    newKey.keys = await dataSource.getRepository(E2EKeyVariant).save(req.body.key.keys.map(mapCreateToE2EKeyVariant));
     let savedKey = await dataSource.getRepository(E2EKey).save(newKey);
-    const workspace = mapToWorkspace(req.body);
+    const workspace = mapCreateToWorkspace(req.body);
     workspace.owner = user;
     workspace.name = req.body.name;
     workspace.key = savedKey;

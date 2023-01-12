@@ -1,9 +1,10 @@
 import express from 'express';
-import { info as i, dataSource } from '../data-source';
-import { AuditEntryEvent } from '../entity/Audit';
-import { User } from '../entity/User';
+import { ACCESS_TOKEN_COOKIE } from '../../routes/constants';
+import { UserDTO } from '../../types/api/v1/response/UserDTO';
+import { dataSource } from '../data-source';
+import { mapToUserDTO, User } from '../entity/User';
 
-export const info = async (req: express.Request, res: express.Response<User>) => {
+export const info = async (req: express.Request, res: express.Response<UserDTO>) => {
     const user = await dataSource.getRepository(User).findOne({
         relations: {
             emails: true,
@@ -24,14 +25,13 @@ export const info = async (req: express.Request, res: express.Response<User>) =>
         },
         cache: false
     });
-    return res.status(200).send(user);
+    return res.status(200).send(mapToUserDTO(user));
 }
 
 export const deleteAccount = async (req: express.Request, res: express.Response) => {
     await dataSource.getRepository(User).remove({ id: req.user! });
-    await i({ detail: req.user! + " has deleted his account", type: AuditEntryEvent.USER_DELETED });
 
-    res.clearCookie('accessToken');
+    res.clearCookie(ACCESS_TOKEN_COOKIE);
 
     return res.status(200).send();
 }

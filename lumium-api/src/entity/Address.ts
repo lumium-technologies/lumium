@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, ManyToOne, Unique } from "typeorm";
+import { AddressDTO } from "../../types/api/v1/response/AddressDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
@@ -43,3 +44,23 @@ export class Address extends AbstractEntity {
     @Column()
     country: string
 }
+
+export const mapToAddressDTO = (entity: Address) => {
+    let dto: AddressDTO = {
+        userId: entity.user?.id,
+        kind: entity.kind?.toString(),
+        fullName: entity.fullName,
+        lineOne: entity.lineOne,
+        lineTwo: entity.lineTwo,
+        city: entity.city,
+        state: entity.state,
+        postalCode: entity.postalCode,
+        country: entity.country,
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
+    };
+    return dto;
+};

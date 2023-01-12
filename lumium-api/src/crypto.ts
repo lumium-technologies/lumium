@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { ACCESS_TOKEN_COOKIE } from '../routes/constants';
 import { dataSource } from './data-source';
 import { BlacklistedToken } from './entity/BlacklistedToken';
 
@@ -14,7 +15,7 @@ export const generateAccessToken = (data: any) => {
 };
 
 export const authenticateAccessToken = (req, res, next) => {
-    const token = req.cookies['accessToken'];
+    const token = req.cookies[ACCESS_TOKEN_COOKIE];
 
     if (token == null) {
         return res.status(401).send();

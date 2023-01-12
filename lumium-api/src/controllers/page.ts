@@ -1,5 +1,7 @@
 import express from 'express';
-import { PageCreateDTO, PageDTO, PageUpdateDTO } from '../../types';
+import { PageCreateDTO } from '../../types/api/v1/create/PageCreateDTO';
+import { PageDTO } from '../../types/api/v1/response/PageDTO';
+import { PageUpdateDTO } from '../../types/api/v1/update/PageUpdateDTO';
 import { dataSource } from '../data-source';
 import { mapCreateToPage, mapToPageDTO, mapUpdateToPage, Page } from '../entity/Page';
 import { Workspace } from '../entity/Workspace';
@@ -22,7 +24,10 @@ export const info = async (req: express.Request, res: express.Response<PageDTO>)
     }
 
     const userId = req.user!;
-    if (page.owner.id != userId && !page.admins.map((t) => t.id).includes(userId) && !page.members.map((t) => t.id).includes(userId) && !page.visitors.map((t) => t.id).includes(userId)) {
+    if (page.owner.id != userId
+        && !page.admins.map((t) => t.id).includes(userId)
+        && !page.members.map((t) => t.id).includes(userId)
+        && !page.visitors.map((t) => t.id).includes(userId)) {
         return res.status(401).send();
     }
     return res.status(200).send(mapToPageDTO(page));
@@ -44,7 +49,9 @@ export const create = async (req: express.Request<PageCreateDTO>, res: express.R
     }
 
     const userId = req.user!;
-    if (workspace.owner.id != userId && !workspace.admins.map(t => t.id).includes(userId) && !workspace.members.map(t => t.id).includes(userId)) {
+    if (workspace.owner.id != userId
+        && !workspace.admins.map(t => t.id).includes(userId)
+        && !workspace.members.map(t => t.id).includes(userId)) {
         return res.status(401).send();
     }
 
@@ -80,10 +87,14 @@ export const update = async (req: express.Request<PageUpdateDTO>, res: express.R
     }
 
     const userId = req.user!;
-    if (page.owner.id != userId && !page.admins.map(t => t.id).includes(userId) && !page.members.map(t => t.id).includes(userId)) {
+    if (page.owner.id != userId
+        && !page.admins.map(t => t.id).includes(userId)
+        && !page.members.map(t => t.id).includes(userId)) {
         return res.status(401).send();
     }
-    if (workspace.owner.id != userId && !workspace.admins.map(t => t.id).includes(userId) && !workspace.members.map(t => t.id).includes(userId)) {
+    if (workspace.owner.id != userId
+        && !workspace.admins.map(t => t.id).includes(userId)
+        && !workspace.members.map(t => t.id).includes(userId)) {
         return res.status(401).send();
     }
 
@@ -119,10 +130,14 @@ export const remove = async (req: express.Request, res: express.Response) => {
     }
 
     const userId = req.user!;
-    if (page.owner.id != userId && !page.admins.map(t => t.id).includes(userId) && !page.members.map(t => t.id).includes(userId)) {
+    if (page.owner.id != userId
+        && !page.admins.map(t => t.id).includes(userId)
+        && !page.members.map(t => t.id).includes(userId)) {
         return res.status(401).send();
     }
-    if (workspace.owner.id != userId && !workspace.admins.map(t => t.id).includes(userId) && !workspace.members.map(t => t.id).includes(userId)) {
+    if (workspace.owner.id != userId
+        && !workspace.admins.map(t => t.id).includes(userId)
+        && !workspace.members.map(t => t.id).includes(userId)) {
         return res.status(401).send();
     }
 

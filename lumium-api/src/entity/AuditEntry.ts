@@ -1,4 +1,5 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
+import { AuditEntryDTO } from '../../types/api/v1/response/AuditEntryDTO';
 import { AbstractEntity } from './AbstractEntity';
 import { User } from './User';
 
@@ -47,3 +48,18 @@ export class AuditEntry extends AbstractEntity {
     @Column({ nullable: true })
     detail?: string;
 }
+
+export const mapToAuditDTO = (entity: AuditEntry) => {
+    let dto: AuditEntryDTO = {
+        userId: entity.user?.id,
+        type: entity.type?.toString(),
+        level: entity.level?.toString(),
+        detail: entity.detail,
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
+    };
+    return dto;
+};

@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne } from "typeorm";
+import { UserPreferenceDTO } from "../../types/api/v1/response/UserPreferenceDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 
@@ -20,3 +21,17 @@ export class UserPreference extends AbstractEntity {
     @Column()
     value: string
 }
+
+export const mapToUserPreferenceDTO = (entity: UserPreference) => {
+    let dto: UserPreferenceDTO = {
+        userId: entity.user?.id,
+        option: entity.option?.toString(),
+        value: entity.value,
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
+    };
+    return dto;
+};

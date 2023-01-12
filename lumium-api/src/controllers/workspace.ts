@@ -28,7 +28,10 @@ export const info = async (req: express.Request, res: express.Response<Workspace
         return res.status(404).send();
     }
     const userId = req.user!;
-    if (workspace.owner.id != userId && !workspace.admins.map((t) => t.id).includes(userId) && !workspace.members.map((t) => t.id).includes(userId) && !workspace.visitors.map((t) => t.id).includes(userId)) {
+    if (workspace.owner.id != userId
+        && !workspace.admins.map((t) => t.id).includes(userId)
+        && !workspace.members.map((t) => t.id).includes(userId)
+        && !workspace.visitors.map((t) => t.id).includes(userId)) {
         return res.status(401).send();
     }
     return res.status(200).send(mapToWorkspaceDTO(workspace));
@@ -48,6 +51,7 @@ export const create = async (req: express.Request<WorkspaceCreateDTO>, res: expr
     const newWorkspace = await dataSource.getRepository(Workspace).save(workspace);
     user.recentWorkspace = newWorkspace;
     await dataSource.getRepository(User).save(user);
+    await dataSource.queryResultCache?.remove([`user-${user.id}`]);
     return res.status(200).send(mapToWorkspaceDTO(newWorkspace));
 };
 
@@ -68,6 +72,7 @@ export const remove = async (req: express.Request, res: express.Response) => {
         return res.status(401).send();
     }
     await dataSource.getRepository(Workspace).delete({ id: req.params.workspaceId });
+    await dataSource.queryResultCache?.remove([`user-${req.user!}`]);
     return res.status(204).send();
 };
 

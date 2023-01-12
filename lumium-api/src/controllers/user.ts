@@ -23,13 +23,17 @@ export const info = async (req: express.Request, res: express.Response<UserDTO>)
         where: {
             id: req.user!
         },
-        cache: false
+        cache: {
+            id: `user-${req.user!}`,
+            milliseconds: 60 * 1000
+        }
     });
     return res.status(200).send(mapToUserDTO(user));
 }
 
 export const deleteAccount = async (req: express.Request, res: express.Response) => {
     await dataSource.getRepository(User).remove({ id: req.user! });
+    await dataSource.queryResultCache?.remove([`user-${req.user!}`]);
 
     res.clearCookie(ACCESS_TOKEN_COOKIE);
 

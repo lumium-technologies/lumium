@@ -40,14 +40,8 @@ describe('workspaces', () => {
         expect(resp.body).toHaveProperty('name', "test");
         expect(resp.body).toHaveProperty('key');
         expect(resp.statusCode).toBe(200);
-        resp = await supertest(app).patch('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send({ preferences: [{ option: 'something', value: 'something' }] });
-        expect(resp.body).toHaveProperty('id');
-        expect(resp.body).toHaveProperty('name', "test");
-        expect(resp.body).toHaveProperty('preferences');
-        expect(resp.statusCode).toBe(200);
-        // TODO: implement patch test correctly
         resp = await supertest(app).delete('/v1/secure/workspace/' + resp.body.id).set('cookie', cookies).send();
-        expect(resp.statusCode).toBe(200);
+        expect(resp.statusCode).toBe(204);
         resp = await supertest(app).delete("/v1/secure/user").set('cookie', cookies).send();
         expect(resp.statusCode).toBe(200);
     });

@@ -33,18 +33,17 @@ router.put(PUT, create);
  * @security JWTAuth
  * @tags workspace
  * @param {string} id.path.required - Workspace uuid
- * @return {WorkspaceDTO} 200 - Success - application/json
+ * @return 204 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  * @return 404 - Not found - text/plain
  */
 router.delete(WORKSPACEID_DELETE, remove);
 
 /**
- * PATCH /secure/workspace/{workspaceId}
+ * PATCH /secure/workspace/
  * @summary Patches a workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @param {string} id.path.required - Workspace uuid
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace properties - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
@@ -53,11 +52,10 @@ router.delete(WORKSPACEID_DELETE, remove);
 router.patch(WORKSPACEID_PATCH, patch);
 
 /**
- * POST /secure/workspace/{workspaceId}
+ * POST /secure/workspace/
  * @summary Updates a workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @param {string} id.path.required - Workspace uuid
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace entity - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain

@@ -1,8 +1,9 @@
 import express from 'express';
 import { PUT as PUT, WORKSPACEID_PATCH, WORKSPACEID_POST } from '../../../../../routes/api/v1/secure/workspace';
 import { WORKSPACEID_GET, WORKSPACEID_DELETE } from '../../../../../routes/api/v1/secure/workspace';
+import { WORKSPACEID_SECRET_GET } from '../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
-import { info, create, remove, patch, post } from '../../../controllers/workspace';
+import { info, create, remove, patch, post, getSecret } from '../../../controllers/workspace';
 
 /**
  * GET /secure/workspace/{workspaceId}
@@ -62,5 +63,17 @@ router.patch(WORKSPACEID_PATCH, patch);
  * @return 404 - Not found - text/plain
  */
 router.post(WORKSPACEID_POST, post);
+
+/**
+ * GET /secure/workspace/{workspaceId}/secret
+ * @summary Returns an encryption secret for the workspace password
+ * @security JWTAuth
+ * @tags workspace
+ * @param {string} id.path.required - Workspace uuid 
+ * @return {WorkspaceSecretDTO} 200 - Success - application/json
+ * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
+ */
+router.get(WORKSPACEID_SECRET_GET, getSecret);
 
 export { router as workspace };

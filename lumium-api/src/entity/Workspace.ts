@@ -6,6 +6,7 @@ import { E2EKey, mapCreateToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
 import { mapToPageDTO, Page } from "./Page";
 import { User } from "./User";
 import { mapToWorkspacePreferenceDTO, WorkspacePreference } from "./WorkspacePreference";
+import { WorkspaceSecret } from "./WorkspaceSecret";
 
 @Entity('workspaces')
 export class Workspace extends AbstractEntity {
@@ -14,21 +15,21 @@ export class Workspace extends AbstractEntity {
 
     @ManyToMany(() => User, (user) => user.administratedWorkspaces)
     @JoinTable()
-    admins: User[]
+    admins?: User[]
 
     @ManyToMany(() => User, (user) => user.memberWorkspaces)
     @JoinTable()
-    members: User[]
+    members?: User[]
 
     @ManyToMany(() => User, (user) => user.visitorWorkspaces)
     @JoinTable()
-    visitors: User[]
+    visitors?: User[]
 
     @OneToMany(() => Page, (page) => page.workspace)
-    pages: Page[]
+    pages?: Page[]
 
     @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
-    preferences: WorkspacePreference[]
+    preferences?: WorkspacePreference[]
 
     @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace)
     @JoinColumn()
@@ -36,6 +37,9 @@ export class Workspace extends AbstractEntity {
 
     @Column({ unique: true })
     name: string
+
+    @OneToMany(() => WorkspaceSecret, (secret) => secret.workspace)
+    secrets?: WorkspaceSecret[]
 }
 
 export const mapToWorkspaceDTO = (entity: Workspace) => {
@@ -60,13 +64,8 @@ export const mapToWorkspaceDTO = (entity: Workspace) => {
 export const mapCreateToWorkspace = (dto: WorkspaceCreateDTO) => {
     let entity: Workspace = {
         owner: null,
-        admins: null,
-        members: null,
-        visitors: null,
-        pages: null,
-        preferences: null,
         key: mapCreateToE2EKey(dto.key),
-        name: dto.name
+        name: dto.name,
     };
     return entity;
 };

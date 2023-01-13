@@ -8,6 +8,8 @@ import { E2EKey } from '../entity/E2EKey';
 import { E2EKeyVariant, mapCreateToE2EKeyVariant } from '../entity/E2EKeyVariant';
 import { WorkspaceDTO } from '../../types/api/v1/response/WorkspaceDTO';
 import { WorkspaceUpdateDTO } from '../../types/api/v1/update/WorkspaceUpdateDTO';
+import { mapToDTO as mapToWorkspaceSecretDTO, WorkspaceSecret } from '../entity/WorkspaceSecret';
+import crypto from "crypto";
 
 export const info = async (req: express.Request, res: express.Response<WorkspaceDTO>) => {
     const workspace = await dataSource.getRepository(Workspace).findOne({
@@ -120,9 +122,49 @@ export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: expres
     const userId = req.user!;
     if (workspace.owner.id != userId
         && !workspace.admins.map((t) => t.id).includes(userId)) {
-        error({ user: { id: req.user! }, type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_POST_ATTEMPT });
+        await error({ user: { id: req.user! }, type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_POST_ATTEMPT });
         return res.status(401).send();
     }
     const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
     return res.status(200).send(mapToWorkspaceDTO(updated));
+};
+
+export const getSecret = async (req: express.Request, res: express.Response) => {
+    const workspace = await dataSource.getRepository(Workspace).findOne({
+        where: {
+            id: req.params.workspaceId
+        },
+        relations: {
+            owner: true,
+            admins: true,
+            members: true,
+            visitors: true,
+            secrets: { user: true, secret: true }
+        },
+        cache: {
+            id: `workspace-secret-${req.params.workspaceId}`,
+            milliseconds: 60 * 1000
+        }
+    });
+    if (!workspace) {
+        return res.status(404).send();
+    }
+    const userId = req.user!;
+    if (workspace.owner.id != userId
+        && !workspace.admins.map(t => t.id).includes(userId)
+        && !workspace.members.map(t => t.id).includes(userId)
+        && !workspace.visitors.map(t => t.id).includes(userId)) {
+        return res.status(401).send();
+    }
+    if (workspace.secrets?.map(t => t.user?.id).includes(userId)) {
+        const userSecret = workspace.secrets?.filter(t => t.user?.id == userId)[0];
+        return res.status(200).contentType("application/json").send(mapToWorkspaceSecretDTO(userSecret));
+    }
+    await dataSource.queryResultCache?.remove([`workspace-secret-${req.params.workspaceId}`]);
+    let newSecret = new WorkspaceSecret();
+    newSecret.workspace = workspace;
+    newSecret.user = { id: userId };
+    newSecret.secret = crypto.randomBytes(64).toString('base64');
+    const secret = await dataSource.getRepository(WorkspaceSecret).save(newSecret);
+    return res.status(200).contentType("application/json").send(mapToWorkspaceSecretDTO(secret));
 };

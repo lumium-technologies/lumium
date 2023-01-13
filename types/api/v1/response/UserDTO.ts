@@ -1,7 +1,7 @@
-import { UserPreferences } from "typescript";
 import { AbstractEntityDTO } from "./AbstractEntityDTO";
 import { EmailDTO } from "./EmailDTO";
 import { PageDTO } from "./PageDTO";
+import { UserPreferenceDTO } from "./UserPreferenceDTO";
 import { WorkspaceDTO } from "./WorkspaceDTO";
 
 export interface UserDTO extends AbstractEntityDTO {
@@ -17,6 +17,6 @@ export interface UserDTO extends AbstractEntityDTO {
     administratedPages: PageDTO[];
     memberPages: PageDTO[];
     visitorPages: PageDTO[];
-    preferences: UserPreferences[];
+    preferences: UserPreferenceDTO[];
     recentWorkspace: WorkspaceDTO;
 }

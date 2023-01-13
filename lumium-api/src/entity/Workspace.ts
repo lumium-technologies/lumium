@@ -1,7 +1,8 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
-import { WorkspaceCreateDTO, WorkspaceDTO } from "../../types";
+import { WorkspaceCreateDTO } from "../../types/api/v1/create/WorkspaceCreateDTO";
+import { WorkspaceDTO } from "../../types/api/v1/response/WorkspaceDTO";
 import { AbstractEntity } from "./AbstractEntity";
-import { E2EKey, mapToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
+import { E2EKey, mapCreateToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
 import { mapToPageDTO, Page } from "./Page";
 import { User } from "./User";
 import { mapToWorkspacePreferenceDTO, WorkspacePreference } from "./WorkspacePreference";
@@ -56,7 +57,7 @@ export const mapToWorkspaceDTO = (entity: Workspace) => {
     return dto;
 };
 
-export const mapToWorkspace = (dto: WorkspaceCreateDTO) => {
+export const mapCreateToWorkspace = (dto: WorkspaceCreateDTO) => {
     let entity: Workspace = {
         owner: null,
         admins: null,
@@ -64,7 +65,7 @@ export const mapToWorkspace = (dto: WorkspaceCreateDTO) => {
         visitors: null,
         pages: null,
         preferences: null,
-        key: mapToE2EKey(dto.key),
+        key: mapCreateToE2EKey(dto.key),
         name: dto.name
     };
     return entity;

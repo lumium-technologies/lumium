@@ -2,7 +2,7 @@ import express from 'express';
 import { PAGEID_GET } from '../../../../../routes/api/v1/secure/page';
 import { PAGEID_DELETE, POST, PUT } from '../../../../routes/api/v1/secure/page';
 const router = express.Router();
-import { create, info, remove, update } from '../../../controllers/page';
+import { create, info, remove, post } from '../../../controllers/page';
 
 /**
  * GET /secure/page/{pageId}
@@ -38,7 +38,7 @@ router.put(PUT, create);
  * @return 401 - Unauthorized - text/plain
  * @return 404 - Not found - text/plain
  */
-router.post(POST, update);
+router.post(POST, post);
 
 /**
  * DELETE /secure/page/{pageId}

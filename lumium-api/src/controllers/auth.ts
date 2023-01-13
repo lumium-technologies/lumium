@@ -1,6 +1,6 @@
 import express from 'express';
-import { UserAuthDTO } from "../../types/api/v1/dto/request";
-import { dataSource } from '../data-source';
+import { UserCreateDTO } from "../../types/api/v1/create/UserCreateDTO";
+import { dataSource, error, info } from '../data-source';
 import { User } from '../entity/User';
 import crypto from 'crypto';
 import { generateAccessToken } from '../crypto';
@@ -9,9 +9,12 @@ import { AuthenticationInformation } from '../entity/AuthenticationInformation';
 import { BlacklistedToken } from '../entity/BlacklistedToken';
 import jwt from 'jsonwebtoken';
 import { LessThan } from 'typeorm';
-import { ReasonDTO } from '../../types';
+import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
+import { UserSignInDTO } from '../../types/api/v1/UserSignInDTO';
+import { ACCESS_TOKEN_COOKIE } from '../../routes/constants';
+import { AuditEntryEvent } from '../entity/AuditEntry';
 
-export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
+export const signIn = async (req: express.Request<UserSignInDTO>, res: express.Response<null | ReasonDTO>) => {
     const user = await dataSource.getRepository(User).findOne({
         where: {
             emails: {
@@ -29,9 +32,14 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         where: {
             user: { id: user.id },
             expires: LessThan(Date.now())
+        },
+        cache: {
+            id: `blacklisted-tokens-user-${user.id}`,
+            milliseconds: 60 * 1000
         }
     });
     await dataSource.getRepository(BlacklistedToken).remove(expiredTokens);
+    await dataSource.queryResultCache?.remove([`blacklisted-tokens-user-${user.id}`]);
     let key = Buffer.from(user.auth!.key, 'base64');
     const derivedKey = crypto.pbkdf2Sync(
         Buffer.from(req.body.password, 'utf8'),
@@ -41,12 +49,14 @@ export const signIn = async (req: express.Request<UserAuthDTO>, res: express.Res
         'sha512'
     );
     if (key.toString('binary') == derivedKey.toString('binary')) {
-        return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+        await info({ id: user.id, type: AuditEntryEvent.USER_SIGN_IN });
+        return res.status(200).cookie(ACCESS_TOKEN_COOKIE, generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
     }
+    await error({ id: user.id, type: AuditEntryEvent.FAILED_LOGIN_ATTEMPT });
     return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'invalid credentials' });
 };
 
-export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Response<null | ReasonDTO>) => {
+export const signUp = async (req: express.Request<UserCreateDTO>, res: express.Response<null | ReasonDTO>) => {
     let exists = await dataSource.getRepository(Email).count({ where: { email: req.body.email } }) != 0;
     if (exists) {
         return res.status(500).contentType("application/json").send({ status: "EMAIL_ALREADY_EXISTS", reason: "email already exists" });
@@ -70,7 +80,8 @@ export const signUp = async (req: express.Request<UserAuthDTO>, res: express.Res
     auth.salt = salt.toString('base64');
     user.auth = auth;
     await dataSource.getRepository(User).save(user);
-    return res.status(200).cookie('accessToken', generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
+    await info({ id: user.id, type: AuditEntryEvent.USER_SIGN_UP });
+    return res.status(200).cookie(ACCESS_TOKEN_COOKIE, generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
 };
 
 export const signOut = async (req: express.Request, res: express.Response) => {
@@ -80,6 +91,8 @@ export const signOut = async (req: express.Request, res: express.Response) => {
     const expTime = exp * 1000;
     let token: BlacklistedToken = { user: { id: req.user! }, token: req.token!, expires: expTime };
     await dataSource.getRepository(BlacklistedToken).save(token);
-    res.clearCookie('accessToken');
+    await dataSource.queryResultCache?.remove([`blacklisted-tokens-user-${req.user!}`]);
+    res.clearCookie(ACCESS_TOKEN_COOKIE);
+    await info({ id: req.user!, type: AuditEntryEvent.USER_SIGN_OUT });
     return res.status(200).send();
 };

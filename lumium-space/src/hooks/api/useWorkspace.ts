@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WorkspaceDTO } from "@types";
+import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
 import { useApi } from "./useApi";
 import { SECURE_WORKSPACE_WORKSPACEID_GET } from "@routes/api/v1";
 import { dec } from 'lumium-renderer';

@@ -1,5 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
-import { PageCreateDTO, PageDTO, PageUpdateDTO } from "../../types";
+import { PageCreateDTO } from "../../types/api/v1/create/PageCreateDTO";
+import { PageDTO } from "../../types/api/v1/response/PageDTO";
+import { PageUpdateDTO } from "../../types/api/v1/update/PageUpdateDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 import { Workspace } from "./Workspace";

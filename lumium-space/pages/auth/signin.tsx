@@ -18,8 +18,8 @@ import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_CREATE } fr
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
-import { ReasonDTO } from '@types';
 import NextLink from 'next/link';
+import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);

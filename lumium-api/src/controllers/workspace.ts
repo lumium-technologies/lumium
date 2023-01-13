@@ -22,6 +22,10 @@ export const info = async (req: express.Request, res: express.Response<Workspace
             pages: true,
             preferences: true,
             key: true
+        },
+        cache: {
+            id: `workspace-${req.params.workspaceId}`,
+            milliseconds: 60 * 1000
         }
     });
     if (!workspace) {
@@ -68,11 +72,11 @@ export const remove = async (req: express.Request, res: express.Response) => {
         return res.status(404).send();
     }
     if (workspace.owner.id != req.user!) {
-        error({ user: { id: req.user! }, detail: 'Attempted to delete workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_DELETE_ATTEMPT });
+        error({ user: { id: req.user! }, type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_DELETE_ATTEMPT });
         return res.status(401).send();
     }
     await dataSource.getRepository(Workspace).delete({ id: req.params.workspaceId });
-    await dataSource.queryResultCache?.remove([`user-${req.user!}`]);
+    await dataSource.queryResultCache?.remove([`user-${req.user!}`, `workspace-${workspace.id}`]);
     return res.status(204).send();
 };
 
@@ -92,10 +96,11 @@ export const patch = async (req: express.Request<WorkspaceUpdateDTO>, res: expre
     }
     const userId = req.user!;
     if (workspace.owner.id != userId && !workspace.admins.map((t) => t.id).includes(userId)) {
-        error({ user: { id: req.user! }, detail: 'Attempted to patch workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_PATCH_ATTEMPT });
+        error({ user: { id: req.user! }, type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_PATCH_ATTEMPT });
         return res.status(401).send();
     }
     const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });
+    await dataSource.queryResultCache?.remove([`workspace-${workspace.id}`]);
     return res.status(200).send(mapToWorkspaceDTO(updated));
 };
 
@@ -113,8 +118,9 @@ export const post = async (req: express.Request<WorkspaceUpdateDTO>, res: expres
         return res.status(404).send();
     }
     const userId = req.user!;
-    if (workspace.owner.id != userId && !workspace.admins.map((t) => t.id).includes(userId)) {
-        error({ user: { id: req.user! }, detail: 'Attempted to post workspace that is not owned by the current user', type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_POST_ATTEMPT });
+    if (workspace.owner.id != userId
+        && !workspace.admins.map((t) => t.id).includes(userId)) {
+        error({ user: { id: req.user! }, type: AuditEntryEvent.UNAUTHORIZED_WORKSPACE_POST_ATTEMPT });
         return res.status(401).send();
     }
     const updated = await dataSource.getRepository(Workspace).save({ ...workspace, ...req.body });

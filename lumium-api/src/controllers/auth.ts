@@ -1,6 +1,6 @@
 import express from 'express';
 import { UserCreateDTO } from "../../types/api/v1/create/UserCreateDTO";
-import { dataSource } from '../data-source';
+import { dataSource, error, info } from '../data-source';
 import { User } from '../entity/User';
 import crypto from 'crypto';
 import { generateAccessToken } from '../crypto';
@@ -12,6 +12,7 @@ import { LessThan } from 'typeorm';
 import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
 import { UserSignInDTO } from '../../types/api/v1/UserSignInDTO';
 import { ACCESS_TOKEN_COOKIE } from '../../routes/constants';
+import { AuditEntryEvent } from '../entity/AuditEntry';
 
 export const signIn = async (req: express.Request<UserSignInDTO>, res: express.Response<null | ReasonDTO>) => {
     const user = await dataSource.getRepository(User).findOne({
@@ -31,9 +32,14 @@ export const signIn = async (req: express.Request<UserSignInDTO>, res: express.R
         where: {
             user: { id: user.id },
             expires: LessThan(Date.now())
+        },
+        cache: {
+            id: `blacklisted-tokens-user-${user.id}`,
+            milliseconds: 60 * 1000
         }
     });
     await dataSource.getRepository(BlacklistedToken).remove(expiredTokens);
+    await dataSource.queryResultCache?.remove([`blacklisted-tokens-user-${user.id}`]);
     let key = Buffer.from(user.auth!.key, 'base64');
     const derivedKey = crypto.pbkdf2Sync(
         Buffer.from(req.body.password, 'utf8'),
@@ -43,8 +49,10 @@ export const signIn = async (req: express.Request<UserSignInDTO>, res: express.R
         'sha512'
     );
     if (key.toString('binary') == derivedKey.toString('binary')) {
+        await info({ id: user.id, type: AuditEntryEvent.USER_SIGN_IN });
         return res.status(200).cookie(ACCESS_TOKEN_COOKIE, generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
     }
+    await error({ id: user.id, type: AuditEntryEvent.FAILED_LOGIN_ATTEMPT });
     return res.status(500).contentType("application/json").send({ status: 'INVALID_CREDENTIALS', reason: 'invalid credentials' });
 };
 
@@ -72,6 +80,7 @@ export const signUp = async (req: express.Request<UserCreateDTO>, res: express.R
     auth.salt = salt.toString('base64');
     user.auth = auth;
     await dataSource.getRepository(User).save(user);
+    await info({ id: user.id, type: AuditEntryEvent.USER_SIGN_UP });
     return res.status(200).cookie(ACCESS_TOKEN_COOKIE, generateAccessToken({ userId: user.id }), { httpOnly: true }).send();
 };
 
@@ -82,6 +91,8 @@ export const signOut = async (req: express.Request, res: express.Response) => {
     const expTime = exp * 1000;
     let token: BlacklistedToken = { user: { id: req.user! }, token: req.token!, expires: expTime };
     await dataSource.getRepository(BlacklistedToken).save(token);
+    await dataSource.queryResultCache?.remove([`blacklisted-tokens-user-${req.user!}`]);
     res.clearCookie(ACCESS_TOKEN_COOKIE);
+    await info({ id: req.user!, type: AuditEntryEvent.USER_SIGN_OUT });
     return res.status(200).send();
 };

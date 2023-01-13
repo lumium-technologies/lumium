@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { ACCESS_TOKEN_COOKIE } from '../routes/constants';
-import { dataSource } from './data-source';
+import { dataSource, error } from './data-source';
+import { AuditEntryEvent } from './entity/AuditEntry';
 import { BlacklistedToken } from './entity/BlacklistedToken';
 
 declare module "express-serve-static-core" {
@@ -26,8 +27,19 @@ export const authenticateAccessToken = (req, res, next) => {
             console.error(err);
             return res.status(401).send()
         }
-        let blacklisted = await dataSource.getRepository(BlacklistedToken).count({ where: { user: { id: decoded.userId }, token: token } });
-        if (blacklisted != 0) {
+        let blacklisted = await dataSource.getRepository(BlacklistedToken).find({
+            where: {
+                user: {
+                    id: decoded.userId,
+                }
+            },
+            cache: {
+                id: `blacklisted-tokens-user-${decoded.userId}`,
+                milliseconds: 60 * 1000
+            }
+        });
+        if (blacklisted?.map(t => t.token).includes(token)) {
+            await error({ id: decoded.userId, type: AuditEntryEvent.FAILED_AUTH_ATTEMPT });
             return res.status(401).send();
         }
         req.user = decoded.userId;

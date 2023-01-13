@@ -3,6 +3,7 @@ import { ROOT, AUTH_SIGNIN, AUTH_SIGNUP } from "@routes/space";
 describe("/", () => {
     it("dark mode/light mode switch", () => {
         cy.visit(ROOT);
+        cy.wait(3000);
         cy.dataCy("switchThemeButton").should("be.visible").click();
         cy.get("body").should("have.class", "chakra-ui-light");
         cy.dataCy("switchThemeButton").should("be.visible").click();

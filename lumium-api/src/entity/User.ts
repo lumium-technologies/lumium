@@ -1,12 +1,13 @@
 import { Entity, Column, OneToMany, ManyToMany, OneToOne, ManyToOne, JoinColumn } from "typeorm"
+import { UserDTO } from "../../types/api/v1/response/UserDTO"
 import { AbstractEntity } from "./AbstractEntity"
 import { Address } from "./Address"
 import { AuthenticationInformation } from "./AuthenticationInformation"
 import { BlacklistedToken } from "./BlacklistedToken"
-import { Email } from "./Email"
-import { Page } from "./Page"
-import { UserPreference } from "./UserPreference"
-import { Workspace } from "./Workspace"
+import { Email, mapToEmailDTO } from "./Email"
+import { mapToPageDTO, Page } from "./Page"
+import { mapToUserPreferenceDTO, UserPreference } from "./UserPreference"
+import { mapToWorkspaceDTO, Workspace } from "./Workspace"
 
 @Entity("users")
 export class User extends AbstractEntity {
@@ -65,3 +66,28 @@ export class User extends AbstractEntity {
     @ManyToOne(() => Workspace, { nullable: true, onDelete: "SET NULL" })
     recentWorkspace?: Workspace
 }
+
+export const mapToUserDTO = (entity: User) => {
+    let dto: UserDTO = {
+        firstName: entity.firstName,
+        lastName: entity.lastName,
+        nickName: entity.nickName,
+        birthday: entity.birthday?.toUTCString(),
+        emails: entity.emails?.map(mapToEmailDTO),
+        ownedWorkspaces: entity.ownedWorkspaces?.map(mapToWorkspaceDTO),
+        administratedWorkspaces: entity.administratedWorkspaces?.map(mapToWorkspaceDTO),
+        visitorWorkspaces: entity.visitorWorkspaces?.map(mapToWorkspaceDTO),
+        ownedPages: entity.ownedPages?.map(mapToPageDTO),
+        administratedPages: entity.administratedPages?.map(mapToPageDTO),
+        memberPages: entity.memberPages?.map(mapToPageDTO),
+        visitorPages: entity.visitorPages?.map(mapToPageDTO),
+        preferences: entity.preferences?.map(mapToUserPreferenceDTO),
+        recentWorkspace: entity.recentWorkspace && mapToWorkspaceDTO(entity.recentWorkspace),
+        id: entity.id,
+        createdAt: entity.createdAt?.toString(),
+        updatedAt: entity.updatedAt?.toString(),
+        deletedAt: entity.deletedAt?.toString(),
+        version: entity.version
+    };
+    return dto;
+};

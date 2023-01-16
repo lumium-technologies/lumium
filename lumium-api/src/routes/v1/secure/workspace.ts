@@ -1,8 +1,9 @@
 import express from 'express';
 import { PUT as PUT, WORKSPACEID_PATCH, WORKSPACEID_POST } from '../../../../../routes/api/v1/secure/workspace';
 import { WORKSPACEID_GET, WORKSPACEID_DELETE } from '../../../../../routes/api/v1/secure/workspace';
+import { WORKSPACEID_SECRET_GET } from '../../../../routes/api/v1/secure/workspace';
 const router = express.Router();
-import { info, create, remove, patch, post } from '../../../controllers/workspace';
+import { info, create, remove, patch, post, getSecret } from '../../../controllers/workspace';
 
 /**
  * GET /secure/workspace/{workspaceId}
@@ -33,18 +34,17 @@ router.put(PUT, create);
  * @security JWTAuth
  * @tags workspace
  * @param {string} id.path.required - Workspace uuid
- * @return {WorkspaceDTO} 200 - Success - application/json
+ * @return 204 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  * @return 404 - Not found - text/plain
  */
 router.delete(WORKSPACEID_DELETE, remove);
 
 /**
- * PATCH /secure/workspace/{workspaceId}
+ * PATCH /secure/workspace/
  * @summary Patches a workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @param {string} id.path.required - Workspace uuid
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace properties - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
@@ -53,16 +53,27 @@ router.delete(WORKSPACEID_DELETE, remove);
 router.patch(WORKSPACEID_PATCH, patch);
 
 /**
- * POST /secure/workspace/{workspaceId}
+ * POST /secure/workspace/
  * @summary Updates a workspace owned by the token subject
  * @security JWTAuth
  * @tags workspace
- * @param {string} id.path.required - Workspace uuid
  * @param {WorkspaceUpdateDTO} request.body.required - new workspace entity - application/json
  * @return {WorkspaceDTO} 200 - Success - application/json
  * @return 401 - Unauthorized - text/plain
  * @return 404 - Not found - text/plain
  */
 router.post(WORKSPACEID_POST, post);
+
+/**
+ * GET /secure/workspace/{workspaceId}/secret
+ * @summary Returns an encryption secret for the workspace password
+ * @security JWTAuth
+ * @tags workspace
+ * @param {string} id.path.required - Workspace uuid 
+ * @return {WorkspaceSecretDTO} 200 - Success - application/json
+ * @return 401 - Unauthorized - text/plain
+ * @return 404 - Not found - text/plain
+ */
+router.get(WORKSPACEID_SECRET_GET, getSecret);
 
 export { router as workspace };

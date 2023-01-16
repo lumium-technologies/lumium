@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from "typeorm";
-import { WorkspacePreferenceDTO } from "../../types";
+import { WorkspacePreferenceDTO } from "../../types/api/v1/response/WorkspacePreferenceDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { Workspace } from "./Workspace";
 

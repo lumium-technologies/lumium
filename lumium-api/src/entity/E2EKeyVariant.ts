@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from "typeorm";
-import { E2EKeyVariantCreateDTO } from "../../types";
-import { E2EKeyVariantDTO } from "../../types/api/v1/dto/entity/E2EKeyVariantDTO";
+import { E2EKeyVariantCreateDTO } from "../../types/api/v1/create/E2EKeyVariantCreateDTO";
+import { E2EKeyVariantDTO } from "../../types/api/v1/response/E2EKeyVariantDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { E2EKey } from "./E2EKey";
 
@@ -42,7 +42,7 @@ export const mapToE2EKeyVariantDTO = (entity: E2EKeyVariant) => {
     return dto;
 };
 
-export const mapToE2EKeyVariant = (dto: E2EKeyVariantCreateDTO) => {
+export const mapCreateToE2EKeyVariant = (dto: E2EKeyVariantCreateDTO) => {
     let entity: E2EKeyVariant = {
         activator: dto.activator,
         activatorNonce: dto.activatorNonce,

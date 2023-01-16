@@ -1,6 +1,7 @@
-import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, MenuItem, Divider, Icon, FlexProps, IconButton, useColorModeValue } from "@chakra-ui/react";
+import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, Divider, IconButton, useColorModeValue } from "@chakra-ui/react";
 import { CreateWorkspace, WorkspaceSideBarButton } from "@components/other";
-import { WorkspaceDTO, UserDTO } from "@types";
+import { UserDTO } from "../../../types/api/v1/response/UserDTO";
+import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
 import { FiChevronDown, FiPlus } from "react-icons/fi";
 import { AiFillPushpin, AiFillStar } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";

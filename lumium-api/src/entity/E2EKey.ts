@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, OneToOne } from "typeorm";
-import { E2EKeyCreateDTO } from "../../types";
-import { E2EKeyDTO } from "../../types/api/v1/dto/entity/E2EKeyDTO";
+import { E2EKeyCreateDTO } from "../../types/api/v1/create/E2EKeyCreateDTO";
+import { E2EKeyDTO } from "../../types/api/v1/response/E2EKeyDTO";
 import { AbstractEntity } from "./AbstractEntity";
-import { E2EKeyVariant, mapToE2EKeyVariant, mapToE2EKeyVariantDTO } from "./E2EKeyVariant";
+import { E2EKeyVariant, mapCreateToE2EKeyVariant, mapToE2EKeyVariantDTO } from "./E2EKeyVariant";
 import { Workspace } from "./Workspace";
 
 @Entity('end_to_end_keys')
@@ -31,9 +31,9 @@ export const mapToE2EKeyDTO = (entity: E2EKey) => {
     return dto;
 }
 
-export const mapToE2EKey = (dto: E2EKeyCreateDTO) => {
+export const mapCreateToE2EKey = (dto: E2EKeyCreateDTO) => {
     let entity: E2EKey = {
-        keys: dto.keys.map(mapToE2EKeyVariant),
+        keys: dto.keys.map(mapCreateToE2EKeyVariant),
         activator: dto.activator
     };
     return entity;

@@ -1,7 +1,7 @@
 import { SECURE_USER_GET } from '@routes/api/v1';
-import { UserDTO } from "@types";
 import { useEffect, useState } from 'react';
 import { useApi } from '@hooks/api';
+import { UserDTO } from '../../../types/api/v1/response/UserDTO';
 
 export const useUserInfo = () => {
     const [userInfo, setUserInfo] = useState<UserDTO>();

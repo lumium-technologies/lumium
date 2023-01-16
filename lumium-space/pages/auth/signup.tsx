@@ -18,7 +18,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from '@routes/space';
 import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
-import { ReasonDTO } from '@types';
+import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
 import NextLink from 'next/link';
 
 const SignUp: React.FC = () => {

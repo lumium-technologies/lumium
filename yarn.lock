@@ -2349,6 +2349,13 @@
     pg-protocol "*"
     pg-types "^2.2.0"
 
+"@types/pkginfo@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@types/pkginfo/-/pkginfo-0.4.0.tgz#00143b97e98aa7c9391943266d2e4aebd8f44c35"
+  integrity sha512-4DGKkOlWkMuVDZQvytWzzWWAjyqDmlLKRYE4lzeA8t0s7fK0aF25uPbX9eBVermUjLJdeLHu9k1WmNiAssqCcg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/prettier@^2.0.0", "@types/prettier@^2.1.5":
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.3.tgz#68ada76827b0010d0db071f739314fa429943d0a"
@@ -8031,6 +8038,11 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+pkginfo@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/pkginfo/-/pkginfo-0.4.1.tgz#b5418ef0439de5425fc4995042dced14fb2a84ff"
+  integrity sha512-8xCNE/aT/EXKenuMDZ+xTVwkT8gsoHN2z/Q29l80u0ppGEXVvsKRzNMbtKhg8LS8k1tJLAHHylf6p4VFmP6XUQ==
 
 posix-character-classes@^0.1.0:
   version "0.1.1"

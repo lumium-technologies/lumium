@@ -1,10 +1,12 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
-import { WorkspaceCreateDTO, WorkspaceDTO } from "../../types";
+import { WorkspaceCreateDTO } from "../../types/api/v1/create/WorkspaceCreateDTO";
+import { WorkspaceDTO } from "../../types/api/v1/response/WorkspaceDTO";
 import { AbstractEntity } from "./AbstractEntity";
-import { E2EKey, mapToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
+import { E2EKey, mapCreateToE2EKey, mapToE2EKeyDTO } from "./E2EKey";
 import { mapToPageDTO, Page } from "./Page";
 import { User } from "./User";
 import { mapToWorkspacePreferenceDTO, WorkspacePreference } from "./WorkspacePreference";
+import { WorkspaceSecret } from "./WorkspaceSecret";
 
 @Entity('workspaces')
 export class Workspace extends AbstractEntity {
@@ -13,21 +15,21 @@ export class Workspace extends AbstractEntity {
 
     @ManyToMany(() => User, (user) => user.administratedWorkspaces)
     @JoinTable()
-    admins: User[]
+    admins?: User[]
 
     @ManyToMany(() => User, (user) => user.memberWorkspaces)
     @JoinTable()
-    members: User[]
+    members?: User[]
 
     @ManyToMany(() => User, (user) => user.visitorWorkspaces)
     @JoinTable()
-    visitors: User[]
+    visitors?: User[]
 
     @OneToMany(() => Page, (page) => page.workspace)
-    pages: Page[]
+    pages?: Page[]
 
     @OneToMany(() => WorkspacePreference, (workspacePreferences) => workspacePreferences.workspace)
-    preferences: WorkspacePreference[]
+    preferences?: WorkspacePreference[]
 
     @OneToOne(() => E2EKey, (e2eKey) => e2eKey.workspace)
     @JoinColumn()
@@ -35,6 +37,9 @@ export class Workspace extends AbstractEntity {
 
     @Column({ unique: true })
     name: string
+
+    @OneToMany(() => WorkspaceSecret, (secret) => secret.workspace)
+    secrets?: WorkspaceSecret[]
 }
 
 export const mapToWorkspaceDTO = (entity: Workspace) => {
@@ -56,16 +61,11 @@ export const mapToWorkspaceDTO = (entity: Workspace) => {
     return dto;
 };
 
-export const mapToWorkspace = (dto: WorkspaceCreateDTO) => {
+export const mapCreateToWorkspace = (dto: WorkspaceCreateDTO) => {
     let entity: Workspace = {
         owner: null,
-        admins: null,
-        members: null,
-        visitors: null,
-        pages: null,
-        preferences: null,
-        key: mapToE2EKey(dto.key),
-        name: dto.name
+        key: mapCreateToE2EKey(dto.key),
+        name: dto.name,
     };
     return entity;
 };

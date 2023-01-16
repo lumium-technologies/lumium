@@ -1,5 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { PageDTO } from "../../types";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
+import { PageCreateDTO } from "../../types/api/v1/create/PageCreateDTO";
+import { PageDTO } from "../../types/api/v1/response/PageDTO";
+import { PageUpdateDTO } from "../../types/api/v1/update/PageUpdateDTO";
 import { AbstractEntity } from "./AbstractEntity";
 import { User } from "./User";
 import { Workspace } from "./Workspace";
@@ -47,4 +49,29 @@ export const mapToPageDTO = (entity: Page) => {
         version: entity.version
     };
     return dto;
+};
+
+export const mapCreateToPage = (dto: PageCreateDTO, ownerId: string) => {
+    let workspace = new Workspace();
+    workspace.id = dto.workspaceId;
+    let owner = new User();
+    owner.id = ownerId;
+    let entity = new Page();
+    entity.name = dto.name; entity.workspace = workspace;
+    entity.owner = owner;
+    return entity;
+};
+
+export const mapUpdateToPage = (dto: PageUpdateDTO) => {
+    let entity = new Page();
+    entity.id = dto.id;
+    entity.name = dto.name;
+    entity.content = dto.content;
+    let owner = new User();
+    owner.id = dto.ownerId;
+    entity.owner = owner;
+    entity.admins = dto.adminIds?.map(t => { let u = new User(); u.id = t; return u; });
+    entity.members = dto.memberIds?.map(t => { let u = new User(); u.id = t; return u; });
+    entity.visitors = dto.visitorIds?.map(t => { let u = new User(); u.id = t; return u; });
+    return entity;
 };

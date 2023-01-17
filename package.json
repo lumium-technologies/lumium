@@ -14,7 +14,7 @@
     "description": "next level docs",
     "scripts": {
         "test": "make test",
-        "build": "make build",
+        "build": "[[ ! -z ${LUMIUM_COMPONENT} ]] && (make build-${LUMIUM_COMPONENT}; exit 0) || make build",
         "prepare": "husky install"
     },
     "workspaces": [

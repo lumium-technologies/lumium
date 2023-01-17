@@ -4,6 +4,8 @@ use axum::extract::State;
 use axum::{middleware, routing::post, Router, Server};
 use sqlx::postgres::PgPoolOptions;
 
+use crate::routes::auth::*;
+use crate::routes::guard::*;
 use crate::state::AppState;
 
 mod routes;
@@ -20,13 +22,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .await?;
 
     let state = AppState::new(database.clone());
-    let guard = middleware::from_fn_with_state(state.sessions.clone(), routes::guard::auth_guard);
+    let guard = middleware::from_fn_with_state(state.sessions.clone(), auth_guard);
 
     let app = Router::new()
-        .route("/signout", post(routes::auth::sign_out))
+        .route("/signout", post(sign_out))
         .route_layer(guard)
-        .route("/signup", post(routes::auth::sign_up))
-        .route("/signin", post(routes::auth::sign_in))
+        .route("/signup", post(sign_up))
+        .route("/signin", post(sign_in_username))
+        .route("/signin", post(sign_in_email))
         .with_state(state.clone());
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
@@ -37,7 +40,3 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-
-// let _: (i64,) = sqlx::query_as("SELECT $1")
-// .bind(150_i64)
-// .fetch_one(&pool).await?;

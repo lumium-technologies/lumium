@@ -1,0 +1,36 @@
+### sign up
+
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{
+  "email": "someone@gmail.com",
+  "username": "someone",
+  "password": "qwerty12345"
+}
+
+### sign in with email
+
+POST http://localhost:3000/signin
+Content-Type: application/json
+
+{
+  "email": "someone@gmail.com",
+  "password": "qwerty12345"
+}
+
+### sign in with username
+
+POST http://localhost:3000/signin
+Content-Type: application/json
+
+{
+  "username": "someone",
+  "password": "qwerty12345"
+}
+
+### sign out
+
+POST http://localhost:3000/signout
+
+###

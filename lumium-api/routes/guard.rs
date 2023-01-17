@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 
 use axum::extract::State;
-use axum::http::Request;
+use axum::http::{Request, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 
@@ -13,7 +13,7 @@ pub struct AuthError {}
 
 impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
-        todo!()
+        (StatusCode::UNAUTHORIZED).into_response()
     }
 }
 

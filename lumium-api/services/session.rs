@@ -13,22 +13,22 @@ impl SessionService {
 
 impl SessionService {
     // signup & signin
-    pub fn create() {
+    pub async fn create() {
         todo!()
     }
 
     // auth guard
-    pub fn find() {
+    pub async fn find() {
         todo!()
     }
 
     // signout
-    pub fn remove() {
+    pub async fn remove() {
         todo!()
     }
 
     // password reset
-    pub fn remove_all() {
+    pub async fn remove_all() {
         todo!()
     }
 }

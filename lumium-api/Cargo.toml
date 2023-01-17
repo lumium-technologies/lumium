@@ -1,10 +1,18 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [package]
 name = "lumium-api"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "lumium"
+path = "./main.rs"
 
 [dependencies]
-axum = "0.6.2"
 tokio = { version = "1.24.1", features = ["full"] }
+axum = { version = "0.6.2", features = ["macros"] }
+axum-extra = { version = "0.4.2", features = ["cookie-signed"] }
+sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres"] }
+redis = { version = "0.22.2", features = [] }

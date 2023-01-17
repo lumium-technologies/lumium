@@ -18,7 +18,7 @@ build-lumium-space: build-lumium-renderer
 build-lumium-api:
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
-		cargo build --release \
+		cargo build --release; \
 		cargo install --path .
 
 reduce-slug-size:
@@ -27,6 +27,7 @@ reduce-slug-size:
 	rm -rf lumium-space/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04)
 
 clean: clean-lumium-renderer clean-lumium-space clean-lumium-api
+	rm -rf node_modules
 
 clean-lumium-renderer:
 	cd lumium-renderer; \
@@ -34,7 +35,8 @@ clean-lumium-renderer:
 
 clean-lumium-space:
 	cd lumium-space; \
-		rm -rf .next
+		rm -rf .next \
+		rm -rf node_modules
 
 clean-lumium-api:
 	cd lumium-api; \

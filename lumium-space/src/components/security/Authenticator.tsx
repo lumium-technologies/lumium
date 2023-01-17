@@ -4,7 +4,7 @@ import { AUTH_SIGNIN } from "@routes/space";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 
-export const Authenticator: React.FC = (props) => {
+export const Authenticator  = ({children}: React.PropsWithChildren<{}>) => {
     const [loginStatus, setLoginStatus] = useState(false);
     const [api] = useApi();
 
@@ -21,7 +21,7 @@ export const Authenticator: React.FC = (props) => {
 
     return (
         <>
-            {loginStatus && props.children}
+            {loginStatus && children}
         </>
     );
 };

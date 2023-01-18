@@ -18,7 +18,6 @@ build-lumium-space: build-lumium-renderer
 build-lumium-api:
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
-		cargo sqlx prepare --check && \
 		cargo build --release && \
 		cargo install --path .
 

@@ -20,4 +20,5 @@ fn main() {
         let (key, value) = env_var.unwrap();
         println!("cargo:rustc-env={key}={value}");
     }
+    println!("cargo:rerun-if-changed=migrations");
 }

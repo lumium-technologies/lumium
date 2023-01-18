@@ -1,0 +1,77 @@
+{
+  "db": "PostgreSQL",
+  "6ca2c005e081961a019179e1c0cbe8be263ddb655f493d3fede6fc376a209f9d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "pwd_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT profiles.id, pwd_hash\n            FROM profiles JOIN emails\n                ON profiles.id = emails.profile_id\n            WHERE emails.address = $1;"
+  },
+  "f4ae900b01fa7e3384b5aa359b732baef8bec9de1c44567d8d7930f83b11873f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "pwd_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT id, pwd_hash\n            FROM profiles\n            WHERE username = $1;"
+  },
+  "f8075a593bab3363c9d8493328a11b2179a79038e330aed990b74f076a211e61": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "WITH profile0 AS (\n                INSERT INTO profiles (username, pwd_hash)\n                    VALUES ($1, $2)\n                    RETURNING id)\n            INSERT\n            INTO emails (profile_id, address)\n            SELECT id, $3\n            FROM profile0\n            RETURNING profile_id AS id;"
+  }
+}

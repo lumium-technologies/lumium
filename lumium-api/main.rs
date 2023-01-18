@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+use std::error::Error;
 use std::net::SocketAddr;
 
 use axum::routing::{delete, get, patch, post};
@@ -16,14 +17,15 @@ mod services;
 mod state;
 
 #[tokio::main]
-async fn main() {
-    let db = "postgres://postgres:postgrespw@localhost:55000";
+async fn main() -> Result<(), Box<dyn Error>> {
+    let db = "postgres://development:development@localhost:5432/lumium";
     let db = std::env::var("DATABASE_URL").unwrap_or(db.to_owned());
     let database = PgPoolOptions::new()
         .max_connections(5)
         .connect(db.as_str())
-        .await
-        .unwrap();
+        .await?;
+
+    sqlx::migrate!("./migrations").run(&database).await?;
 
     let state = AppState::new(database);
 
@@ -51,12 +53,11 @@ async fn main() {
 
     let app = Router::new().merge(root).merge(auth).merge(user);
 
-    // todo get rid of it, use flags
-    let port = std::env::var("PORT").map_or(3000, |t| t.parse().unwrap());
+    let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     println!("listening on {addr}");
-    Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+
+    Server::bind(&addr).serve(app.into_make_service()).await?;
+
+    Ok(())
 }

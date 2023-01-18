@@ -62,7 +62,7 @@ impl ProfileService {
         .await;
 
         let result = result.map_err(|e| ProfileSrvError::InternalError(Some(e)))?;
-        let result =  result.id.map(|uuid| uuid.to_string());
+        let result = result.id.map(|uuid| uuid.to_string());
         result.ok_or_else(|| ProfileSrvError::InternalError(None))
     }
 }

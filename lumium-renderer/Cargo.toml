@@ -54,4 +54,4 @@ wasm-bindgen-test = "0.3.33"
 #opt-level = "s"
 
 [build-dependencies]
-dotenv = "0.15.0"
+dotenvy = "0.15.6"

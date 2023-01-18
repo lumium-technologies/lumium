@@ -6,6 +6,7 @@ else
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     . "$HOME/.cargo/env"
     export PATH="$PATH:$HOME/.cargo/bin"
+    cargo install sqlx-cli
 fi
 
 if [[ ${LUMIUM_COMPONENT} != "lumium-api" ]]; then

@@ -1,0 +1,6 @@
+### ping
+
+GET http://localhost:3000/
+Accept: application/json
+
+###

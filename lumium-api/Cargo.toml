@@ -12,10 +12,10 @@ path = "./main.rs"
 
 [dependencies]
 tokio = { version = "1.24.1", features = ["full"] }
-axum = { version = "0.6.2", features = ["macros"] }
+axum = { version = "0.6.2", features = ["macros", "headers"] }
 axum-extra = { version = "0.4.2", features = ["cookie-signed"] }
 serde = { version = "1.0.152" }
 serde_json = { version = "1.0.91" }
 sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "uuid"] }
-redis = { version = "0.22.2", features = [] }
 argon2 = { version = "0.4.1" }
+async-trait = { version = "0.1.61" }

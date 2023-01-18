@@ -2,41 +2,36 @@ use axum::extract::FromRef;
 use axum_extra::extract::cookie::Key;
 use sqlx::{Pool, Postgres};
 
-use crate::services::{ProfileService, SessionService};
+use crate::services::profile::ProfileService;
+use crate::services::session::SessionService;
 
-// TODO impl Debug?
 #[derive(Clone)]
 pub struct AppState {
-    pub profiles: ProfileService,
-    pub sessions: SessionService,
-    pub secret: Key,
+    secret: Key,
+    session: SessionService,
+    profile: ProfileService,
 }
 
 impl AppState {
     pub fn new(database: Pool<Postgres>) -> Self {
         Self {
-            profiles: ProfileService::new(database.clone()),
-            sessions: SessionService::new(database.clone()),
-            // TODO I don't think we want to regenerate every time
             secret: Key::generate(),
+            session: SessionService::new(database.clone()),
+            profile: ProfileService::new(database.clone()),
         }
     }
 }
 
-impl FromRef<AppState> for ProfileService {
-    fn from_ref(state: &AppState) -> Self {
-        state.profiles.clone()
-    }
+macro_rules! impl_di {
+    ($($t:ty: $f:ident),+) => {$(
+        impl FromRef<AppState> for $t {
+            fn from_ref(state: &AppState) -> Self {
+                state.$f.clone()
+            }
+        }
+    )+};
 }
 
-impl FromRef<AppState> for SessionService {
-    fn from_ref(state: &AppState) -> Self {
-        state.sessions.clone()
-    }
-}
-
-impl FromRef<AppState> for Key {
-    fn from_ref(state: &AppState) -> Self {
-        state.secret.clone()
-    }
-}
+impl_di!(Key: secret);
+impl_di!(SessionService: session);
+impl_di!(ProfileService: profile);

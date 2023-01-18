@@ -1,9 +1,12 @@
 use axum::extract::{Json, State};
+use axum::http::StatusCode;
 use axum::response::IntoResponse;
+use axum_extra::extract::cookie::Cookie;
 use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
 
-use crate::services::{ProfileService, SessionService};
+use crate::services::profile::ProfileService;
+use crate::services::session::SessionService;
 
 #[derive(Deserialize)]
 pub struct SignUp {
@@ -12,48 +15,35 @@ pub struct SignUp {
     password: String,
 }
 
-// 201, 401
 pub async fn sign_up(
-    sessions: State<SessionService>,
-    profiles: State<ProfileService>,
-    Json(json): Json<SignUp>,
-    // TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
-    // jar: SignedCookieJar,
+    State(sessions): State<SessionService>,
+    State(profiles): State<ProfileService>,
+    jar: SignedCookieJar,
+    Json(json): Json<SignIn>,
 ) -> impl IntoResponse {
     todo!()
 }
 
 #[derive(Deserialize)]
-pub struct SignInWithUsername {
-    username: String,
+pub struct SignIn {
+    username_or_email: String,
     password: String,
 }
 
-// 200, 400
-pub async fn sign_in_username(
-    sessions: State<SessionService>,
-    profiles: State<ProfileService>,
-    Json(json): Json<SignInWithUsername>,
+pub async fn sign_in(
+    State(sessions): State<SessionService>,
+    State(profiles): State<ProfileService>,
+    jar: SignedCookieJar,
+    Json(json): Json<SignIn>,
 ) -> impl IntoResponse {
-    todo!()
+    // (jar.add(Cookie::new("sid", "hello")), StatusCode::OK)
+    // todo!()
 }
 
-#[derive(Deserialize)]
-pub struct SignInWithEmail {
-    email: String,
-    password: String,
-}
-
-// 200, 400
-pub async fn sign_in_email(
-    sessions: State<SessionService>,
-    profiles: State<ProfileService>,
-    Json(json): Json<SignInWithEmail>,
+pub async fn sign_out(
+    State(sessions): State<SessionService>,
+    jar: SignedCookieJar,
 ) -> impl IntoResponse {
-    todo!()
-}
-
-// 200, 401
-pub async fn sign_out(sessions: State<SessionService>) -> impl IntoResponse {
-    todo!()
+    // jar.remove(Cookie::named("sid"))
+    // todo!()
 }

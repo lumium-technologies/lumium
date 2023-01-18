@@ -71,6 +71,8 @@ CREATE TABLE pages
 (
 	id         UUID PRIMARY KEY                  DEFAULT gen_random_uuid(),
 
+	cargo      TEXT                     NOT NULL DEFAULT '',
+
 	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 	updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 	deleted_at TIMESTAMP WITH TIME ZONE          DEFAULT NULL,

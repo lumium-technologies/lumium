@@ -23,9 +23,9 @@ build-lumium-api:
 		cargo install --path .
 
 reduce-slug-size:
-	[ -z "${LUMIUM_HEROKU_BUILD}" ] || \
-		(rm -rf lumium-renderer/target;
-	rm -rf lumium-space/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04)
+	[ -z "" ] || \
+		(rm -rf lumium-renderer/target; \
+		rm -rf lumium-space/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04)
 
 clean: clean-lumium-renderer clean-lumium-space clean-lumium-api
 	rm -rf node_modules

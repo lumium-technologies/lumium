@@ -17,9 +17,9 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "cypress:open": "cd .. && NEXT_PUBLIC_NODE_TEST=true NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && NODE_TEST=true cypress open'",
-        "cypress:run": "NODE_TEST=true cypress run",
-        "cypress:test": "cd .. && NEXT_PUBLIC_NODE_TEST=true NODE_TEST=true yarn run build && concurrently -k -s first 'NODE_TEST=true yarn start' 'cd lumium-space && yarn run cypress:run'"
+        "cypress:open": "cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && cypress open'",
+        "cypress:run": "cypress run",
+        "cypress:test": "cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && yarn run cypress:run'"
     },
     "dependencies": {
         "@chakra-ui/icons": "^2.0.12",

@@ -5,7 +5,7 @@ var dotenv_path;
 
 if (process.env.REVIEW_APP && process.env.NODE_ENV === 'production') {
     dotenv_path = process.cwd() + '/.env.review';
-} else if (process.env.NODE_TEST) {
+} else if (process.env.NEXT_PUBLIC_NODE_TEST) {
     dotenv_path = process.cwd() + '/.env.test';
 } else if (process.env.NODE_ENV !== 'production') {
     dotenv_path = process.cwd() + '/.env.development';

@@ -11,14 +11,14 @@ build-lumium-renderer:
 build-lumium-space: build-lumium-renderer
 	(cd lumium-renderer/pkg && (yarn unlink || true) && yarn link)
 	cd lumium-space; \
-		yarn link lumium-renderer; \
-		yarn --frozen-lockfile; \
+		yarn link lumium-renderer && \
+		yarn --frozen-lockfile && \
 		yarn build
 
 build-lumium-api:
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
-		cargo build --release; \
+		cargo build --release && \
 		cargo install --path .
 
 reduce-slug-size:

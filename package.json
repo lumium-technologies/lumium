@@ -14,7 +14,7 @@
     "description": "next level docs",
     "scripts": {
         "test": "make test",
-        "build": "[ ! -z ${LUMIUM_COMPONENT} ] && component=\"-${LUMIUM_COMPONENT}\"; make build${component}",
+        "build": "[ ! -z ${LUMIUM_COMPONENT} ] && component=\"-${LUMIUM_COMPONENT}\"; make build${component} -j && make reduce-slug-size",
         "prepare": "husky install"
     },
     "workspaces": [

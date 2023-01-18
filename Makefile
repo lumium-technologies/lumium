@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-build: build-lumium-space build-lumium-api reduce-slug-size
+build: build-lumium-space build-lumium-api
 
 build-lumium-renderer:
 	(which git >/dev/null && git submodule update --init --recursive) || true;
@@ -22,9 +22,11 @@ build-lumium-api:
 		cargo install --path .
 
 reduce-slug-size:
-	[ -z "" ] || \
+	[ -z "${LUMIUM_HEROKU_BUILD}" ] || \
 		(rm -rf lumium-renderer/target; \
-		rm -rf lumium-space/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04)
+		rm -rf lumium-api/target; \
+		rm -rf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04; \
+		du -sh **/*)
 
 clean: clean-lumium-renderer clean-lumium-space clean-lumium-api
 	rm -rf node_modules

@@ -18,6 +18,7 @@ build-lumium-space: build-lumium-renderer
 build-lumium-api:
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
+		export SQLX_OFFLINE="true"; \
 		cargo build --release && \
 		cargo install --path .
 

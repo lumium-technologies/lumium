@@ -1,4 +1,7 @@
 {
+    "addons": [
+        "heroku-postgresql:mini"
+    ],
     "buildpacks": [{
             "url": "https://github.com/dmathieu/heroku-buildpack-submodules.git"
         },

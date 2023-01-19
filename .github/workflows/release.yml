@@ -15,6 +15,13 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
       - name: Install dependencies
         run: yarn install
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-edit
       - name: Generate changelog
         if: "!startsWith(github.event.head_commit.message, '[VERSION]')"
         id: semantic-release
@@ -33,7 +40,8 @@ jobs:
           git config --unset core.hooksPath
           git config --global user.name "github-actions[bot]"
           git config --global user.email "actions@github.com"
-          (cd lumium-api && yarn version --new-version $VERSION --no-git-tag-version)
+          (cd lumium-api && cargo set-version $VERSION)
+          (cd lumium-renderer && cargo set-version $VERSION)
           (cd lumium-space && yarn version --new-version $VERSION --no-git-tag-version)
           git add -A
           yarn version --new-version $VERSION --message "[VERSION] $VERSION"

@@ -20,7 +20,7 @@ build-lumium-api:
 		cd lumium-api; \
 		export SQLX_OFFLINE="true"; \
 		cargo build --release && \
-		cargo install --path .
+		cargo install --path . --root build --profile release --force
 
 reduce-slug-size:
 	[ -z "${LUMIUM_HEROKU_BUILD}" ] || \

@@ -7,7 +7,7 @@ edition = "2021"
 publish = false
 
 [[bin]]
-name = "lumium"
+name = "lumium-api"
 path = "./main.rs"
 
 [dependencies]

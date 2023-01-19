@@ -1,1 +1,1 @@
-web: cd lumium-api && ./lumium
+web: cd lumium-api && ./build/bin/lumium-api

@@ -17,19 +17,16 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
-import { WorkspaceDTO } from '@types';
 
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
-    const { workspace, refetchWorkspace } = useWorkspace(workspaceId);
     const { workspace, refetchWorkspace } = useWorkspace(workspaceId);
     const { userInfo } = useUserInfo();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
-    const [passwordError, setPasswordError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [mount, didMount] = useState(false);
     const {
@@ -109,7 +106,6 @@ const Workspace: React.FC = () => {
                                 sidebarWidth={"320px"}
                             />
                         )
-                        )
                     }
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
                         {
@@ -152,57 +148,9 @@ const Workspace: React.FC = () => {
                                 <Heading>
                                     Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
                                 </Heading>
-                                <Heading>
-                                    Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                </Heading>
                             }
                             {
                                 !passwordEntered &&
-                                <>
-                                    <WidgetCentered title={"Enter the workspace password"} logo={false}>
-                                        <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                            <FormControl id="password" isRequired isInvalid={passwordError == 'Password is incorrect'}>
-                                                <FormLabel>Password</FormLabel>
-                                                <InputGroup>
-                                                    <Input
-                                                        name={"password"}
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        onChange={formik.handleChange}
-                                                        value={formik.values.password}
-                                                        data-cy="passwordInput"
-                                                    />
-                                                    <InputRightElement h={'full'}>
-                                                        <Button
-                                                            variant={'ghost'}
-                                                            onClick={() =>
-                                                                setShowPassword((showPassword) => !showPassword)
-                                                            }>
-                                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                        </Button>
-                                                    </InputRightElement>
-                                                </InputGroup>
-                                                <FormErrorMessage data-cy="credentialError">{passwordError}</FormErrorMessage>
-                                            </FormControl>
-                                            <Stack spacing={6} mt={"2%"}>
-                                                <Button
-                                                    bg={'blue.400'}
-                                                    color={'white'}
-                                                    _hover={{
-                                                        bg: 'blue.500',
-                                                    }}
-                                                    type="submit"
-                                                >
-                                                    Submit
-                                                </Button>
-                                            </Stack>
-                                        </form>
-                                    </WidgetCentered>
-                                </>
-                                || pageId &&
-                                <Flex flexDir="row">
-                                    <Textarea />
-                                    <LumiumRenderer />
-                                </Flex>
                                 <>
                                     <WidgetCentered title={"Enter the workspace password"} logo={false}>
                                         <form onSubmit={formik.handleSubmit} data-cy={"form"}>

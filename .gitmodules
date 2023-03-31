@@ -1,3 +1,6 @@
 [submodule "lumium-renderer/katex-renderer"]
 	path = lumium-renderer/katex-renderer
 	url = https://github.com/D3PSI/katex-renderer.git
+[submodule "lumium-renderer/serde-crypt"]
+	path = lumium-renderer/serde-crypt
+	url = https://github.com/d3psi/serde-crypt

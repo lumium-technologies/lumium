@@ -2,6 +2,7 @@
 
 use std::error::Error;
 use std::net::{Ipv4Addr, SocketAddr};
+use std::str::FromStr;
 
 use axum::http::HeaderValue;
 use axum::routing::{delete, get, patch, post};
@@ -25,11 +26,13 @@ mod state;
 #[openapi(
     paths(
         auth::sign_up,
+        auth::sign_in,
         auth::sign_out
     ),
     components(
         schemas(
-            auth::SignUp
+            auth::SignUp,
+            auth::SignIn
         )
     ),
     modifiers(&SecurityAddon),
@@ -87,6 +90,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .route_layer(guard.clone())
         .with_state(state);
 
+    let origins = vec![
+        HeaderValue::from_str(std::env::var("SPACE_HOST")?.as_str())?,
+        HeaderValue::from_str(std::env::var("API_HOST")?.as_str())?,
+    ];
+
     let app = Router::new()
         .merge(SwaggerUi::new("/v1/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .merge(root)
@@ -95,9 +103,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .layer(
             CorsLayer::new()
                 .allow_credentials(AllowCredentials::yes())
-                .allow_origin(AllowOrigin::exact(HeaderValue::from_str(
-                    std::env::var("SPACE_HOST")?.as_str(),
-                )?)),
+                .allow_origin(AllowOrigin::list(origins)),
         );
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());

@@ -34,12 +34,21 @@ pub async fn sign_up(
     todo!()
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 pub struct SignIn {
     username_or_email: String,
     password: String,
 }
 
+#[utoipa::path(
+    post,
+    path = "/v1/auth/signin",
+    request_body = SignIn,
+    responses(
+        (status = 200, description = "Sign in successful")
+    ),
+    tag = "auth"
+)]
 pub async fn sign_in(
     State(sessions): State<SessionService>,
     State(profiles): State<ProfileService>,

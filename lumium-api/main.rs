@@ -54,7 +54,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let app = Router::new().merge(root).merge(auth).merge(user);
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
-    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     println!("listening on {addr}");
 
     Server::bind(&addr).serve(app.into_make_service()).await?;

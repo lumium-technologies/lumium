@@ -14,12 +14,21 @@ path = "./main.rs"
 tokio = { version = "1.24.1", features = ["full"] }
 axum = { version = "0.6.2", features = ["macros", "headers"] }
 axum-extra = { version = "0.4.2", features = ["cookie-signed"] }
+tower-http = { version = "0.4.0", features = ["cors"] }
 serde = { version = "1.0.152" }
 serde_json = { version = "1.0.91" }
-sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "uuid", "offline"] }
+sqlx = { version = "0.6.2", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid",
+    "offline",
+] }
 argon2 = { version = "0.4.1" }
 async-trait = { version = "0.1.61" }
 
 [build-dependencies]
 dotenvy = "0.15.6"
-sqlx-cli = { version = "0.6.2", features = ["rustls", "postgres"], default-features = false }
+sqlx-cli = { version = "0.6.2", features = [
+    "rustls",
+    "postgres",
+], default-features = false }

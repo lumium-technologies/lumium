@@ -19,7 +19,7 @@ pub async fn sign_up(
     State(sessions): State<SessionService>,
     State(profiles): State<ProfileService>,
     jar: SignedCookieJar,
-    Json(json): Json<SignIn>,
+    Json(json): Json<SignUp>,
 ) -> impl IntoResponse {
     todo!()
 }

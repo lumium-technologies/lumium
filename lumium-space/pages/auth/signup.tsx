@@ -29,11 +29,11 @@ const SignUp: React.FC = () => {
     const handleSignUp = () => {
         const email = formik.values.email;
         const password = formik.values.password;
-        const nickName = formik.values.nickName;
+        const username = formik.values.nickName;
         api.post(AUTH_SIGNUP, {
             email: email,
             password: password,
-            nickName: nickName
+            username: username
         }).then((res) => {
             if (res.status == 200) {
                 Router.push(SPACES_CREATE);

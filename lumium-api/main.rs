@@ -1,12 +1,16 @@
 #![forbid(unsafe_code)]
 
 use std::error::Error;
-use std::net::SocketAddr;
+use std::net::{Ipv4Addr, SocketAddr};
 
+use axum::http::HeaderValue;
 use axum::routing::{delete, get, patch, post};
 use axum::{middleware, Router, Server};
 use sqlx::postgres::PgPoolOptions;
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{AllowCredentials, AllowOrigin, CorsLayer};
+use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
+use utoipa::{Modify, OpenApi};
+use utoipa_swagger_ui::SwaggerUi;
 
 use crate::routes::guard::auth_guard;
 use crate::routes::{auth, root, user};
@@ -16,6 +20,37 @@ use crate::state::AppState;
 mod routes;
 mod services;
 mod state;
+
+#[derive(OpenApi)]
+#[openapi(
+    paths(
+        auth::sign_up,
+        auth::sign_out
+    ),
+    components(
+        schemas(
+            auth::SignUp
+        )
+    ),
+    modifiers(&SecurityAddon),
+    tags(
+        (name = "auth", description = "Authentication API")
+    )
+)]
+struct ApiDoc;
+
+struct SecurityAddon;
+
+impl Modify for SecurityAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        if let Some(components) = openapi.components.as_mut() {
+            components.add_security_scheme(
+                "api_key",
+                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new("todo_apikey"))),
+            )
+        }
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -53,13 +88,20 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_state(state);
 
     let app = Router::new()
+        .merge(SwaggerUi::new("/v1/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .merge(root)
         .merge(auth)
         .merge(user)
-        .layer(CorsLayer::very_permissive());
+        .layer(
+            CorsLayer::new()
+                .allow_credentials(AllowCredentials::yes())
+                .allow_origin(AllowOrigin::exact(HeaderValue::from_str(
+                    std::env::var("SPACE_HOST")?.as_str(),
+                )?)),
+        );
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
-    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
     println!("listening on {addr}");
 
     Server::bind(&addr).serve(app.into_make_service()).await?;

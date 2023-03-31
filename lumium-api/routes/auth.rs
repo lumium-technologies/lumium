@@ -4,17 +4,27 @@ use axum::response::IntoResponse;
 use axum_extra::extract::cookie::Cookie;
 use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
+use utoipa::ToSchema;
 
 use crate::services::profile::ProfileService;
 use crate::services::session::SessionService;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 pub struct SignUp {
     email: String,
     username: String,
     password: String,
 }
 
+#[utoipa::path(
+    post,
+    path = "/v1/auth/signup",
+    request_body = SignUp,
+    responses(
+        (status = 200, description = "Sign up successful")
+    ),
+    tag = "auth"
+)]
 pub async fn sign_up(
     State(sessions): State<SessionService>,
     State(profiles): State<ProfileService>,
@@ -40,6 +50,17 @@ pub async fn sign_in(
     // todo!()
 }
 
+#[utoipa::path(
+    post,
+    path = "/v1/auth/signout",
+    responses(
+        (status = 200, description = "Sign out successful")
+    ),
+    security(
+        ("api_key" = [])
+    ),
+    tag = "auth"
+    )]
 pub async fn sign_out(
     State(sessions): State<SessionService>,
     jar: SignedCookieJar,

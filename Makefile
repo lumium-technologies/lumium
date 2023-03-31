@@ -47,7 +47,7 @@ clean-lumium-api:
 
 test: test-lumium-renderer test-lumium-space test-lumium-api
 
-test-lumium-renderer:
+test-lumium-renderer: build-lumium-renderer
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
 		wasm-pack test --chrome --headless
@@ -56,9 +56,11 @@ test-lumium-space: build-lumium-space build-lumium-api
 	cd lumium-space; \
 		yarn run cypress:test
 
-test-lumium-api:
+test-lumium-api: build-lumium-api
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
-		cargo test
+		export SQLX_OFFLINE="true"; \
+		cargo test;
+
 
 .PHONY: clean test reduce-slug-size

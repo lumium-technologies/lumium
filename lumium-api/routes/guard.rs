@@ -1,16 +1,19 @@
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
+use std::str::FromStr;
 
-use async_trait::async_trait;
-use axum::extract::{FromRequestParts, State};
-use axum::http::request::Parts;
-use axum::http::{Request, StatusCode};
+use axum::extract::State;
+use axum::headers::{Header, HeaderName};
+use axum::http::{HeaderValue, Request, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
+use axum::TypedHeader;
 
 use crate::services::session::SessionService;
 
-pub const X_LUMIUM_SESSION_HEADER: &str = "x-lumium-session";
+pub const X_LUMIUM_SESSION_HEADER_STRING: &str = "x-lumium-session";
+static X_LUMIUM_SESSION_HEADER_NAME: HeaderName =
+    HeaderName::from_static(X_LUMIUM_SESSION_HEADER_STRING);
 
 #[derive(Debug)]
 pub struct AuthError;
@@ -30,44 +33,51 @@ impl Display for AuthError {
 impl Error for AuthError {}
 
 #[derive(Debug, Clone)] // Copy
-pub struct SessionHeader(String);
+pub struct SessionHeader(pub String);
 
-#[derive(Debug)]
-pub struct SessionHeaderRejection;
+impl Header for SessionHeader {
+    fn name() -> &'static HeaderName {
+        &X_LUMIUM_SESSION_HEADER_NAME
+    }
 
-impl IntoResponse for SessionHeaderRejection {
-    fn into_response(self) -> Response {
-        (StatusCode::UNAUTHORIZED).into_response()
+    fn encode<E: Extend<HeaderValue>>(&self, values: &mut E) {
+        let value = HeaderValue::from_str(self.0.as_str()).unwrap();
+        values.extend(std::iter::once(value));
+    }
+
+    fn decode<'i, I>(values: &mut I) -> Result<Self, axum::headers::Error>
+    where
+        Self: Sized,
+        I: Iterator<Item = &'i HeaderValue>,
+    {
+        let value = values.next().ok_or_else(axum::headers::Error::invalid)?;
+        Ok(SessionHeader(
+            value
+                .to_str()
+                .map_err(|_| axum::headers::Error::invalid())?
+                .to_string(),
+        ))
     }
 }
 
-#[async_trait]
-impl<S> FromRequestParts<S> for SessionHeader
-where
-    S: Send + Sync,
-{
-    type Rejection = SessionHeaderRejection;
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        if let Some(session) = parts.headers.get(X_LUMIUM_SESSION_HEADER) {
-            Ok(SessionHeader(
-                session
-                    .to_str()
-                    .map_err(|_| SessionHeaderRejection)?
-                    .to_string(),
-            ))
-        } else {
-            Err(SessionHeaderRejection)
-        }
+impl Into<(HeaderName, HeaderValue)> for SessionHeader {
+    fn into(self) -> (HeaderName, HeaderValue) {
+        (
+            HeaderName::from_static(X_LUMIUM_SESSION_HEADER_STRING),
+            HeaderValue::from_str(self.0.as_str()).unwrap(),
+        )
     }
 }
 
 pub async fn auth_guard<T>(
     State(sessions): State<SessionService>,
-    SessionHeader(session_token): SessionHeader,
+    session_header: Option<TypedHeader<SessionHeader>>,
     request: Request<T>,
     next: Next<T>,
 ) -> Result<Response, AuthError> {
-    // todo!()
-    Ok(next.run(request).await)
+    if let Some(TypedHeader(SessionHeader(session))) = session_header {
+        Ok(next.run(request).await)
+    } else {
+        Err(AuthError)
+    }
 }

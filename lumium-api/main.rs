@@ -7,7 +7,7 @@ use std::net::{Ipv4Addr, SocketAddr};
 use axum::http::HeaderValue;
 use axum::routing::{delete, get, patch, post};
 use axum::{middleware, Router, Server};
-use routes::guard::X_LUMIUM_SESSION_HEADER;
+use routes::guard::X_LUMIUM_SESSION_HEADER_STRING;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use tower_http::cors::{AllowCredentials, AllowOrigin, CorsLayer};
@@ -60,7 +60,9 @@ impl Modify for SecurityAddon {
         if let Some(components) = openapi.components.as_mut() {
             components.add_security_scheme(
                 "Lumium Session",
-                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(X_LUMIUM_SESSION_HEADER))),
+                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(
+                    X_LUMIUM_SESSION_HEADER_STRING,
+                ))),
             )
         }
     }

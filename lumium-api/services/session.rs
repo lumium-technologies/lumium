@@ -26,7 +26,7 @@ impl SessionService {
 
 impl SessionService {
     pub async fn create(&self, user: &str) -> Result<String, SessionServiceError> {
-        todo!()
+        Ok("thisisasession".to_string())
     }
 
     pub async fn verify(&self, session: &str) -> Result<String, SessionServiceError> {

@@ -1,13 +1,13 @@
 use axum::extract::{Json, State};
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
-use axum_extra::extract::cookie::Cookie;
+use axum::response::{AppendHeaders, IntoResponse};
 use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::services::profile::ProfileService;
 use crate::services::session::SessionService;
+
+use super::guard::{SessionHeader, X_LUMIUM_SESSION_HEADER_STRING};
 
 #[derive(Deserialize, ToSchema)]
 pub struct SignUp {
@@ -26,12 +26,12 @@ pub struct SignUp {
     tag = "auth"
 )]
 pub async fn sign_up(
-    State(sessions): State<SessionService>,
-    State(profiles): State<ProfileService>,
-    jar: SignedCookieJar,
+    State(session): State<SessionService>,
+    State(profile): State<ProfileService>,
     Json(json): Json<SignUp>,
 ) -> impl IntoResponse {
-    todo!()
+    let session = session.create(&json.username).await.unwrap();
+    AppendHeaders([SessionHeader(session).into()])
 }
 
 #[derive(Deserialize, ToSchema)]

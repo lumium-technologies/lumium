@@ -27,9 +27,9 @@ argon2 = { version = "0.4.1" }
 async-trait = { version = "0.1.61" }
 utoipa = { version = "3.2.1", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "3.1.2", features = ["axum"] }
+dotenvy = "0.15.6"
 
 [build-dependencies]
-dotenvy = "0.15.6"
 sqlx-cli = { version = "0.6.2", features = [
     "rustls",
     "postgres",

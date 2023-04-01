@@ -1,19 +1,16 @@
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
-use std::str::FromStr;
 
 use async_trait::async_trait;
 use axum::extract::{FromRequestParts, State};
-use axum::headers::{Header, HeaderName};
 use axum::http::request::Parts;
-use axum::http::{HeaderValue, Request, StatusCode};
+use axum::http::{Request, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
-use axum::TypedHeader;
 
 use crate::services::session::SessionService;
 
-const X_LUMIUM_SESSION_HEADER: &str = "x-lumium-session";
+pub const X_LUMIUM_SESSION_HEADER: &str = "x-lumium-session";
 
 #[derive(Debug)]
 pub struct AuthError;
@@ -71,7 +68,6 @@ pub async fn auth_guard<T>(
     request: Request<T>,
     next: Next<T>,
 ) -> Result<Response, AuthError> {
-    dbg!(session_token);
     // todo!()
     Ok(next.run(request).await)
 }

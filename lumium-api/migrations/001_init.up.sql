@@ -30,7 +30,6 @@ CREATE TABLE emails
 	CONSTRAINT deleted_after_updated CHECK ( deleted_at IS NULL OR deleted_at >= updated_at )
 );
 
--- unique unless soft-deleted
 CREATE UNIQUE INDEX email_address_unique
 	ON emails (address)
 	WHERE deleted_at IS NULL;
@@ -42,8 +41,23 @@ CREATE TABLE sessions
 
 	session_token TEXT                     NOT NULL UNIQUE,
 	ip_address    INET                     NOT NULL,
-	user_agent    TEXT                     NOT NULL, -- DEFAULT NULL instead?
+	user_agent    TEXT                     NOT NULL,
 
 	issued_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
+CREATE TYPE session_secret_status AS ENUM ('active', 'phase_out', 'inactive');
+
+CREATE TABLE session_secrets
+(
+    id         BIGSERIAL PRIMARY KEY,
+
+    value      TEXT                     NOT NULL UNIQUE,
+    status     session_secret_status    NOT NULL,
+
+    issued_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX session_secrets_active_unique
+    ON session_secrets (status)
+    WHERE status = 'active';

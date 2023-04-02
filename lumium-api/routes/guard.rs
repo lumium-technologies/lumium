@@ -1,6 +1,5 @@
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
-use std::str::FromStr;
 
 use axum::extract::State;
 use axum::headers::{Header, HeaderName};
@@ -9,18 +8,24 @@ use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::TypedHeader;
 
-use crate::services::session::SessionService;
+use crate::services::session::{SessionService, SessionServiceError};
 
 pub const X_LUMIUM_SESSION_HEADER_STRING: &str = "x-lumium-session";
 static X_LUMIUM_SESSION_HEADER_NAME: HeaderName =
     HeaderName::from_static(X_LUMIUM_SESSION_HEADER_STRING);
 
 #[derive(Debug)]
-pub struct AuthError;
+pub enum AuthError {
+    SessionServiceError(SessionServiceError),
+    Unauthorized,
+}
 
 impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
-        (StatusCode::UNAUTHORIZED).into_response()
+        match self {
+            Self::SessionServiceError(e) => e.into_response(),
+            Self::Unauthorized => (StatusCode::UNAUTHORIZED).into_response(),
+        }
     }
 }
 
@@ -70,14 +75,18 @@ impl Into<(HeaderName, HeaderValue)> for SessionHeader {
 }
 
 pub async fn auth_guard<T>(
-    State(sessions): State<SessionService>,
+    State(session): State<SessionService>,
     session_header: Option<TypedHeader<SessionHeader>>,
     request: Request<T>,
     next: Next<T>,
 ) -> Result<Response, AuthError> {
-    if let Some(TypedHeader(SessionHeader(session))) = session_header {
+    if let Some(TypedHeader(SessionHeader(session_hmac))) = session_header {
+        session
+            .verify(&session_hmac)
+            .await
+            .map_err(|e| AuthError::SessionServiceError(e))?;
         Ok(next.run(request).await)
     } else {
-        Err(AuthError)
+        Err(AuthError::Unauthorized)
     }
 }

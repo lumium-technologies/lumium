@@ -1,13 +1,17 @@
+use std::error::Error;
+use std::fmt::{Display, Formatter};
+
 use axum::extract::{Json, State};
-use axum::response::{AppendHeaders, IntoResponse};
+use axum::http::StatusCode;
+use axum::response::{AppendHeaders, IntoResponse, Response};
 use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
 use utoipa::ToSchema;
 
-use crate::services::profile::ProfileService;
-use crate::services::session::SessionService;
+use crate::services::profile::{ProfileService, ProfileServiceError, VerifyOn};
+use crate::services::session::{SessionService, SessionServiceError};
 
-use super::guard::{SessionHeader, X_LUMIUM_SESSION_HEADER_STRING};
+use super::guard::SessionHeader;
 
 #[derive(Deserialize, ToSchema)]
 pub struct SignUp {
@@ -15,6 +19,29 @@ pub struct SignUp {
     username: String,
     password: String,
 }
+
+#[derive(Debug)]
+pub enum AuthServiceError {
+    SessionServiceError(SessionServiceError),
+    ProfileServiceError(ProfileServiceError),
+}
+
+impl IntoResponse for AuthServiceError {
+    fn into_response(self) -> Response {
+        match self {
+            AuthServiceError::SessionServiceError(e) => e.into_response(),
+            AuthServiceError::ProfileServiceError(e) => e.into_response(),
+        }
+    }
+}
+
+impl Display for AuthServiceError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        todo!()
+    }
+}
+
+impl Error for AuthServiceError {}
 
 #[utoipa::path(
     post,
@@ -29,14 +56,21 @@ pub async fn sign_up(
     State(session): State<SessionService>,
     State(profile): State<ProfileService>,
     Json(json): Json<SignUp>,
-) -> impl IntoResponse {
-    let session = session.create(&json.username).await.unwrap();
-    AppendHeaders([SessionHeader(session).into()])
+) -> Result<impl IntoResponse, AuthServiceError> {
+    profile
+        .create(&json.email, &json.username, &json.password)
+        .await
+        .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
+    let session = session
+        .create(&json.username)
+        .await
+        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+    Ok(AppendHeaders([SessionHeader(session).into()]))
 }
 
 #[derive(Deserialize, ToSchema)]
 pub struct SignIn {
-    username_or_email: String,
+    email: String,
     password: String,
 }
 
@@ -50,13 +84,19 @@ pub struct SignIn {
     tag = "auth"
 )]
 pub async fn sign_in(
-    State(sessions): State<SessionService>,
-    State(profiles): State<ProfileService>,
-    jar: SignedCookieJar,
+    State(session): State<SessionService>,
+    State(profile): State<ProfileService>,
     Json(json): Json<SignIn>,
-) -> impl IntoResponse {
-    // (jar.add(Cookie::new("sid", "hello")), StatusCode::OK)
-    // todo!()
+) -> Result<impl IntoResponse, AuthServiceError> {
+    let profile = profile
+        .verify(&json.password, VerifyOn::Email(&json.email))
+        .await
+        .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
+    let session = session
+        .create(&profile)
+        .await
+        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+    Ok(AppendHeaders([SessionHeader(session).into()]))
 }
 
 #[utoipa::path(

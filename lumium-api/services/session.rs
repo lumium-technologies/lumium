@@ -1,3 +1,5 @@
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
 use sqlx::{Pool, Postgres};
 use std::error::Error;
 use std::fmt::{Display, Formatter};
@@ -8,6 +10,12 @@ pub struct SessionServiceError;
 impl Display for SessionServiceError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         todo!()
+    }
+}
+
+impl IntoResponse for SessionServiceError {
+    fn into_response(self) -> axum::response::Response {
+        (StatusCode::UNAUTHORIZED).into_response()
     }
 }
 

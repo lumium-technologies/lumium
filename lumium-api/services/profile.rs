@@ -1,4 +1,6 @@
-use crate::services::password::{PasswordService, PasswordSrvError};
+use crate::services::password::{PasswordService, PasswordServiceError};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
 use sqlx::types::Uuid;
 use sqlx::Error as SqlxError;
 use sqlx::{Pool, Postgres};
@@ -6,20 +8,31 @@ use std::error::Error;
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
-pub enum ProfileSrvError {
+pub enum ProfileServiceError {
     InternalError(Option<SqlxError>),
-    PassSrvError(PasswordSrvError),
+    PasswordServiceError(PasswordServiceError),
     NotFound,
     WrongPassword,
 }
 
-impl Display for ProfileSrvError {
+impl Display for ProfileServiceError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         todo!()
     }
 }
 
-impl Error for ProfileSrvError {}
+impl IntoResponse for ProfileServiceError {
+    fn into_response(self) -> axum::response::Response {
+        match self {
+            Self::NotFound => (StatusCode::NOT_FOUND).into_response(),
+            Self::WrongPassword => (StatusCode::UNAUTHORIZED).into_response(),
+            Self::InternalError(_) => (StatusCode::INTERNAL_SERVER_ERROR).into_response(),
+            Self::PasswordServiceError(e) => e.into_response(),
+        }
+    }
+}
+
+impl Error for ProfileServiceError {}
 
 #[derive(Clone)]
 pub struct ProfileService {
@@ -40,9 +53,9 @@ impl ProfileService {
         email: &str,
         username: &str,
         password: &str,
-    ) -> Result<String, ProfileSrvError> {
+    ) -> Result<String, ProfileServiceError> {
         let pwd = self.password.create(password);
-        let pwd = pwd.map_err(|e| ProfileSrvError::PassSrvError(e))?;
+        let pwd = pwd.map_err(|e| ProfileServiceError::PasswordServiceError(e))?;
 
         let result = sqlx::query!(
             r#"WITH profile0 AS (
@@ -61,14 +74,14 @@ impl ProfileService {
         .fetch_one(&self.database)
         .await;
 
-        let result = result.map_err(|e| ProfileSrvError::InternalError(Some(e)))?;
+        let result = result.map_err(|e| ProfileServiceError::InternalError(Some(e)))?;
         let result = result.id.map(|uuid| uuid.to_string());
-        result.ok_or_else(|| ProfileSrvError::InternalError(None))
+        result.ok_or_else(|| ProfileServiceError::InternalError(None))
     }
 }
 
 impl ProfileService {
-    pub async fn update(&self) -> Result<String, ProfileSrvError> {
+    pub async fn update(&self) -> Result<String, ProfileServiceError> {
         todo!()
     }
 }
@@ -85,18 +98,18 @@ pub enum VerifyOn<'a> {
 }
 
 impl ProfileService {
-    pub async fn verify(&self, pwd: &str, vo: VerifyOn<'_>) -> Result<String, ProfileSrvError> {
+    pub async fn verify(&self, pwd: &str, vo: VerifyOn<'_>) -> Result<String, ProfileServiceError> {
         let r = match vo {
             VerifyOn::Username(u) => self.q_verify_by_name(u).await,
             VerifyOn::Email(e) => self.q_verify_by_mail(e).await,
         };
 
-        let r = r.map_err(|e| ProfileSrvError::InternalError(Some(e)))?;
-        let r = r.ok_or_else(|| ProfileSrvError::NotFound)?;
+        let r = r.map_err(|e| ProfileServiceError::InternalError(Some(e)))?;
+        let r = r.ok_or_else(|| ProfileServiceError::NotFound)?;
         let s = self.password.verify(pwd, r.pwd_hash.as_str());
-        let s = s.map_err(|e| ProfileSrvError::PassSrvError(e))?;
+        let s = s.map_err(|e| ProfileServiceError::PasswordServiceError(e))?;
         match s {
-            false => Err(ProfileSrvError::WrongPassword),
+            false => Err(ProfileServiceError::WrongPassword),
             true => Ok(r.id.to_string()),
         }
     }
@@ -128,7 +141,7 @@ impl ProfileService {
 }
 
 impl ProfileService {
-    pub async fn delete(&self) -> Result<String, ProfileSrvError> {
+    pub async fn delete(&self) -> Result<String, ProfileServiceError> {
         todo!()
     }
 }

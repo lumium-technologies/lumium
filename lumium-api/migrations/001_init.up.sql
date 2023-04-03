@@ -48,14 +48,16 @@ CREATE TABLE sessions
 
 CREATE TYPE session_secret_status AS ENUM ('active', 'phase_out', 'inactive');
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE session_secrets
 (
     id         BIGSERIAL PRIMARY KEY,
 
-    value      TEXT                     NOT NULL UNIQUE,
-    status     session_secret_status    NOT NULL,
+    value      TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+    status     session_secret_status    NOT NULL        DEFAULT 'active',
 
-    issued_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    issued_at  TIMESTAMP WITH TIME ZONE NOT NULL        DEFAULT now()
 );
 
 CREATE UNIQUE INDEX session_secrets_active_unique

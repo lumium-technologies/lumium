@@ -1,5 +1,33 @@
 {
   "db": "PostgreSQL",
+  "1b850b022ec26fecd0315d2276e33c78ef0e13629daa1ac4baca9567b4ed9a1d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "UPDATE session_secrets SET status = 'phase_out' WHERE status = 'active'"
+  },
+  "38f09bafc8a9af4e417f9236f9f08f9d311a16d255f5e53e3376ac8e74199249": {
+    "describe": {
+      "columns": [
+        {
+          "name": "value",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "INSERT INTO session_secrets DEFAULT VALUES RETURNING value"
+  },
   "6ca2c005e081961a019179e1c0cbe8be263ddb655f493d3fede6fc376a209f9d": {
     "describe": {
       "columns": [
@@ -25,6 +53,51 @@
       }
     },
     "query": "SELECT profiles.id, pwd_hash\n            FROM profiles JOIN emails\n                ON profiles.id = emails.profile_id\n            WHERE emails.address = $1;"
+  },
+  "720e7ab6e8ec2b12557cf0b0cf5b175d6f974cfb724cd10ee47d63775a0a30dd": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "UPDATE session_secrets SET status = 'inactive' WHERE status = 'phase_out'"
+  },
+  "75c03d164342a4ead4219606c0a25757ffb99f620c441180a639405521f671c1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "value",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Interval"
+        ]
+      }
+    },
+    "query": "SELECT value FROM session_secrets\n            WHERE status = 'active' AND\n            ((NOW() - issued_at) < $1)"
+  },
+  "7671c3370de2452b8bd5ba9139617378a2b5b02884b7024855933d73e15623cf": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Inet",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO sessions \n            (profile_id, session_token, ip_address, user_agent)\n            VALUES \n            ($1, $2, $3, $4)"
   },
   "f4ae900b01fa7e3384b5aa359b732baef8bec9de1c44567d8d7930f83b11873f": {
     "describe": {

@@ -57,12 +57,12 @@ pub async fn sign_up(
     State(profile): State<ProfileService>,
     Json(json): Json<SignUp>,
 ) -> Result<impl IntoResponse, AuthServiceError> {
-    profile
+    let profile_id = profile
         .create(&json.email, &json.username, &json.password)
         .await
         .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
     let session = session
-        .create(&json.username)
+        .create(&profile_id)
         .await
         .map_err(|e| AuthServiceError::SessionServiceError(e))?;
     Ok(AppendHeaders([SessionHeader(session).into()]))

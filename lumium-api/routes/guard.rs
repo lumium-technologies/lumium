@@ -80,9 +80,9 @@ pub async fn auth_guard<T>(
     request: Request<T>,
     next: Next<T>,
 ) -> Result<Response, AuthError> {
-    if let Some(TypedHeader(SessionHeader(session_hmac))) = session_header {
+    if let Some(TypedHeader(SessionHeader(session_id))) = session_header {
         session
-            .verify(&session_hmac)
+            .verify(&session_id)
             .await
             .map_err(|e| AuthError::SessionServiceError(e))?;
         Ok(next.run(request).await)

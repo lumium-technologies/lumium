@@ -4,6 +4,7 @@ use std::fmt::{Display, Formatter};
 use axum::extract::{Json, State};
 use axum::http::StatusCode;
 use axum::response::{AppendHeaders, IntoResponse, Response};
+use axum::TypedHeader;
 use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
 use utoipa::ToSchema;
@@ -106,14 +107,19 @@ pub async fn sign_in(
         (status = 200, description = "Sign out successful")
     ),
     security(
-        ("api_key" = [])
+        ("Lumium Session" = [])
     ),
     tag = "auth"
     )]
 pub async fn sign_out(
-    State(sessions): State<SessionService>,
-    jar: SignedCookieJar,
-) -> impl IntoResponse {
-    // jar.remove(Cookie::named("sid"))
-    // todo!()
+    State(session): State<SessionService>,
+    session_header: TypedHeader<SessionHeader>,
+) -> Result<impl IntoResponse, AuthServiceError> {
+    let TypedHeader(SessionHeader(session_id)) = session_header;
+    session
+        .destroy(&session_id)
+        .await
+        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+
+    Ok(())
 }

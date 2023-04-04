@@ -22,6 +22,26 @@
     },
     "query": "INSERT INTO sessions \n            (profile_id, ip_address, user_agent)\n            VALUES \n            ($1, $2, $3)\n            RETURNING session_id"
   },
+  "2624eb5076ea34c375065c6dccc6f7b82c90ef76e3d9a0065a9b3cdec1e22706": {
+    "describe": {
+      "columns": [
+        {
+          "name": "profile_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT profile_id\n            FROM sessions\n            WHERE session_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode($1, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode($1, 'hex')\n                )"
+  },
   "6ca2c005e081961a019179e1c0cbe8be263ddb655f493d3fede6fc376a209f9d": {
     "describe": {
       "columns": [
@@ -47,6 +67,24 @@
       }
     },
     "query": "SELECT profiles.id, pwd_hash\n            FROM profiles JOIN emails\n                ON profiles.id = emails.profile_id\n            WHERE emails.address = $1;"
+  },
+  "6ce912067a2e8a4a2cd7208cf2df74e73612f958937397815a83c960e4b9e628": {
+    "describe": {
+      "columns": [
+        {
+          "name": "update_session_secret",
+          "ordinal": 0,
+          "type_info": "Void"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT update_session_secret()"
   },
   "f4ae900b01fa7e3384b5aa359b732baef8bec9de1c44567d8d7930f83b11873f": {
     "describe": {

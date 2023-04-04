@@ -44,7 +44,7 @@ CREATE TABLE sessions
 	profile_id    UUID REFERENCES profiles (id),
 
 	session_token TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
-    session_id    TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+    session_id    TEXT                     NOT NULL UNIQUE,
 	ip_address    INET                     NOT NULL,
 	user_agent    TEXT                     NOT NULL,
 
@@ -78,7 +78,7 @@ CREATE OR REPLACE FUNCTION gen_session_id() RETURNS trigger LANGUAGE plpgsql AS
 $func$
 BEGIN
     PERFORM update_session_secret();
-    NEW.session_id := hmac(NEW.session_token, (SELECT s.value FROM session_secrets s WHERE s.status = 'active'), 'sha512');
+    NEW.session_id := encode(hmac(NEW.session_token, (SELECT s.value FROM session_secrets s WHERE s.status = 'active'), 'sha512'), 'hex');
     RETURN NEW;
 END
 $func$;

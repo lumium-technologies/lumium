@@ -1,13 +1,14 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use sqlx::types::{ipnetwork::IpNetwork, Uuid};
-use sqlx::{Pool, Postgres};
+use sqlx::{Pool, Postgres, Transaction};
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
 #[derive(Debug, Clone)]
 pub enum SessionServiceError {
+    SessionVerificationError,
     InternalError,
 }
 
@@ -20,6 +21,7 @@ impl Display for SessionServiceError {
 impl IntoResponse for SessionServiceError {
     fn into_response(self) -> axum::response::Response {
         match self {
+            Self::SessionVerificationError => (StatusCode::UNAUTHORIZED).into_response(),
             Self::InternalError => (StatusCode::INTERNAL_SERVER_ERROR).into_response(),
         }
     }
@@ -60,15 +62,45 @@ impl SessionService {
         Ok(session_id)
     }
 
-    pub async fn verify(&self, session: &str) -> Result<String, SessionServiceError> {
+    pub async fn verify(&self, session_id: &str) -> Result<String, SessionServiceError> {
+        sqlx::query!("SELECT update_session_secret()")
+            .execute(&self.database)
+            .await
+            .map_err(|_| SessionServiceError::InternalError)?;
+        let result = sqlx::query!(
+            r#"SELECT profile_id
+            FROM sessions
+            WHERE session_id = $1
+            AND (hmac(session_token,
+                  (SELECT s.value
+                   FROM session_secrets s
+                   WHERE s.status = 'active'),
+                  'sha512') = decode($1, 'hex')
+                OR hmac(session_token,
+                        (SELECT s.value
+                         FROM session_secrets s
+                         WHERE s.status = 'phase_out'),
+                        'sha512') = decode($1, 'hex')
+                )"#,
+            session_id
+        )
+        .fetch_optional(&self.database)
+        .await
+        .map_err(|_| SessionServiceError::InternalError)?;
+
+        if let Some(result) = result {
+            if let Some(profile_id) = result.profile_id {
+                return Ok(profile_id.to_string());
+            }
+        }
+        Err(SessionServiceError::SessionVerificationError)
+    }
+
+    pub async fn destroy(&self, session_id: &str) -> Result<String, SessionServiceError> {
         todo!()
     }
 
-    pub async fn delete(&self, session: &str) -> Result<String, SessionServiceError> {
-        todo!()
-    }
-
-    pub async fn delete_all(&self, user: &str) -> Result<String, SessionServiceError> {
+    pub async fn destroy_all(&self, profile_id: &str) -> Result<String, SessionServiceError> {
         todo!()
     }
 }

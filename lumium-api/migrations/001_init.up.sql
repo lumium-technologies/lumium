@@ -32,9 +32,13 @@ CREATE TABLE emails
 	CONSTRAINT deleted_after_updated CHECK ( deleted_at IS NULL OR deleted_at >= updated_at )
 );
 
-CREATE UNIQUE INDEX email_address_unique
+CREATE UNIQUE INDEX emails_address_unique
 	ON emails (address)
 	WHERE deleted_at IS NULL;
+
+CREATE UNIQUE INDEX emails_one_primary_per_profile
+    ON emails (profile_id, is_primary)
+    WHERE is_primary IS TRUE;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 

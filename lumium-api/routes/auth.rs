@@ -2,10 +2,8 @@ use std::error::Error;
 use std::fmt::{Display, Formatter};
 
 use axum::extract::{Json, State};
-use axum::http::StatusCode;
 use axum::response::{AppendHeaders, IntoResponse, Response};
 use axum::TypedHeader;
-use axum_extra::extract::SignedCookieJar;
 use serde::Deserialize;
 use utoipa::ToSchema;
 

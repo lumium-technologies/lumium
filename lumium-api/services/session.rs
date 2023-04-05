@@ -1,10 +1,13 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
+use axum::TypedHeader;
 use sqlx::types::{ipnetwork::IpNetwork, Uuid};
 use sqlx::{Pool, Postgres, Transaction};
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
+
+use crate::routes::guard::SessionHeader;
 
 #[derive(Debug, Clone)]
 pub enum SessionServiceError {
@@ -60,6 +63,14 @@ impl SessionService {
         .session_id;
 
         Ok(session_id)
+    }
+
+    pub async fn get_profile(
+        &self,
+        session_header: TypedHeader<SessionHeader>,
+    ) -> Result<String, SessionServiceError> {
+        let TypedHeader(SessionHeader(session_id)) = session_header;
+        self.verify(&session_id).await
     }
 
     pub async fn verify(&self, session_id: &str) -> Result<String, SessionServiceError> {

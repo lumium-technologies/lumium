@@ -10,7 +10,7 @@ use axum::{middleware, Router, Server};
 use routes::guard::X_LUMIUM_SESSION_HEADER_STRING;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
-use tower_http::cors::{AllowCredentials, AllowOrigin, CorsLayer};
+use tower_http::cors::{AllowCredentials, AllowHeaders, AllowOrigin, CorsLayer};
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
@@ -108,11 +108,7 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
         .merge(root)
         .merge(auth)
         .merge(user)
-        .layer(
-            CorsLayer::new()
-                .allow_credentials(AllowCredentials::yes())
-                .allow_origin(AllowOrigin::list(origins)),
-        );
+        .layer(CorsLayer::permissive().allow_origin(AllowOrigin::list(origins)));
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
     let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));

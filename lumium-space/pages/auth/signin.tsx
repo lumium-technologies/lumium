@@ -33,7 +33,7 @@ const SignIn: React.FC = () => {
         api.post<ReasonDTO>(AUTH_SIGNIN, {
             "email": email,
             "password": password
-        }, { withCredentials: true }).then((res) => {
+        }).then((res) => {
             if (res.status == 200) {
                 refetchUserInfo().then((info) => {
                     if (info?.recentWorkspace) {
@@ -43,7 +43,7 @@ const SignIn: React.FC = () => {
                     };
                 });
             }
-        }).catch((err) => setError(err.response.data));
+        }).catch((err) => setError(err.response?.data));
     };
 
     const formik = useFormik({

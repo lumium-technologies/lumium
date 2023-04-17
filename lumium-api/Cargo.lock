@@ -1150,6 +1150,7 @@ dependencies = [
  "tower-http 0.4.0",
  "utoipa",
  "utoipa-swagger-ui",
+ "wasm-bindgen",
 ]
 
 [[package]]

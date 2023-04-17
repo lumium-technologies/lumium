@@ -2,7 +2,7 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::TypedHeader;
 use sqlx::types::{ipnetwork::IpNetwork, Uuid};
-use sqlx::{Pool, Postgres, Transaction};
+use sqlx::{Pool, Postgres};
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;

@@ -8,6 +8,7 @@ repository = "https://github.com/lumium-technologies/lumium.git"
 license = "GPL-3.0-or-later"
 
 [lib]
+path = "./lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
@@ -26,6 +27,7 @@ ring = { version = "0.16.20", features = ["wasm32_c"] }
 passwords = "3.1.9"
 base64 = "0.21.0"
 lazy_static = "1.4.0"
+utoipa = { version = "3.2.1", features = ["axum_extras"] }
 
 [dependencies.web-sys]
 version = "0.3.4"

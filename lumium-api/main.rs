@@ -10,7 +10,7 @@ use axum::{middleware, Router, Server};
 use routes::guard::X_LUMIUM_SESSION_HEADER_STRING;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
-use tower_http::cors::{AllowCredentials, AllowHeaders, AllowOrigin, CorsLayer};
+use tower_http::cors::{AllowOrigin, CorsLayer};
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
@@ -23,6 +23,7 @@ use crate::state::AppState;
 mod routes;
 mod services;
 mod state;
+mod transfer;
 
 const PRODUCTION_ENV: &str = "PRODUCTION";
 const ENVIRONMENT_ENV: &str = "ENVIRONMENT";
@@ -42,8 +43,8 @@ const ENV_TEST_VAL: &str = "test";
     ),
     components(
         schemas(
-            auth::SignUp,
-            auth::SignIn
+            transfer::auth::SignUpDTO,
+            transfer::auth::SignInDTO
         )
     ),
     modifiers(&SecurityAddon),

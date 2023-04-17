@@ -1,6 +1,7 @@
 pub mod crypto;
 pub mod dtos;
 pub mod render;
+pub mod transfer;
 
 #[macro_use]
 extern crate lazy_static;

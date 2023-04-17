@@ -4,20 +4,12 @@ use std::fmt::{Display, Formatter};
 use axum::extract::{Json, State};
 use axum::response::{AppendHeaders, IntoResponse, Response};
 use axum::TypedHeader;
-use serde::Deserialize;
-use utoipa::ToSchema;
 
 use crate::services::profile::{ProfileService, ProfileServiceError, VerifyOn};
 use crate::services::session::{SessionService, SessionServiceError};
+use crate::transfer::auth::{SignInDTO, SignUpDTO};
 
 use super::guard::SessionHeader;
-
-#[derive(Deserialize, ToSchema)]
-pub struct SignUp {
-    email: String,
-    username: String,
-    password: String,
-}
 
 #[derive(Debug)]
 pub enum AuthServiceError {
@@ -54,7 +46,7 @@ impl Error for AuthServiceError {}
 pub async fn sign_up(
     State(session): State<SessionService>,
     State(profile): State<ProfileService>,
-    Json(json): Json<SignUp>,
+    Json(json): Json<SignUpDTO>,
 ) -> Result<impl IntoResponse, AuthServiceError> {
     let profile_id = profile
         .create(&json.email, &json.username, &json.password)
@@ -65,12 +57,6 @@ pub async fn sign_up(
         .await
         .map_err(|e| AuthServiceError::SessionServiceError(e))?;
     Ok(AppendHeaders([SessionHeader(session).into()]))
-}
-
-#[derive(Deserialize, ToSchema)]
-pub struct SignIn {
-    email: String,
-    password: String,
 }
 
 #[utoipa::path(
@@ -85,7 +71,7 @@ pub struct SignIn {
 pub async fn sign_in(
     State(session): State<SessionService>,
     State(profile): State<ProfileService>,
-    Json(json): Json<SignIn>,
+    Json(json): Json<SignInDTO>,
 ) -> Result<impl IntoResponse, AuthServiceError> {
     let profile = profile
         .verify(&json.password, VerifyOn::Email(&json.email))

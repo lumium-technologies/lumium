@@ -15,7 +15,7 @@ crate-type = ["cdylib", "rlib"]
 wasm-bindgen = { version = "0.2.80" }
 pulldown-cmark = "0.9.1"
 js-sys = "0.3.57"
-seed = "0.9.1"
+seed = "0.10.0"
 katex-renderer = { path = "./katex-renderer", features = [
     "wasm",
 ], default-features = false }

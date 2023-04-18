@@ -4,3 +4,6 @@
 [submodule "vendor/serde-crypt"]
 	path = vendor/serde-crypt
 	url = https://github.com/d3psi/serde-crypt.git
+[submodule "vendor/serde-crypt-macro"]
+	path = vendor/serde-crypt-macro
+	url = https://github.com/d3psi/serde-crypt-macro

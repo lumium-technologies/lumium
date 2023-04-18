@@ -19,6 +19,7 @@ wasm-bindgen = { version = "0.2.80" }
 serde = { version = "1.0.152" }
 serde-wasm-bindgen = "0.4"
 serde-crypt = { path = "../vendor/serde-crypt" }
+serde-crypt-macro = { path = "../vendor/serde-crypt-macro" }
 serde_json = { version = "1.0.91" }
 sqlx = { version = "0.6.2", features = [
     "runtime-tokio-rustls",

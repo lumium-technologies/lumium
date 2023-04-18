@@ -11,7 +11,7 @@ name = "lumium-api"
 path = "./main.rs"
 
 [dependencies]
-tokio = { version = "1.24.1", features = ["full"] }
+tokio = { version = "1.24.2", features = ["full"] }
 axum = { version = "0.6.2", features = ["macros", "headers"] }
 axum-extra = { version = "0.4.2", features = ["cookie-signed"] }
 tower-http = { version = "0.4.0", features = ["cors"] }

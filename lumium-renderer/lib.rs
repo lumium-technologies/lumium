@@ -16,32 +16,6 @@ use web_sys::RequestCredentials;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 #[wasm_bindgen]
-pub async fn enc(content: String) -> Result<String, JsValue> {
-    let nonce = generate_random_nonce();
-    let encrypt = base64::encode(encrypt(nonce, content.as_bytes().to_vec()).await?);
-    let nonce = base64::encode(nonce);
-
-    Ok(format!("{}.{}", &nonce, &encrypt))
-}
-
-#[wasm_bindgen]
-pub async fn dec(content: String) -> Result<String, JsValue> {
-    let parts = content.split(".");
-    let parts: Vec<Vec<u8>> = parts
-        .map(|p| base64::decode(p.as_bytes()).unwrap())
-        .collect();
-    if parts.len() != 2 {
-        return Err(JsValue::from("failed to parse nonce"));
-    }
-    let nonce: [u8; NONCE_LEN] = parts.get(0).unwrap().clone().try_into().unwrap();
-    let data = parts.get(1).unwrap().to_vec();
-    let data = decrypt(nonce, data).await?;
-    let content = std::str::from_utf8(&data).unwrap();
-
-    Ok(content.to_string())
-}
-
-#[wasm_bindgen]
 pub async fn create_workspace(password: String, name: String) -> Result<JsValue, JsValue> {
     let key_create_dto = generate_key_variants(password)?;
     let workspace_create_dto = WorkspaceCreateDTO {

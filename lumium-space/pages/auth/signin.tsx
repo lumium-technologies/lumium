@@ -20,6 +20,8 @@ import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import NextLink from 'next/link';
 import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
+import { SignInDTO } from 'lumium-renderer';
+import { AxiosResponse } from 'axios';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,10 +32,7 @@ const SignIn: React.FC = () => {
     const handleSignIn = () => {
         const email = formik.values.email;
         const password = formik.values.password;
-        api.post<ReasonDTO>(AUTH_SIGNIN, {
-            "email": email,
-            "password": password
-        }).then((res) => {
+        api.post<SignInDTO, AxiosResponse<ReasonDTO>>(AUTH_SIGNIN, { email, password }).then((res) => {
             if (res.status == 200) {
                 refetchUserInfo().then((info) => {
                     if (info?.recentWorkspace) {

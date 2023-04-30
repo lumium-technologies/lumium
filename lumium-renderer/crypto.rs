@@ -1,17 +1,16 @@
+use crate::request;
+use crate::transfer::constants::*;
 use crate::transfer::e2ekeys::E2EKeyCreateDTO;
 use crate::transfer::e2ekeys::E2EKeyVariantCreateDTODecrypted;
 use crate::transfer::e2ekeys::E2EKeyVariantDTODecrypted;
-use crate::transfer::workspace::WorkspaceDTO;
+use crate::transfer::workspace::WorkspaceDTOEncrypted;
 use crate::JsFuture;
-use crate::X_LUMIUM_SESSION_HEADER;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 use once_cell::sync::Lazy;
 use passwords::PasswordGenerator;
 use ring::rand::{SecureRandom, SystemRandom};
 use std::sync::Mutex;
-use web_sys::{Request, RequestCredentials, RequestInit, RequestMode, Response};
 
 const MASTER_KEY_BYTE_LENGTH: usize = 32;
 const ACTIVATOR_KEY_BYTE_LENGTH: usize = 32;
@@ -80,38 +79,15 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
     if !PASSWORD.lock().unwrap().is_empty() {
         return Ok(());
     }
-    let mut opts = RequestInit::new();
-    opts.method("GET");
-    opts.credentials(RequestCredentials::Include);
-    opts.mode(RequestMode::Cors);
 
     let window = web_sys::window().unwrap();
     let workspace_id = window.location().pathname()?;
-    let origin = format!(
-        "{}/{}/{}",
-        env!("RENDERER_API_HOST").to_string(),
-        "v1/secure/workspace",
-        workspace_id
-    );
-    let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
-    let session = window
-        .local_storage()?
-        .unwrap()
-        .get_item(X_LUMIUM_SESSION_HEADER)?
-        .unwrap();
-    request
-        .headers()
-        .set("Content-Type", "application/json")
-        .unwrap();
-    request
-        .headers()
-        .set(X_LUMIUM_SESSION_HEADER, &session)
-        .unwrap();
-
-    let fetch = window.fetch_with_request(&request);
-    let resp_value = JsFuture::from(fetch).await?;
-    assert!(resp_value.is_instance_of::<Response>());
-    let resp: Response = resp_value.dyn_into().unwrap();
+    let resp = request(
+        "GET",
+        format!("{}/{}", WORKSPACE, workspace_id).as_str(),
+        None,
+    )
+    .await?;
     if resp.status() != 200 {
         return Err(JsValue::from("failed to get workspace"));
     }
@@ -120,9 +96,9 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
     let password = window
         .local_storage()?
         .unwrap()
-        .get_item("workspacePassword")?
+        .get_item(LOCAL_STORAGE_PASSWORD_KEY)?
         .unwrap();
-    let workspace_dto: WorkspaceDTO = serde_wasm_bindgen::from_value(json)?;
+    let workspace_dto: WorkspaceDTOEncrypted = serde_wasm_bindgen::from_value(json)?;
 
     for variant_dto in workspace_dto.key.keys {
         serde_crypt::setup(password.as_bytes().to_vec());

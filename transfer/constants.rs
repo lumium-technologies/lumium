@@ -16,6 +16,7 @@ macro_rules! gen_bindings {
 }
 
 gen_bindings!(X_LUMIUM_SESSION_HEADER, "x-lumium-session");
+gen_bindings!(LOCAL_STORAGE_PASSWORD_KEY, "lumium-workspace-password");
 
 gen_bindings!(DOCS, "/v1/docs");
 

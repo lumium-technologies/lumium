@@ -11,7 +11,7 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::RequestCredentials;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
-async fn request(method: &str, url: &str, body: Option<&JsValue>) -> Result<Response, JsValue> {
+pub async fn request(method: &str, url: &str, body: Option<&JsValue>) -> Result<Response, JsValue> {
     let mut opts = RequestInit::new();
     opts.method(method);
     opts.credentials(RequestCredentials::Include);

@@ -84,12 +84,6 @@
             "@test": [
                 "test"
             ],
-            "@types/*": [
-                "types/*"
-            ],
-            "@types": [
-                "types"
-            ],
             "@routes/*": [
                 "routes/*"
             ],

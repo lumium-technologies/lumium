@@ -1,15 +1,21 @@
-use crate::transfer::e2ekeys::{E2EKeyCreateDTODecrypted, E2EKeyCreateDTOEncrypted};
+use crate::transfer::e2ekeys::{E2EKeyCreateDTO, E2EKeyDTO};
 use serde::{Deserialize, Serialize};
-use serde_crypt;
-use serde_crypt_macro::serde_crypt_gen;
 use utoipa::ToSchema;
+use wasm_bindgen::prelude::*;
 
-#[serde_crypt_gen]
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceCreateDTO {
-    #[serde_crypt_types(E2EKeyCreateDTOEncrypted, E2EKeyCreateDTODecrypted)]
     pub key: E2EKeyCreateDTO,
-    #[serde(with = "serde_crypt")]
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
+#[serde(rename_all = "camelCase")]
+#[wasm_bindgen]
+pub struct WorkspaceDTO {
+    #[wasm_bindgen(skip)]
+    pub key: E2EKeyDTO,
+    #[wasm_bindgen(getter_with_clone)]
     pub name: String,
 }

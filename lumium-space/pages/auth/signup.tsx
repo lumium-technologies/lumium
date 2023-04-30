@@ -18,21 +18,19 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from '@routes/space';
 import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
-import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
 import NextLink from 'next/link';
 import { SignUpDTO } from 'lumium-renderer';
-import { AxiosResponse } from 'axios';
 
 const SignUp: React.FC = () => {
     const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<ReasonDTO | null>(null);
+    const [error, setError] = useState<any | null>(null);
 
     const handleSignUp = () => {
         const email = formik.values.email;
         const password = formik.values.password;
         const username = formik.values.nickName;
-        api.post<SignUpDTO, AxiosResponse<ReasonDTO>>(AUTH_SIGNUP, {
+        api.post<SignUpDTO>(AUTH_SIGNUP, {
             email: email,
             password: password,
             username: username

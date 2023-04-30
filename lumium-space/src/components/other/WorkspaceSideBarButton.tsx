@@ -2,10 +2,10 @@ import { Button } from "@chakra-ui/react";
 import { ROOT } from "@routes/space";
 import { FiLock } from "react-icons/fi";
 import NextLink from 'next/link';
-import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
+import { WorkspaceDTOEncrypted } from "lumium-renderer";
 
 interface props {
-    w: WorkspaceDTO;
+    w: WorkspaceDTOEncrypted;
 }
 export const WorkspaceSideBarButton = ({ w }: props) => {
     const clearWorkspacePassword = () => {

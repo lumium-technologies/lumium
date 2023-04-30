@@ -17,7 +17,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
-import { get_lumium_workspace_password as pass } from 'lumium-renderer';
+import { get_local_storage_password_key as pass } from 'lumium-renderer';
 
 const Workspace: React.FC = () => {
     const router = useRouter();

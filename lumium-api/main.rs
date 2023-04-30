@@ -7,7 +7,6 @@ use std::net::{Ipv4Addr, SocketAddr};
 use axum::http::HeaderValue;
 use axum::routing::{delete, get, patch, post};
 use axum::{middleware, Router, Server};
-use routes::guard::X_LUMIUM_SESSION_HEADER_STRING;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use tower_http::cors::{AllowOrigin, CorsLayer};
@@ -24,6 +23,8 @@ mod routes;
 mod services;
 mod state;
 mod transfer;
+
+use crate::transfer::constants::*;
 
 const PRODUCTION_ENV: &str = "PRODUCTION";
 const ENVIRONMENT_ENV: &str = "ENVIRONMENT";
@@ -61,9 +62,7 @@ impl Modify for SecurityAddon {
         if let Some(components) = openapi.components.as_mut() {
             components.add_security_scheme(
                 "Lumium Session",
-                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(
-                    X_LUMIUM_SESSION_HEADER_STRING,
-                ))),
+                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(X_LUMIUM_SESSION_HEADER))),
             )
         }
     }
@@ -82,20 +81,20 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
     let root = Router::new().route("/v1/", get(root::check));
 
     let auth = Router::new()
-        .route("/v1/auth/signout", post(auth::sign_out))
+        .route(SIGNOUT, post(auth::sign_out))
         .route_layer(guard.clone())
-        .route("/v1/auth/signup", post(auth::sign_up))
-        .route("/v1/auth/signin", post(auth::sign_in))
+        .route(SIGNUP, post(auth::sign_up))
+        .route(SIGNIN, post(auth::sign_in))
         .with_state(state.clone());
 
     let user = Router::new()
-        .route("/v1/profile", get(user::get_profile))
-        .route("/v1/profile", delete(user::delete_profile))
-        .route("/v1/profile/username", patch(user::update_username))
-        .route("/v1/profile/password", patch(user::update_password))
-        .route("/v1/profile/email", patch(user::update_email))
-        .route("/v1/profile/email", post(user::create_email))
-        .route("/v1/profile/email", delete(user::delete_email))
+        .route(PROFILE, get(user::get_profile))
+        .route(PROFILE, delete(user::delete_profile))
+        .route(USERNAME, patch(user::update_username))
+        .route(PASSWORD, patch(user::update_password))
+        .route(EMAIL, patch(user::update_email))
+        .route(EMAIL, post(user::create_email))
+        .route(EMAIL, delete(user::delete_email))
         .route_layer(guard.clone())
         .with_state(state);
 
@@ -105,7 +104,7 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
         .map(|t| HeaderValue::from_str(t).unwrap());
 
     let app = Router::new()
-        .merge(SwaggerUi::new("/v1/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
+        .merge(SwaggerUi::new(DOCS).url("/api-docs/openapi.json", ApiDoc::openapi()))
         .merge(root)
         .merge(auth)
         .merge(user)

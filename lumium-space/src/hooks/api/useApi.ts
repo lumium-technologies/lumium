@@ -2,21 +2,22 @@ import { V1 } from "@routes/api/v1";
 import { AUTH, AUTH_SIGNIN, ROOT } from "@routes/space";
 import axios, { AxiosInstance } from "axios";
 import Router from "next/router";
+import { get_x_lumium_session_header as s } from 'lumium-renderer';
 
 const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST + V1 : "" });
 
 instance.interceptors.request.use((r) => {
-    const session = localStorage.getItem('x-lumium-session');
+    const session = localStorage.getItem(s());
     if (session) {
-        r.headers['x-lumium-session'] = session;
+        r.headers[s()] = session;
     }
     return r;
 });
 
 instance.interceptors.response.use(
     (r) => {
-        if (r.headers['x-lumium-session']) {
-            localStorage.setItem('x-lumium-session', r.headers['x-lumium-session'])
+        if (r.headers[s()]) {
+            localStorage.setItem(s(), r.headers[s()])
         }
         return r;
     },

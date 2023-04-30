@@ -9,10 +9,9 @@ use axum::response::{IntoResponse, Response};
 use axum::TypedHeader;
 
 use crate::services::session::{SessionService, SessionServiceError};
+use crate::transfer::constants::X_LUMIUM_SESSION_HEADER;
 
-pub const X_LUMIUM_SESSION_HEADER_STRING: &str = "x-lumium-session";
-static X_LUMIUM_SESSION_HEADER_NAME: HeaderName =
-    HeaderName::from_static(X_LUMIUM_SESSION_HEADER_STRING);
+static X_LUMIUM_SESSION_HEADER_NAME: HeaderName = HeaderName::from_static(X_LUMIUM_SESSION_HEADER);
 
 #[derive(Debug)]
 pub enum AuthError {
@@ -68,7 +67,7 @@ impl Header for SessionHeader {
 impl Into<(HeaderName, HeaderValue)> for SessionHeader {
     fn into(self) -> (HeaderName, HeaderValue) {
         (
-            HeaderName::from_static(X_LUMIUM_SESSION_HEADER_STRING),
+            HeaderName::from_static(X_LUMIUM_SESSION_HEADER),
             HeaderValue::from_str(self.0.as_str()).unwrap(),
         )
     }

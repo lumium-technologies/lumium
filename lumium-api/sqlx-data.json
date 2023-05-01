@@ -32,7 +32,7 @@
         }
       ],
       "nullable": [
-        true
+        false
       ],
       "parameters": {
         "Left": [
@@ -41,6 +41,18 @@
       }
     },
     "query": "SELECT profile_id\n            FROM sessions\n            WHERE session_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode($1, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode($1, 'hex')\n                )"
+  },
+  "2d3ee1f5621da1035910b373b2d6065c0e797c1d77b48926ed155886325f1247": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "DELETE FROM sessions\n            WHERE profile_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode(session_id, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode(session_id, 'hex')\n                )"
   },
   "6ca2c005e081961a019179e1c0cbe8be263ddb655f493d3fede6fc376a209f9d": {
     "describe": {
@@ -86,6 +98,18 @@
     },
     "query": "SELECT update_session_secret()"
   },
+  "c3f2dd2e3dbf9c655b8a4b2bfaabf4503464f801c7e05d21fdf19a4e3b45a551": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "DELETE FROM sessions\n            WHERE session_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode($1, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode($1, 'hex')\n                )"
+  },
   "f4ae900b01fa7e3384b5aa359b732baef8bec9de1c44567d8d7930f83b11873f": {
     "describe": {
       "columns": [
@@ -122,7 +146,7 @@
         }
       ],
       "nullable": [
-        true
+        false
       ],
       "parameters": {
         "Left": [

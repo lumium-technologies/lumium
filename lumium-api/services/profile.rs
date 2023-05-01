@@ -75,8 +75,7 @@ impl ProfileService {
         .await;
 
         let result = result.map_err(|e| ProfileServiceError::InternalError(Some(e)))?;
-        let result = result.id.map(|uuid| uuid.to_string());
-        result.ok_or_else(|| ProfileServiceError::InternalError(None))
+        Ok(result.id.to_string())
     }
 }
 

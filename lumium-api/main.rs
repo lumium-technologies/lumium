@@ -114,7 +114,9 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
     let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
     println!("listening on {addr}");
 
-    Server::bind(&addr).serve(app.into_make_service()).await?;
+    Server::bind(&addr)
+        .serve(app.into_make_service_with_connect_info::<SocketAddr>())
+        .await?;
 
     Ok(())
 }

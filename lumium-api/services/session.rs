@@ -42,11 +42,15 @@ impl SessionService {
         Self { database }
     }
 
-    pub async fn create(&self, user: &str) -> Result<String, SessionServiceError> {
+    pub async fn create(
+        &self,
+        user: &str,
+        ip_addr: &str,
+        user_agent: &str,
+    ) -> Result<String, SessionServiceError> {
         let profile_id = Uuid::from_str(user).map_err(|_| SessionServiceError::InternalError)?;
-        let user_agent = "".to_string();
-        let ip_address =
-            IpNetwork::from_str("0.0.0.0").map_err(|_| SessionServiceError::InternalError)?;
+        let ip_addr =
+            IpNetwork::from_str(ip_addr).map_err(|_| SessionServiceError::InternalError)?;
         let session_id = sqlx::query!(
             r#"INSERT INTO sessions 
             (profile_id, ip_address, user_agent)
@@ -54,7 +58,7 @@ impl SessionService {
             ($1, $2, $3)
             RETURNING session_id"#,
             profile_id,
-            ip_address,
+            ip_addr,
             user_agent
         )
         .fetch_one(&self.database)
@@ -100,18 +104,54 @@ impl SessionService {
         .map_err(|_| SessionServiceError::InternalError)?;
 
         if let Some(result) = result {
-            if let Some(profile_id) = result.profile_id {
-                return Ok(profile_id.to_string());
-            }
+            return Ok(result.profile_id.to_string());
         }
         Err(SessionServiceError::SessionVerificationError)
     }
 
-    pub async fn destroy(&self, session_id: &str) -> Result<String, SessionServiceError> {
-        todo!()
+    pub async fn destroy(&self, session_id: &str) -> Result<(), SessionServiceError> {
+        sqlx::query!(
+            r#"DELETE FROM sessions
+            WHERE session_id = $1
+            AND (hmac(session_token,
+                  (SELECT s.value
+                   FROM session_secrets s
+                   WHERE s.status = 'active'),
+                  'sha512') = decode($1, 'hex')
+                OR hmac(session_token,
+                        (SELECT s.value
+                         FROM session_secrets s
+                         WHERE s.status = 'phase_out'),
+                        'sha512') = decode($1, 'hex')
+                )"#,
+            session_id
+        )
+        .execute(&self.database)
+        .await
+        .map(|_| ())
+        .map_err(|_| SessionServiceError::InternalError)
     }
 
-    pub async fn destroy_all(&self, profile_id: &str) -> Result<String, SessionServiceError> {
-        todo!()
+    pub async fn destroy_all(&self, profile_id: &str) -> Result<(), SessionServiceError> {
+        sqlx::query!(
+            r#"DELETE FROM sessions
+            WHERE profile_id = $1
+            AND (hmac(session_token,
+                  (SELECT s.value
+                   FROM session_secrets s
+                   WHERE s.status = 'active'),
+                  'sha512') = decode(session_id, 'hex')
+                OR hmac(session_token,
+                        (SELECT s.value
+                         FROM session_secrets s
+                         WHERE s.status = 'phase_out'),
+                        'sha512') = decode(session_id, 'hex')
+                )"#,
+            Uuid::from_str(profile_id).map_err(|_| SessionServiceError::InternalError)?
+        )
+        .execute(&self.database)
+        .await
+        .map(|_| ())
+        .map_err(|_| SessionServiceError::InternalError)
     }
 }

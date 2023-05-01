@@ -1,7 +1,9 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter};
+use std::net::SocketAddr;
 
-use axum::extract::{Json, State};
+use axum::extract::{ConnectInfo, Json, State};
+use axum::headers::UserAgent;
 use axum::response::{AppendHeaders, IntoResponse, Response};
 use axum::TypedHeader;
 
@@ -37,7 +39,7 @@ impl Error for AuthServiceError {}
 #[utoipa::path(
     post,
     path = "/v1/auth/signup",
-    request_body = SignUp,
+    request_body = SignUpDTO,
     responses(
         (status = 200, description = "Sign up successful")
     ),
@@ -46,6 +48,8 @@ impl Error for AuthServiceError {}
 pub async fn sign_up(
     State(session): State<SessionService>,
     State(profile): State<ProfileService>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
     Json(json): Json<SignUpDTO>,
 ) -> Result<impl IntoResponse, AuthServiceError> {
     let profile_id = profile
@@ -53,7 +57,7 @@ pub async fn sign_up(
         .await
         .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
     let session = session
-        .create(&profile_id)
+        .create(&profile_id, addr.to_string().as_str(), user_agent.as_str())
         .await
         .map_err(|e| AuthServiceError::SessionServiceError(e))?;
     Ok(AppendHeaders([SessionHeader(session).into()]))
@@ -62,7 +66,7 @@ pub async fn sign_up(
 #[utoipa::path(
     post,
     path = "/v1/auth/signin",
-    request_body = SignIn,
+    request_body = SignInDTO,
     responses(
         (status = 200, description = "Sign in successful")
     ),
@@ -71,6 +75,8 @@ pub async fn sign_up(
 pub async fn sign_in(
     State(session): State<SessionService>,
     State(profile): State<ProfileService>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
     Json(json): Json<SignInDTO>,
 ) -> Result<impl IntoResponse, AuthServiceError> {
     let profile = profile
@@ -78,7 +84,11 @@ pub async fn sign_in(
         .await
         .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
     let session = session
-        .create(&profile)
+        .create(
+            &profile,
+            addr.ip().to_string().as_str(),
+            user_agent.as_str(),
+        )
         .await
         .map_err(|e| AuthServiceError::SessionServiceError(e))?;
     Ok(AppendHeaders([SessionHeader(session).into()]))

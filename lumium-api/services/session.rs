@@ -124,6 +124,7 @@ impl SessionService {
         Ok(())
     }
 
+    #[allow(unused)]
     pub async fn destroy_all(&self, profile_id: Uuid) -> Result<(), SessionServiceError> {
         sqlx::query!(
             r#"DELETE FROM sessions

@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 build: build-lumium-space build-lumium-api
 
-build-lumium-renderer:
+build-lumium-renderer: build-lumium-api
 	(which git >/dev/null && git submodule update --init --recursive) || true;
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
@@ -19,7 +19,6 @@ build-lumium-api:
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
 		export SQLX_OFFLINE="true"; \
-		cargo build --release && \
 		cargo install --path . --root build --profile release --force
 
 reduce-slug-size:
@@ -63,4 +62,4 @@ test-lumium-api: build-lumium-api
 		cargo test;
 
 
-.PHONY: clean test reduce-slug-size
+.PHONY: build build-lumium-api build-lumium-renderer build-lumium-space test test-lumium-api test-lumium-renderer test-lumium-space clean test reduce-slug-size

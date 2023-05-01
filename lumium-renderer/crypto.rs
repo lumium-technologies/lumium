@@ -1,11 +1,13 @@
 use crate::request;
 use crate::transfer::constants::*;
 use crate::transfer::e2ekeys::E2EKeyCreateDTO;
-use crate::transfer::e2ekeys::E2EKeyVariantCreateDTODecrypted;
+use crate::transfer::e2ekeys::E2EKeyVariantCreateDTO;
 use crate::transfer::workspace::WorkspaceDTOEncrypted;
 use crate::JsFuture;
 use wasm_bindgen::prelude::*;
 
+use base64::engine::general_purpose;
+use base64::Engine;
 use once_cell::sync::Lazy;
 use passwords::PasswordGenerator;
 use ring::rand::{SecureRandom, SystemRandom};
@@ -41,26 +43,24 @@ pub fn generate_key_variants(password: String) -> Result<E2EKeyCreateDTO, JsValu
         strict: true,
     };
     let recovery_codes = pg.generate(NUM_RECOVERY_CODES).unwrap();
-    let mut variants = Vec::<String>::new();
-    let variant = E2EKeyVariantCreateDTODecrypted {
-        activator: activator.to_vec(),
-        value: master_key.to_vec(),
-    };
+    let mut variants = Vec::new();
     serde_crypt::setup(password.as_bytes().to_vec());
-    let variant = serde_json::to_string(&variant).unwrap();
+    let variant = E2EKeyVariantCreateDTO {
+        activator: serde_crypt::e(activator).map_err(|e| JsValue::from(e.to_string()))?,
+        value: serde_crypt::e(master_key).map_err(|e| JsValue::from(e.to_string()))?,
+    };
     variants.push(variant);
     for recovery in &recovery_codes {
-        let variant = E2EKeyVariantCreateDTODecrypted {
-            activator: activator.to_vec(),
-            value: master_key.to_vec(),
-        };
         serde_crypt::setup(recovery.as_bytes().to_vec());
-        let variant = serde_json::to_string(&variant).unwrap();
+        let variant = E2EKeyVariantCreateDTO {
+            activator: serde_crypt::e(activator).map_err(|e| JsValue::from(e.to_string()))?,
+            value: serde_crypt::e(master_key).map_err(|e| JsValue::from(e.to_string()))?,
+        };
         variants.push(variant);
     }
     let key_create_dto = E2EKeyCreateDTO {
         keys: variants,
-        activator: activator.to_vec(),
+        activator: general_purpose::URL_SAFE_NO_PAD.encode(activator),
     };
 
     download(
@@ -101,15 +101,15 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
 
     for variant_dto in workspace_dto.key.keys {
         serde_crypt::setup(password.as_bytes().to_vec());
-        let activator =
-            serde_crypt::d::<Vec<u8>>(String::from_utf8(variant_dto.activator).unwrap());
+        let activator = serde_crypt::d::<String>(variant_dto.activator);
         if let Err(..) = activator {
             continue;
         }
-        if workspace_dto.key.activator == activator.unwrap() {
+        if workspace_dto.key.activator
+            == general_purpose::URL_SAFE_NO_PAD.encode(activator.unwrap())
+        {
             serde_crypt::setup(
-                serde_crypt::d(String::from_utf8(variant_dto.value).unwrap())
-                    .map_err(|e| JsValue::from(e.to_string()))?,
+                serde_crypt::d(variant_dto.value).map_err(|e| JsValue::from(e.to_string()))?,
             );
             return Ok(());
         }

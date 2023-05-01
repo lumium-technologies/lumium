@@ -1,5 +1,4 @@
 use axum::extract::FromRef;
-use axum_extra::extract::cookie::Key;
 use sqlx::{Pool, Postgres};
 
 use crate::services::profile::ProfileService;
@@ -8,7 +7,6 @@ use crate::services::workspace::WorkspaceService;
 
 #[derive(Clone)]
 pub struct AppState {
-    secret: Key,
     session: SessionService,
     profile: ProfileService,
     workspace: WorkspaceService,
@@ -17,7 +15,6 @@ pub struct AppState {
 impl AppState {
     pub fn new(database: Pool<Postgres>) -> Self {
         Self {
-            secret: Key::generate(),
             session: SessionService::new(database.clone()),
             profile: ProfileService::new(database.clone()),
             workspace: WorkspaceService::new(database.clone()),
@@ -35,7 +32,6 @@ macro_rules! impl_di {
     )+};
 }
 
-impl_di!(Key: secret);
 impl_di!(SessionService: session);
 impl_di!(ProfileService: profile);
 impl_di!(WorkspaceService: workspace);

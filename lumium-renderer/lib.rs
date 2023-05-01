@@ -47,7 +47,7 @@ pub async fn create_workspace(password: String, name: String) -> Result<JsValue,
 
     let body = serde_json::ser::to_string(&workspace_create_dto).unwrap();
 
-    let resp = request("PUT", WORKSPACE, Some(&JsValue::from(body))).await?;
+    let resp = request("PUT", API_V1_WORKSPACE, Some(&JsValue::from(body))).await?;
     if resp.status() != 200 {
         return Err(JsValue::from("failed to create workspace"));
     }

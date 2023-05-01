@@ -83,12 +83,6 @@
             ],
             "@test": [
                 "test"
-            ],
-            "@routes/*": [
-                "routes/*"
-            ],
-            "@routes": [
-                "routes"
             ]
         },
         "incremental": true

@@ -2,7 +2,6 @@ use crate::request;
 use crate::transfer::constants::*;
 use crate::transfer::e2ekeys::E2EKeyCreateDTO;
 use crate::transfer::e2ekeys::E2EKeyVariantCreateDTODecrypted;
-use crate::transfer::e2ekeys::E2EKeyVariantDTODecrypted;
 use crate::transfer::workspace::WorkspaceDTOEncrypted;
 use crate::JsFuture;
 use wasm_bindgen::prelude::*;
@@ -84,7 +83,7 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
     let workspace_id = window.location().pathname()?;
     let resp = request(
         "GET",
-        format!("{}/{}", WORKSPACE, workspace_id).as_str(),
+        format!("{}/{}", API_V1_WORKSPACE, workspace_id).as_str(),
         None,
     )
     .await?;
@@ -102,13 +101,16 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
 
     for variant_dto in workspace_dto.key.keys {
         serde_crypt::setup(password.as_bytes().to_vec());
-        let variant = serde_json::from_str(&variant_dto);
-        if let Err(..) = variant {
+        let activator =
+            serde_crypt::d::<Vec<u8>>(String::from_utf8(variant_dto.activator).unwrap());
+        if let Err(..) = activator {
             continue;
         }
-        let variant: E2EKeyVariantDTODecrypted = variant.unwrap();
-        if workspace_dto.key.activator == variant.activator {
-            serde_crypt::setup(variant.value);
+        if workspace_dto.key.activator == activator.unwrap() {
+            serde_crypt::setup(
+                serde_crypt::d(String::from_utf8(variant_dto.value).unwrap())
+                    .map_err(|e| JsValue::from(e.to_string()))?,
+            );
             return Ok(());
         }
     }

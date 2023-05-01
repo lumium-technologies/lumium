@@ -1,10 +1,8 @@
-import { V1 } from "@routes/api/v1";
-import { AUTH, AUTH_SIGNIN, ROOT } from "@routes/space";
 import axios, { AxiosInstance } from "axios";
 import Router from "next/router";
-import { get_x_lumium_session_header as s } from 'lumium-renderer';
+import { get_x_lumium_session_header as s, get_space_root as r, get_space_auth as a, get_space_auth_signin as signin } from 'lumium-renderer';
 
-const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST + V1 : "" });
+const instance: AxiosInstance = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_HOST ? process.env.NEXT_PUBLIC_API_HOST : "" });
 
 instance.interceptors.request.use((r) => {
     const session = localStorage.getItem(s());
@@ -26,8 +24,8 @@ instance.interceptors.response.use(
             return Promise.reject(error);
         }
         if (error.response.status === 401) {
-            if (!Router.asPath.startsWith(AUTH) && Router.asPath != ROOT) {
-                Router.push(AUTH_SIGNIN);
+            if (!Router.asPath.startsWith(a()) && Router.asPath != r()) {
+                Router.push(signin());
             }
             return Promise.resolve(error);
         };

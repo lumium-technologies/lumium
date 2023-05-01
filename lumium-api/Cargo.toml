@@ -21,7 +21,7 @@ serde-wasm-bindgen = "0.4"
 serde-crypt = { path = "../vendor/serde-crypt" }
 serde-crypt-macro = { path = "../vendor/serde-crypt-macro" }
 serde_json = { version = "1.0.91" }
-sqlx = { version = "0.6.2", features = [
+sqlx = { version = "0.6.3", features = [
     "runtime-tokio-rustls",
     "postgres",
     "uuid",

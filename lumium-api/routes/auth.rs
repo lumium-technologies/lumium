@@ -57,7 +57,11 @@ pub async fn sign_up(
         .await
         .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
     let session = session
-        .create(&profile_id, addr.to_string().as_str(), user_agent.as_str())
+        .create(
+            &profile_id,
+            addr.ip().to_string().as_str(),
+            user_agent.as_str(),
+        )
         .await
         .map_err(|e| AuthServiceError::SessionServiceError(e))?;
     Ok(AppendHeaders([SessionHeader(session).into()]))
@@ -68,7 +72,8 @@ pub async fn sign_up(
     path = "/v1/auth/signin",
     request_body = SignInDTO,
     responses(
-        (status = 200, description = "Sign in successful")
+        (status = 200, description = "Sign in successful"),
+        (status = 401, description = "Unauthorized")
     ),
     tag = "auth"
 )]
@@ -98,7 +103,8 @@ pub async fn sign_in(
     post,
     path = "/v1/auth/signout",
     responses(
-        (status = 200, description = "Sign out successful")
+        (status = 200, description = "Sign out successful"),
+        (status = 401, description = "Unauthorized")
     ),
     security(
         ("Lumium Session" = [])

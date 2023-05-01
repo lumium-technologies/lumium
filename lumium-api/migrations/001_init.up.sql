@@ -33,7 +33,7 @@ CREATE TABLE sessions
 	id            BIGSERIAL PRIMARY KEY,
 	profile_id    UUID                     NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
 
-	session_token TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+	session_token BYTEA                    NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
     session_id    TEXT                     NOT NULL UNIQUE,
 	ip_address    INET                     NOT NULL,
 	user_agent    TEXT                     NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE session_secrets
 (
     id         BIGSERIAL PRIMARY KEY,
 
-    value      TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+    value      BYTEA                    NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
     status     session_secret_status    NOT NULL        DEFAULT 'active',
 
     issued_at  TIMESTAMP WITH TIME ZONE NOT NULL        DEFAULT now()
@@ -103,7 +103,7 @@ CREATE TABLE end_to_end_keys
 (
     workspace_id    UUID PRIMARY KEY    REFERENCES workspaces (id) ON DELETE CASCADE,
 
-    activator       TEXT                NOT NULL UNIQUE
+    activator       BYTEA               NOT NULL UNIQUE
 );
 
 CREATE TABLE end_to_end_key_variants
@@ -111,8 +111,8 @@ CREATE TABLE end_to_end_key_variants
     id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
     key_id      UUID                NOT NULL        REFERENCES end_to_end_keys (workspace_id) ON DELETE CASCADE,
 
-    activator   TEXT                NOT NULL UNIQUE,
-    value       TEXT                NOT NULL UNIQUE
+    activator   BYTEA               NOT NULL UNIQUE,
+    value       BYTEA               NOT NULL UNIQUE
 );
 
 CREATE TABLE workspace_admins

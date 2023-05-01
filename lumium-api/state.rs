@@ -4,12 +4,14 @@ use sqlx::{Pool, Postgres};
 
 use crate::services::profile::ProfileService;
 use crate::services::session::SessionService;
+use crate::services::workspace::WorkspaceService;
 
 #[derive(Clone)]
 pub struct AppState {
     secret: Key,
     session: SessionService,
     profile: ProfileService,
+    workspace: WorkspaceService,
 }
 
 impl AppState {
@@ -18,6 +20,7 @@ impl AppState {
             secret: Key::generate(),
             session: SessionService::new(database.clone()),
             profile: ProfileService::new(database.clone()),
+            workspace: WorkspaceService::new(database.clone()),
         }
     }
 }
@@ -35,3 +38,4 @@ macro_rules! impl_di {
 impl_di!(Key: secret);
 impl_di!(SessionService: session);
 impl_di!(ProfileService: profile);
+impl_di!(WorkspaceService: workspace);

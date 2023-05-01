@@ -5,7 +5,7 @@ use serde_crypt_macro::serde_crypt_gen;
 use tsify::Tsify;
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema, Tsify, Clone)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Tsify, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceCreateDTO {
     pub key: E2EKeyCreateDTO,
@@ -13,7 +13,7 @@ pub struct WorkspaceCreateDTO {
 }
 
 #[serde_crypt_gen]
-#[derive(Serialize, Deserialize, ToSchema, Tsify, Clone)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Tsify, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceDTO {
     pub key: E2EKeyDTO,

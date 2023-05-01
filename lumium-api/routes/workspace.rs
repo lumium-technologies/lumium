@@ -8,7 +8,7 @@ use crate::{
     transfer::workspace::{WorkspaceCreateDTO, WorkspaceDTOEncrypted},
 };
 
-use super::guard::SessionHeader;
+use super::auth::SessionHeader;
 
 #[utoipa::path(
     put,
@@ -18,6 +18,9 @@ use super::guard::SessionHeader;
         (status = 200, description = "Success", body = WorkspaceDTOEncrypted),
         (status = 401, description = "Unauthorized"),
         ),
+    security(
+        ("Lumium Session" = [])
+    ),
     tag = "workspace"
     )]
 pub async fn create_workspace(
@@ -26,11 +29,7 @@ pub async fn create_workspace(
     session_header: TypedHeader<SessionHeader>,
     Json(workspace_create_dto): Json<WorkspaceCreateDTO>,
 ) -> Result<Json<WorkspaceDTOEncrypted>, WorkspaceServiceError> {
-    let profile_id = session
-        .get_profile(session_header)
-        .await
-        .map_err(|_| WorkspaceServiceError::InternalError)?;
-    workspace
-        .create(workspace_create_dto, profile_id.as_str())
-        .await
+    let TypedHeader(SessionHeader(session_id)) = session_header;
+    let profile_id = session.verify(&session_id).await?;
+    workspace.create(workspace_create_dto, profile_id).await
 }

@@ -1,19 +1,15 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::TypedHeader;
 use sqlx::types::ipnetwork::IpNetwork;
 use sqlx::types::Uuid;
 use sqlx::{Error, Pool, Postgres};
-use std::str::FromStr;
-
-use crate::routes::guard::SessionHeader;
+use std::net::IpAddr;
 
 #[derive(Clone)]
 pub struct SessionService {
     database: Pool<Postgres>,
 }
 
-#[derive(Debug, Clone)]
 pub enum SessionServiceError {
     SessionVerificationError,
     InternalError,
@@ -34,12 +30,6 @@ impl From<Error> for SessionServiceError {
     }
 }
 
-impl From<sqlx::types::uuid::Error> for SessionServiceError {
-    fn from(_: sqlx::types::uuid::Error) -> Self {
-        Self::InternalError
-    }
-}
-
 impl SessionService {
     pub fn new(database: Pool<Postgres>) -> Self {
         Self { database }
@@ -47,23 +37,21 @@ impl SessionService {
 
     pub async fn create(
         &self,
-        user: &str,
-        ip_addr: &str,
+        profile_id: Uuid,
+        ip_addr: IpAddr,
         user_agent: &str,
     ) -> Result<String, SessionServiceError> {
         let mut tx = self.database.begin().await?;
+
         sqlx::query!("SELECT update_session_secret()")
             .execute(&mut tx)
             .await?;
-        let profile_id = Uuid::from_str(user)?;
-        let ip_addr =
-            IpNetwork::from_str(ip_addr).map_err(|_| SessionServiceError::InternalError)?;
+
+        let ip_addr = IpNetwork::from(ip_addr);
+
         let session_id = sqlx::query!(
-            r#"INSERT INTO sessions 
-            (profile_id, ip_address, user_agent)
-            VALUES 
-            ($1, $2, $3)
-            RETURNING session_id"#,
+            r#"INSERT INTO sessions (profile_id, ip_address, user_agent)
+            VALUES ($1, $2, $3) RETURNING session_id"#,
             profile_id,
             ip_addr,
             user_agent
@@ -72,26 +60,18 @@ impl SessionService {
         .await?
         .session_id;
 
-        tx.commit()
-            .await
-            .map_err(|_| SessionServiceError::InternalError)?;
+        tx.commit().await?;
 
         Ok(session_id)
     }
 
-    pub async fn get_profile(
-        &self,
-        session_header: TypedHeader<SessionHeader>,
-    ) -> Result<String, SessionServiceError> {
-        let TypedHeader(SessionHeader(session_id)) = session_header;
-        self.verify(&session_id).await
-    }
-
-    pub async fn verify(&self, session_id: &str) -> Result<String, SessionServiceError> {
+    pub async fn verify(&self, session_id: &str) -> Result<Uuid, SessionServiceError> {
         let mut tx = self.database.begin().await?;
+
         sqlx::query!("SELECT update_session_secret()")
             .execute(&mut tx)
             .await?;
+
         let result = sqlx::query!(
             r#"SELECT profile_id
             FROM sessions
@@ -111,11 +91,13 @@ impl SessionService {
         )
         .fetch_optional(&mut tx)
         .await?;
+
         tx.commit().await?;
 
         if let Some(result) = result {
-            return Ok(result.profile_id.to_string());
+            return Ok(result.profile_id);
         }
+
         Err(SessionServiceError::SessionVerificationError)
     }
 
@@ -142,7 +124,7 @@ impl SessionService {
         Ok(())
     }
 
-    pub async fn destroy_all(&self, profile_id: &str) -> Result<(), SessionServiceError> {
+    pub async fn destroy_all(&self, profile_id: Uuid) -> Result<(), SessionServiceError> {
         sqlx::query!(
             r#"DELETE FROM sessions
             WHERE profile_id = $1
@@ -157,7 +139,7 @@ impl SessionService {
                          WHERE s.status = 'phase_out'),
                         'sha512') = decode(session_id, 'hex')
                 )"#,
-            Uuid::from_str(profile_id).map_err(|_| SessionServiceError::InternalError)?
+            profile_id
         )
         .execute(&self.database)
         .await?;

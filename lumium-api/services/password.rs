@@ -4,25 +4,20 @@ use argon2::password_hash::SaltString;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use std::error::Error;
-use std::fmt::{Display, Formatter};
 
-#[derive(Debug, Clone)]
-pub struct PasswordServiceError(pub ArgonError);
-
-impl Display for PasswordServiceError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        self.0.fmt(f)
-    }
+pub enum PasswordServiceError {
+    VerificationError,
+    InternalError,
 }
 
 impl IntoResponse for PasswordServiceError {
     fn into_response(self) -> axum::response::Response {
-        (StatusCode::UNAUTHORIZED).into_response()
+        match self {
+            Self::VerificationError => (StatusCode::UNAUTHORIZED).into_response(),
+            Self::InternalError => (StatusCode::INTERNAL_SERVER_ERROR).into_response(),
+        }
     }
 }
-
-impl Error for PasswordServiceError {}
 
 #[derive(Clone)]
 pub struct PasswordService {
@@ -42,21 +37,21 @@ impl PasswordService {
         let salt = &SaltString::generate(&mut OsRng);
         let hash = self.argon.hash_password(pwd.as_bytes(), salt);
         hash.map(|h| h.to_string())
-            .map_err(|e| PasswordServiceError(e))
+            .map_err(|_| PasswordServiceError::InternalError)
     }
 
-    pub fn verify(&self, pwd: &str, hash: &str) -> Result<bool, PasswordServiceError> {
+    pub fn verify(&self, pwd: &str, hash: &str) -> Result<(), PasswordServiceError> {
         let hash = PasswordHash::new(&hash);
-        let hash = hash.map_err(|e| PasswordServiceError(e))?;
+        let hash = hash.map_err(|_| PasswordServiceError::InternalError)?;
         let res = self.argon.verify_password(pwd.as_bytes(), &hash);
 
         if let Err(e) = res {
             return match e {
-                ArgonError::Password => Ok(false),
-                _ => Err(PasswordServiceError(e)),
+                ArgonError::Password => Err(PasswordServiceError::VerificationError),
+                _ => Err(PasswordServiceError::InternalError),
             };
         }
 
-        Ok(true)
+        Ok(())
     }
 }

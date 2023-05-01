@@ -1,5 +1,3 @@
-use std::error::Error;
-use std::fmt::{Display, Formatter};
 use std::net::SocketAddr;
 
 use axum::extract::{ConnectInfo, Json, State};
@@ -7,34 +5,45 @@ use axum::headers::UserAgent;
 use axum::response::{AppendHeaders, IntoResponse, Response};
 use axum::TypedHeader;
 
-use crate::services::profile::{ProfileService, ProfileServiceError, VerifyOn};
+use crate::services::profile::{ProfileService, ProfileServiceError};
 use crate::services::session::{SessionService, SessionServiceError};
 use crate::transfer::auth::{SignInDTO, SignUpDTO};
 
-use super::guard::SessionHeader;
+use axum::headers::{Header, HeaderName};
+use axum::http::{HeaderValue, Request, StatusCode};
+use axum::middleware::Next;
 
-#[derive(Debug)]
-pub enum AuthServiceError {
+use crate::transfer::constants::X_LUMIUM_SESSION_HEADER;
+
+static X_LUMIUM_SESSION_HEADER_NAME: HeaderName = HeaderName::from_static(X_LUMIUM_SESSION_HEADER);
+
+pub enum AuthError {
     SessionServiceError(SessionServiceError),
     ProfileServiceError(ProfileServiceError),
+    Unauthorized,
 }
 
-impl IntoResponse for AuthServiceError {
+impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
         match self {
-            AuthServiceError::SessionServiceError(e) => e.into_response(),
-            AuthServiceError::ProfileServiceError(e) => e.into_response(),
+            Self::SessionServiceError(e) => e.into_response(),
+            Self::ProfileServiceError(e) => e.into_response(),
+            Self::Unauthorized => StatusCode::UNAUTHORIZED.into_response(),
         }
     }
 }
 
-impl Display for AuthServiceError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        todo!()
+impl From<SessionServiceError> for AuthError {
+    fn from(e: SessionServiceError) -> Self {
+        Self::SessionServiceError(e)
     }
 }
 
-impl Error for AuthServiceError {}
+impl From<ProfileServiceError> for AuthError {
+    fn from(e: ProfileServiceError) -> Self {
+        Self::ProfileServiceError(e)
+    }
+}
 
 #[utoipa::path(
     post,
@@ -51,19 +60,13 @@ pub async fn sign_up(
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     TypedHeader(user_agent): TypedHeader<UserAgent>,
     Json(json): Json<SignUpDTO>,
-) -> Result<impl IntoResponse, AuthServiceError> {
+) -> Result<impl IntoResponse, AuthError> {
     let profile_id = profile
         .create(&json.email, &json.username, &json.password)
-        .await
-        .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
+        .await?;
     let session = session
-        .create(
-            &profile_id,
-            addr.ip().to_string().as_str(),
-            user_agent.as_str(),
-        )
-        .await
-        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+        .create(profile_id, addr.ip(), user_agent.as_str())
+        .await?;
     Ok(AppendHeaders([SessionHeader(session).into()]))
 }
 
@@ -83,19 +86,11 @@ pub async fn sign_in(
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     TypedHeader(user_agent): TypedHeader<UserAgent>,
     Json(json): Json<SignInDTO>,
-) -> Result<impl IntoResponse, AuthServiceError> {
-    let profile = profile
-        .verify(&json.password, VerifyOn::Email(&json.email))
-        .await
-        .map_err(|e| AuthServiceError::ProfileServiceError(e))?;
+) -> Result<impl IntoResponse, AuthError> {
+    let profile_id = profile.verify(&json.email, &json.password).await?;
     let session = session
-        .create(
-            &profile,
-            addr.ip().to_string().as_str(),
-            user_agent.as_str(),
-        )
-        .await
-        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+        .create(profile_id, addr.ip(), user_agent.as_str())
+        .await?;
     Ok(AppendHeaders([SessionHeader(session).into()]))
 }
 
@@ -114,12 +109,59 @@ pub async fn sign_in(
 pub async fn sign_out(
     State(session): State<SessionService>,
     session_header: TypedHeader<SessionHeader>,
-) -> Result<impl IntoResponse, AuthServiceError> {
+) -> Result<impl IntoResponse, AuthError> {
     let TypedHeader(SessionHeader(session_id)) = session_header;
-    session
-        .destroy(&session_id)
-        .await
-        .map_err(|e| AuthServiceError::SessionServiceError(e))?;
+    session.destroy(&session_id).await?;
 
     Ok(())
+}
+
+pub struct SessionHeader(pub String);
+
+impl Header for SessionHeader {
+    fn name() -> &'static HeaderName {
+        &X_LUMIUM_SESSION_HEADER_NAME
+    }
+
+    fn encode<E: Extend<HeaderValue>>(&self, values: &mut E) {
+        let value = HeaderValue::from_str(self.0.as_str()).unwrap();
+        values.extend(std::iter::once(value));
+    }
+
+    fn decode<'i, I>(values: &mut I) -> Result<Self, axum::headers::Error>
+    where
+        Self: Sized,
+        I: Iterator<Item = &'i HeaderValue>,
+    {
+        let value = values.next().ok_or_else(axum::headers::Error::invalid)?;
+        Ok(SessionHeader(
+            value
+                .to_str()
+                .map_err(|_| axum::headers::Error::invalid())?
+                .to_string(),
+        ))
+    }
+}
+
+impl Into<(HeaderName, HeaderValue)> for SessionHeader {
+    fn into(self) -> (HeaderName, HeaderValue) {
+        (
+            HeaderName::from_static(X_LUMIUM_SESSION_HEADER),
+            HeaderValue::from_str(self.0.as_str()).unwrap(),
+        )
+    }
+}
+
+pub async fn auth_guard<T>(
+    State(session): State<SessionService>,
+    session_header: Option<TypedHeader<SessionHeader>>,
+    request: Request<T>,
+    next: Next<T>,
+) -> Result<Response, AuthError> {
+    if let Some(TypedHeader(SessionHeader(session_id))) = session_header {
+        session.verify(&session_id).await?;
+        Ok(next.run(request).await)
+    } else {
+        Err(AuthError::Unauthorized)
+    }
 }

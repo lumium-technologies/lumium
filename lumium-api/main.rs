@@ -14,7 +14,7 @@ use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::routes::guard::auth_guard;
+use crate::routes::auth::auth_guard;
 use crate::routes::{auth, profile, workspace};
 
 use crate::state::AppState;
@@ -49,7 +49,10 @@ const ENV_TEST_VAL: &str = "test";
             transfer::auth::SignInDTO,
             transfer::workspace::WorkspaceCreateDTO,
             transfer::workspace::WorkspaceDTOEncrypted,
-            transfer::e2ekeys::E2EKeyCreateDTO
+            transfer::e2ekeys::E2EKeyCreateDTO,
+            transfer::e2ekeys::E2EKeyDTO,
+            transfer::e2ekeys::E2EKeyVariantCreateDTO,
+            transfer::e2ekeys::E2EKeyVariantDTO
         )
     ),
     modifiers(&SecurityAddon),

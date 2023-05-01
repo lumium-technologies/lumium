@@ -11,7 +11,7 @@
         {
           "name": "activator",
           "ordinal": 1,
-          "type_info": "Bytea"
+          "type_info": "Text"
         }
       ],
       "nullable": [
@@ -26,7 +26,28 @@
     },
     "query": "SELECT workspace_id, activator\n            FROM end_to_end_keys\n            WHERE workspace_id = $1"
   },
-  "128cf036ae32f2b8ae4a5d7dcb2e0bb71c686ca3f21dd9e305b5116529284cdc": {
+  "085d4d47d74276ca7d9c6be32246272c87361dcc82b499647a06188ea0f481b3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "workspace_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO end_to_end_keys (workspace_id, activator)\n            VALUES ($1, $2) RETURNING workspace_id"
+  },
+  "1dd21f0e137ef40ea536dfb52f1d65a64aa25f938ff0e14f5d3083df562df984": {
     "describe": {
       "columns": [
         {
@@ -46,7 +67,7 @@
         ]
       }
     },
-    "query": "INSERT INTO sessions \n            (profile_id, ip_address, user_agent)\n            VALUES \n            ($1, $2, $3)\n            RETURNING session_id"
+    "query": "INSERT INTO sessions (profile_id, ip_address, user_agent)\n            VALUES ($1, $2, $3) RETURNING session_id"
   },
   "2624eb5076ea34c375065c6dccc6f7b82c90ef76e3d9a0065a9b3cdec1e22706": {
     "describe": {
@@ -106,31 +127,26 @@
     },
     "query": "SELECT id, name\n            FROM workspaces\n            WHERE id = $1"
   },
-  "6ca2c005e081961a019179e1c0cbe8be263ddb655f493d3fede6fc376a209f9d": {
+  "62e1c2eec14ea2c2576dfe94a7be33eb18a0a7c8a255ad33bb7e542f2bcfbf90": {
     "describe": {
       "columns": [
         {
           "name": "id",
           "ordinal": 0,
           "type_info": "Uuid"
-        },
-        {
-          "name": "pwd_hash",
-          "ordinal": 1,
-          "type_info": "Text"
         }
       ],
       "nullable": [
-        false,
         false
       ],
       "parameters": {
         "Left": [
+          "Uuid",
           "Text"
         ]
       }
     },
-    "query": "SELECT profiles.id, pwd_hash\n            FROM profiles JOIN emails\n                ON profiles.id = emails.profile_id\n            WHERE emails.address = $1;"
+    "query": "INSERT INTO workspaces (owner_id, name)\n            VALUES ($1, $2) RETURNING id"
   },
   "6ce912067a2e8a4a2cd7208cf2df74e73612f958937397815a83c960e4b9e628": {
     "describe": {
@@ -150,70 +166,16 @@
     },
     "query": "SELECT update_session_secret()"
   },
-  "a96b41d61b119e01b6ba029104e53401363c0cd4c1cee96754c8c14a3ac50bf6": {
+  "b402ed5cf3aecfd8f821a4127612c60fc46616a0f6313b68411257a90afdd8d2": {
     "describe": {
       "columns": [
         {
-          "name": "workspace_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Bytea"
-        ]
-      }
-    },
-    "query": "INSERT INTO end_to_end_keys (workspace_id, activator) VALUES ($1, $2) RETURNING workspace_id"
-  },
-  "c3f2dd2e3dbf9c655b8a4b2bfaabf4503464f801c7e05d21fdf19a4e3b45a551": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "DELETE FROM sessions\n            WHERE session_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode($1, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode($1, 'hex')\n                )"
-  },
-  "d72a05965e5e6646b9d99bea8cff7966be2274e5ee92f271b533d08ea2939680": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text"
-        ]
-      }
-    },
-    "query": "INSERT INTO workspaces (owner_id, name) VALUES ($1, $2) RETURNING id"
-  },
-  "f4ae900b01fa7e3384b5aa359b732baef8bec9de1c44567d8d7930f83b11873f": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
+          "name": "profile_id",
           "ordinal": 0,
           "type_info": "Uuid"
         },
         {
-          "name": "pwd_hash",
+          "name": "password_hash",
           "ordinal": 1,
           "type_info": "Text"
         }
@@ -228,9 +190,35 @@
         ]
       }
     },
-    "query": "SELECT id, pwd_hash\n            FROM profiles\n            WHERE username = $1;"
+    "query": "SELECT p.id AS profile_id, p.pwd_hash AS password_hash\n            FROM profiles p JOIN emails e ON p.id = e.profile_id\n            WHERE e.address = $1"
   },
-  "f8075a593bab3363c9d8493328a11b2179a79038e330aed990b74f076a211e61": {
+  "b798567ee7abe5bd4eaade0ac4e14c86c535f80925b1d882d6d908c6440258fb": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO end_to_end_key_variants (key_id, activator, value)\n                VALUES ($1, $2, $3)"
+  },
+  "c3f2dd2e3dbf9c655b8a4b2bfaabf4503464f801c7e05d21fdf19a4e3b45a551": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "DELETE FROM sessions\n            WHERE session_id = $1\n            AND (hmac(session_token,\n                  (SELECT s.value\n                   FROM session_secrets s\n                   WHERE s.status = 'active'),\n                  'sha512') = decode($1, 'hex')\n                OR hmac(session_token,\n                        (SELECT s.value\n                         FROM session_secrets s\n                         WHERE s.status = 'phase_out'),\n                        'sha512') = decode($1, 'hex')\n                )"
+  },
+  "d69a591f2d0dcadb3b472b67586f855ce79c1165eb71d8ebcb23ec7966fb493f": {
     "describe": {
       "columns": [
         {
@@ -250,7 +238,7 @@
         ]
       }
     },
-    "query": "WITH profile0 AS (\n                INSERT INTO profiles (username, pwd_hash)\n                    VALUES ($1, $2)\n                    RETURNING id)\n            INSERT\n            INTO emails (profile_id, address)\n            SELECT id, $3\n            FROM profile0\n            RETURNING profile_id AS id;"
+    "query": "WITH profile0 AS (\n                INSERT INTO profiles (username, pwd_hash)\n                    VALUES ($1, $2)\n                    RETURNING id)\n            INSERT INTO emails (profile_id, address)\n            SELECT id, $3\n            FROM profile0\n            RETURNING profile_id AS id;"
   },
   "f94d227e93eaee2b7cc997e8ba6f97e6f2bfa6265289bc116b08c30a7d3ac77c": {
     "describe": {
@@ -263,12 +251,12 @@
         {
           "name": "activator",
           "ordinal": 1,
-          "type_info": "Bytea"
+          "type_info": "Text"
         },
         {
           "name": "value",
           "ordinal": 2,
-          "type_info": "Bytea"
+          "type_info": "Text"
         }
       ],
       "nullable": [

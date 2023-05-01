@@ -1,12 +1,12 @@
-use std::str::FromStr;
-
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use sqlx::{types::Uuid, Error, Pool, Postgres};
 
 use crate::transfer::{
-    e2ekeys::{E2EKeyDTO, E2EKeyVariantDTOEncrypted},
+    e2ekeys::{E2EKeyDTO, E2EKeyVariantDTO},
     workspace::{WorkspaceCreateDTO, WorkspaceDTOEncrypted},
 };
+
+use super::session::SessionServiceError;
 
 #[derive(Clone)]
 pub struct WorkspaceService {
@@ -14,25 +14,27 @@ pub struct WorkspaceService {
 }
 
 pub enum WorkspaceServiceError {
+    SessionServiceError(SessionServiceError),
     InternalError,
 }
 
 impl IntoResponse for WorkspaceServiceError {
     fn into_response(self) -> axum::response::Response {
         match self {
+            Self::SessionServiceError(e) => e.into_response(),
             Self::InternalError => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
     }
 }
 
-impl From<Error> for WorkspaceServiceError {
-    fn from(_: Error) -> Self {
-        Self::InternalError
+impl From<SessionServiceError> for WorkspaceServiceError {
+    fn from(e: SessionServiceError) -> Self {
+        Self::SessionServiceError(e)
     }
 }
 
-impl From<sqlx::types::uuid::Error> for WorkspaceServiceError {
-    fn from(_: sqlx::types::uuid::Error) -> Self {
+impl From<Error> for WorkspaceServiceError {
+    fn from(_: Error) -> Self {
         Self::InternalError
     }
 }
@@ -45,26 +47,41 @@ impl WorkspaceService {
     pub async fn create(
         &self,
         workspace_create_dto: WorkspaceCreateDTO,
-        owner: &str,
+        owner_id: Uuid,
     ) -> Result<Json<WorkspaceDTOEncrypted>, WorkspaceServiceError> {
-        let owner_id = Uuid::from_str(owner)?;
         let mut tx = self.database.begin().await?;
+
         let workspace_id = sqlx::query!(
-            r#"INSERT INTO workspaces (owner_id, name) VALUES ($1, $2) RETURNING id"#,
+            r#"INSERT INTO workspaces (owner_id, name)
+            VALUES ($1, $2) RETURNING id"#,
             owner_id,
             workspace_create_dto.name
         )
         .fetch_one(&mut tx)
         .await?
         .id;
+
         let key_id = sqlx::query!(
-            r#"INSERT INTO end_to_end_keys (workspace_id, activator) VALUES ($1, $2) RETURNING workspace_id"#,
-             workspace_id,
+            r#"INSERT INTO end_to_end_keys (workspace_id, activator)
+            VALUES ($1, $2) RETURNING workspace_id"#,
+            workspace_id,
             workspace_create_dto.key.activator
         )
         .fetch_one(&mut tx)
         .await?
         .workspace_id;
+
+        for key in workspace_create_dto.key.keys {
+            sqlx::query!(
+                r#"INSERT INTO end_to_end_key_variants (key_id, activator, value)
+                VALUES ($1, $2, $3)"#,
+                key_id,
+                key.activator,
+                key.value
+            )
+            .execute(&mut tx)
+            .await?;
+        }
 
         let workspace = sqlx::query!(
             r#"SELECT id, name
@@ -97,7 +114,7 @@ impl WorkspaceService {
 
         let keys = e2e_key_variants
             .iter()
-            .map(|t| E2EKeyVariantDTOEncrypted {
+            .map(|t| E2EKeyVariantDTO {
                 activator: t.activator.clone(),
                 value: t.value.clone(),
             })

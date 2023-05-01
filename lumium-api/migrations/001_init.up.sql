@@ -103,7 +103,7 @@ CREATE TABLE end_to_end_keys
 (
     workspace_id    UUID PRIMARY KEY    REFERENCES workspaces (id) ON DELETE CASCADE,
 
-    activator       BYTEA               NOT NULL UNIQUE
+    activator       TEXT                NOT NULL UNIQUE
 );
 
 CREATE TABLE end_to_end_key_variants
@@ -111,8 +111,8 @@ CREATE TABLE end_to_end_key_variants
     id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
     key_id      UUID                NOT NULL        REFERENCES end_to_end_keys (workspace_id) ON DELETE CASCADE,
 
-    activator   BYTEA               NOT NULL UNIQUE,
-    value       BYTEA               NOT NULL UNIQUE
+    activator   TEXT                NOT NULL UNIQUE,
+    value       TEXT                NOT NULL UNIQUE
 );
 
 CREATE TABLE workspace_admins

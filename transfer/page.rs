@@ -4,7 +4,7 @@ use tsify::Tsify;
 use utoipa::ToSchema;
 
 #[serde_crypt_gen]
-#[derive(Serialize, Deserialize, ToSchema, Tsify, Clone)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Tsify, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PageDTO {
     pub workspace_id: String,

@@ -1,27 +1,17 @@
-import { useApi } from "@hooks/api";
-import { SECURE_PONG } from "@routes/api/v1";
-import { AUTH_SIGNIN } from "@routes/space";
+import { get_space_auth_signin, get_x_lumium_session_header } from "lumium-renderer";
 import Router from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export const Authenticator  = ({children}: React.PropsWithChildren<{}>) => {
-    const [loginStatus, setLoginStatus] = useState(false);
-    const [api] = useApi();
-
+export const Authenticator = ({ children }: React.PropsWithChildren<{}>) => {
     useEffect(() => {
-        api.get(SECURE_PONG).then((res) => {
-            if (res.status == 200) {
-                setLoginStatus(true);
-            } else if (res.status == 401) {
-                setLoginStatus(false);
-                Router.push(AUTH_SIGNIN);
-            }
-        });
-    }, [api]);
+        if (localStorage.getItem(get_x_lumium_session_header()) == null) {
+            Router.push(get_space_auth_signin());
+        }
+    });
 
     return (
         <>
-            {loginStatus && children}
+            {localStorage.getItem(get_x_lumium_session_header()) != null && children}
         </>
     );
 };

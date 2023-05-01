@@ -1,11 +1,11 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
-import { AUTH_SIGNIN } from "@routes/space";
+// import { AUTH_SIGNIN } from "@routes/space";
 import Router from "next/router";
 import { useEffect } from "react";
 
 const Auth: React.FC = () => {
     useEffect(() => {
-        Router.push(AUTH_SIGNIN);
+        // Router.push(AUTH_SIGNIN);
     });
 
     return (

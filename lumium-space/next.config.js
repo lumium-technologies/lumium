@@ -17,7 +17,7 @@ const { parsed: myEnv } = dotenvExpand.expand(require('dotenv').config({
 
 // This entire configuration file using WasmChunksFixPlugin is because of https://github.com/vercel/next.js/issues/29362
 module.exports = {
-    webpack(config, {isServer, dev}) {
+    webpack(config, { isServer, dev }) {
         if (dotenv_path) {
             config.plugins.push(new webpack.EnvironmentPlugin(myEnv));
         }
@@ -40,14 +40,14 @@ class WasmChunksFixPlugin {
             compilation.hooks.processAssets.tap(
                 { name: "WasmChunksFixPlugin" },
                 (assets) =>
-                Object.entries(assets).forEach(([pathname, source]) => {
-                    if (!pathname.match(/\.wasm$/)) return;
-                    compilation.deleteAsset(pathname);
+                    Object.entries(assets).forEach(([pathname, source]) => {
+                        if (!pathname.match(/\.wasm$/)) return;
+                        compilation.deleteAsset(pathname);
 
-                    const name = pathname.split("/")[1];
-                    const info = compilation.assetsInfo.get(pathname);
-                    compilation.emitAsset(name, source, info);
-                })
+                        const name = pathname.split("/")[1];
+                        const info = compilation.assetsInfo.get(pathname);
+                        compilation.emitAsset(name, source, info);
+                    })
             );
         });
     }

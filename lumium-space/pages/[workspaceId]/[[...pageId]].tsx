@@ -16,13 +16,14 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
-import { get_local_storage_password_key as pass } from 'lumium-renderer';
+import { get_local_storage_password_key as pass, WorkspaceDTODecrypted, get_workspace } from 'lumium-renderer';
 
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
-    const { workspace, refetchWorkspace } = useWorkspace(workspaceId);
-    const { userInfo } = useUserInfo();
+    // const { workspace, refetchWorkspace } = useWorkspace(workspaceId);
+    // const { userInfo } = useUserInfo();
+    const [workspace, setWorkspace] = useState<WorkspaceDTODecrypted | null>();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
@@ -37,12 +38,13 @@ const Workspace: React.FC = () => {
     const handlePasswordEntered = () => {
         localStorage.setItem(pass(), formik.values.password);
         setPasswordEntered(true);
-        refetchWorkspace();
+        get_workspace(workspaceId as string).then(wrk => setWorkspace(wrk));
     }
 
     useEffect(() => {
         const workspacePassword = localStorage.getItem(pass());
         setPasswordEntered(workspacePassword != null);
+        get_workspace(workspaceId as string).then(wrk => setWorkspace(wrk));
         const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
         const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
         if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
@@ -80,8 +82,8 @@ const Workspace: React.FC = () => {
                             <DrawerContent>
                                 <SideBar
                                     onCloseSideBar={onCloseSideBar}
-                                    workspace={workspace}
-                                    userInfo={userInfo}
+                                    // workspace={workspace}
+                                    // userInfo={userInfo}
                                     setPinnedSideBar={setPinnedSideBar}
                                     pinnedSideBar={pinnedSideBar}
                                 />
@@ -91,8 +93,8 @@ const Workspace: React.FC = () => {
                         (
                             <SideBar
                                 onCloseSideBar={onCloseSideBar}
-                                workspace={workspace}
-                                userInfo={userInfo}
+                                // workspace={workspace}
+                                // userInfo={userInfo}
                                 setPinnedSideBar={setPinnedSideBar}
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
@@ -104,8 +106,8 @@ const Workspace: React.FC = () => {
                             pinnedNavBar && (
                                 <NavBar
                                     onOpenSideBar={onOpenSideBar}
-                                    userInfo={userInfo}
-                                    workspace={workspace}
+                                    // userInfo={userInfo}
+                                    // workspace={workspace}
                                     pinnedSidebar={pinnedSideBar}
                                     setPinnedNavBar={setPinnedNavBar}
                                 />
@@ -136,10 +138,10 @@ const Workspace: React.FC = () => {
                                 )
                             }
                             {
-                                (workspace?.name && userInfo?.nickName && !pageId) &&
-                                <Heading>
-                                    Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                </Heading>
+                                // (workspace?.name && userInfo?.nickName && !pageId) &&
+                                // <Heading>
+                                //     Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                                // </Heading>
                             }
                             {
                                 !passwordEntered &&
@@ -190,11 +192,11 @@ const Workspace: React.FC = () => {
                                 </Flex>
                             }
                             {
-                                workspace?.pages.map((p) => {
-                                    return (
-                                        <Button key={p.id} as={NextLink} href={p.id}></Button>
-                                    );
-                                })
+                                // workspace?.pages?.map((p) => {
+                                //     return (
+                                //         <Button key={p.id} as={NextLink} href={p.id}></Button>
+                                //     );
+                                // })
                             }
                         </Flex>
                     </Flex>

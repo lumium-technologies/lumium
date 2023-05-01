@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { ROOT } from "@routes/space";
+// import { ROOT } from "@routes/space";
 import { FiLock } from "react-icons/fi";
 import NextLink from 'next/link';
 import { WorkspaceDTOEncrypted } from "lumium-renderer";
@@ -19,7 +19,8 @@ export const WorkspaceSideBarButton = ({ w }: props) => {
             bg="none"
             justifyContent={{ base: "center", md: "flex-start" }}
             as={NextLink}
-            href={ROOT + w.id}
+            // href={ROOT + w.id}
+            href={""}
             onClick={clearWorkspacePassword}
         >{w.name}</Button>
     )

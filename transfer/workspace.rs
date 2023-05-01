@@ -5,12 +5,18 @@ use serde_crypt_macro::serde_crypt_gen;
 use tsify::Tsify;
 use utoipa::ToSchema;
 
+use crate::transfer::constants::gen_ts_mapping;
+use paste::paste;
+use wasm_bindgen::prelude::*;
+
 #[derive(Debug, Serialize, Deserialize, ToSchema, Tsify, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceCreateDTO {
     pub key: E2EKeyCreateDTO,
     pub name: String,
 }
+
+gen_ts_mapping!(WorkspaceCreateDTO);
 
 #[serde_crypt_gen]
 #[derive(Debug, Serialize, Deserialize, ToSchema, Tsify, Clone)]
@@ -26,3 +32,6 @@ pub struct WorkspaceDTO {
     #[serde_crypt_types(Option<String>, Option<Vec<PageDTODecrypted>>)]
     pub pages: _,
 }
+
+gen_ts_mapping!(WorkspaceDTOEncrypted);
+gen_ts_mapping!(WorkspaceDTODecrypted);

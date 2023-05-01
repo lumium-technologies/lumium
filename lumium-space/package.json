@@ -51,6 +51,7 @@
         "react-dom": "^18.2.0",
         "react-icons": "^4.7.1",
         "react-mt-svg-lines": "^0.9.1",
+        "react-no-ssr": "^1.1.0",
         "react-query": "^3.39.1",
         "react-redux": "^7.2.8",
         "swr": "^0.4.2",

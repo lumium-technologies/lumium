@@ -3,21 +3,20 @@ pub mod render;
 pub mod transfer;
 
 use crate::transfer::constants::*;
-use crate::transfer::workspace::WorkspaceCreateDTO;
+use crate::transfer::workspace::{TWorkspaceDTODecrypted, WorkspaceCreateDTO};
 use crypto::generate_key_variants;
 use seed::{self, prelude::*, *};
+use transfer::workspace::{TWorkspaceDTOEncrypted, WorkspaceDTODecrypted};
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::RequestCredentials;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 pub async fn request(method: &str, url: &str, body: Option<&JsValue>) -> Result<Response, JsValue> {
     let mut opts = RequestInit::new();
     opts.method(method);
-    opts.credentials(RequestCredentials::Include);
     opts.mode(RequestMode::Cors);
     opts.body(body);
-    let origin = format!("{}/{}", env!("RENDERER_API_HOST").to_string(), url);
+    let origin = format!("{}{}", env!("RENDERER_API_HOST").to_string(), url);
     let request = Request::new_with_str_and_init(origin.as_str(), &opts)?;
     request.headers().set("Content-Type", "application/json")?;
     let window = web_sys::window().unwrap();
@@ -38,7 +37,10 @@ pub async fn request(method: &str, url: &str, body: Option<&JsValue>) -> Result<
 }
 
 #[wasm_bindgen]
-pub async fn create_workspace(password: String, name: String) -> Result<JsValue, JsValue> {
+pub async fn create_workspace(
+    password: String,
+    name: String,
+) -> Result<TWorkspaceDTOEncrypted, JsValue> {
     let key_create_dto = generate_key_variants(password)?;
     let workspace_create_dto = WorkspaceCreateDTO {
         key: key_create_dto,
@@ -52,7 +54,20 @@ pub async fn create_workspace(password: String, name: String) -> Result<JsValue,
         return Err(JsValue::from("failed to create workspace"));
     }
 
-    let json = JsFuture::from(resp.json()?).await?;
+    Ok(JsFuture::from(resp.json()?).await?.into())
+}
 
-    Ok(json)
+#[wasm_bindgen]
+pub async fn get_workspace(workspace_id: String) -> Result<TWorkspaceDTODecrypted, JsValue> {
+    let resp = request(
+        "GET",
+        format!("{}/{}", API_V1_WORKSPACE, workspace_id).as_str(),
+        None,
+    )
+    .await?;
+    if resp.status() != 200 {
+        return Err(JsValue::from("error"));
+    }
+
+    Ok(JsFuture::from(resp.json()?).await?.into())
 }

@@ -1,9 +1,9 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode, useColorModeValue, Box, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, MenuList, Spacer } from "@chakra-ui/react";
 import { BORDER_DARK, BORDER_LIGHT } from "@definitions/constants";
-import { useApi } from "@hooks/api";
-import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
-import { ROOT } from "@routes/space";
+// import { useApi } from "@hooks/api";
+// import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
+// import { ROOT } from "@routes/space";
 import Router from "next/router";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -13,7 +13,7 @@ interface NavBarProps extends FlexProps {
 
 export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
-    const [api] = useApi();
+    // const [api] = useApi();
     const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
     return (
         <Flex
@@ -60,7 +60,7 @@ export const NavBar = ({ backgroundColor, ...rest }: NavBarProps) => {
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None"
                                 width={"100%"}
-                                onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}
+                            // onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}
                             >Sign out</Button>
                         </MenuList>
                     </Menu>

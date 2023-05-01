@@ -1,10 +1,10 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode, useColorModeValue, Box, Text, FlexProps, Flex, IconButton, HStack, Button, Menu, MenuButton, Avatar, VStack, MenuList, MenuDivider, Spacer } from "@chakra-ui/react";
-import { useApi } from "@hooks/api";
-import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
-import { ACCOUNT, ROOT } from "@routes/space";
-import { UserDTO } from "../../../types/api/v1/response/UserDTO";
-import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
+// import { useApi } from "@hooks/api";
+// import { SECURE_AUTH_SIGNOUT } from "@routes/api/v1";
+// import { ACCOUNT, ROOT } from "@routes/space";
+// import { UserDTO } from "../../../types/api/v1/response/UserDTO";
+// import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
 import Router from "next/router";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import NextLink from 'next/link';
@@ -13,29 +13,29 @@ import { BACKGROUND_LIGHT, BACKGROUND_DARK, BORDER_DARK, BORDER_LIGHT } from "@d
 
 interface NavBarProps extends FlexProps {
     onOpenSideBar: () => void;
-    userInfo?: UserDTO;
-    workspace?: WorkspaceDTO;
+    // userInfo?: UserDTO;
+    // workspace?: WorkspaceDTO;
     pinnedSidebar: boolean;
     setPinnedNavBar: (bool: any) => void;
 }
 
-export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setPinnedNavBar, ...rest }: NavBarProps) => {
+export const NavBar = ({ onOpenSideBar, /*userInfo, workspace,*/ pinnedSidebar, setPinnedNavBar, ...rest }: NavBarProps) => {
     const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
     const borderColor = useColorModeValue(BORDER_LIGHT, BORDER_DARK);
     const { colorMode, toggleColorMode } = useColorMode();
-    const [api] = useApi();
+    // const [api] = useApi();
     let role = ""
-    if (userInfo?.id) {
-        if (workspace?.ownerId == userInfo?.id) {
-            role = "Owner"
-        } else if (workspace?.admins.includes(userInfo?.id)) {
-            role = "Admin"
-        } else if (workspace?.members.includes(userInfo?.id)) {
-            role = "Member"
-        } else if (workspace?.visitors.includes(userInfo?.id)) {
-            role = "Visitor"
-        }
-    }
+    // if (userInfo?.id) {
+    //     if (workspace?.ownerId == userInfo?.id) {
+    //         role = "Owner"
+    //     } else if (workspace?.admins.includes(userInfo?.id)) {
+    //         role = "Admin"
+    //     } else if (workspace?.members.includes(userInfo?.id)) {
+    //         role = "Member"
+    //     } else if (workspace?.visitors.includes(userInfo?.id)) {
+    //         role = "Visitor"
+    //     }
+    // }
 
     return (
         <Flex
@@ -50,13 +50,13 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
             {...rest}
         >
             {!pinnedSidebar &&
-            <IconButton
-                display={'flex'}
-                variant="outline"
-                aria-label="open menu"
-                icon={<FiMenu />}
-                onClick={onOpenSideBar}
-            />
+                <IconButton
+                    display={'flex'}
+                    variant="outline"
+                    aria-label="open menu"
+                    icon={<FiMenu />}
+                    onClick={onOpenSideBar}
+                />
             }
             <Spacer />
             <HStack>
@@ -88,7 +88,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">{userInfo?.nickName}</Text>
+                                    <Text fontSize="sm">{/*userInfo?.nickName*/}</Text>
                                     <Text fontSize="xs" color="gray.400">
                                         {role}
                                     </Text>
@@ -106,7 +106,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                 width={"100%"}
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None" as={NextLink}
-                                href={ACCOUNT}
+                                href={""/*ACCOUNT*/}
                             >Settings</Button>
                             <MenuDivider />
                             <Button
@@ -114,7 +114,7 @@ export const NavBar = ({ onOpenSideBar, userInfo, workspace, pinnedSidebar, setP
                                 justifyContent={{ base: "center", md: "flex-start" }}
                                 bg="None"
                                 data-cy={"signOut"}
-                                onClick={() => { api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); }}
+                                onClick={() => { /*api.post(SECURE_AUTH_SIGNOUT).then(() => Router.push(ROOT)); */ }}
                             >Sign out</Button>
                         </MenuList>
                     </Menu>

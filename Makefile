@@ -16,6 +16,7 @@ build-lumium-space: build-lumium-renderer
 		yarn build
 
 build-lumium-api:
+	(which git >/dev/null && git submodule update --init --recursive) || true;
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
 		export SQLX_OFFLINE="true"; \

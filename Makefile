@@ -6,7 +6,7 @@ build-lumium-renderer: build-lumium-api
 	(which git >/dev/null && git submodule update --init --recursive) || true;
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
-		wasm-pack build --release
+		./scripts/build.sh
 
 build-lumium-space: build-lumium-renderer
 	(cd lumium-renderer/pkg && (yarn unlink || true) && yarn link)
@@ -50,7 +50,7 @@ test: test-lumium-renderer test-lumium-space test-lumium-api
 test-lumium-renderer: build-lumium-renderer
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
-		wasm-pack test --chrome --headless
+		./scripts/test.sh
 
 test-lumium-space: build-lumium-space build-lumium-api
 	cd lumium-space; \

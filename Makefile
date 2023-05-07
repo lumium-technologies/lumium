@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 
+all: clean build test dockerize
+
 build: build-lumium-space build-lumium-api
 
 build-lumium-renderer: build-lumium-api
@@ -62,5 +64,12 @@ test-lumium-api: build-lumium-api
 		export SQLX_OFFLINE="true"; \
 		cargo test;
 
+dockerize: dockerize-lumium-api dockerize-lumium-space
 
-.PHONY: build build-lumium-api build-lumium-renderer build-lumium-space test test-lumium-api test-lumium-renderer test-lumium-space clean test reduce-slug-size
+dockerize-lumium-api:
+	docker build -t lumium-api:latest . -f lumium-api/Dockerfile --platform linux/amd64
+
+dockerize-lumium-space:
+	docker build -t lumium-space:latest . -f lumium-space/Dockerfile --platform linux/amd64
+
+.PHONY: build build-lumium-api build-lumium-renderer build-lumium-space test test-lumium-api test-lumium-renderer test-lumium-space clean test reduce-slug-size dockerize dockerize-lumium-api dockerize-lumium-space

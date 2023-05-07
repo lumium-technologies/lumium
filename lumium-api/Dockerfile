@@ -1,17 +1,13 @@
 FROM rust:latest AS builder
 WORKDIR /usr/src/
-RUN rustup target add x86_64-unknown-linux-musl
+RUN rustup target add x86_64-unknown-linux-gnu
 
-RUN USER=root cargo new lumium
-WORKDIR /usr/src/lumium
-COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release
-
-COPY src ./src
-COPY templates ./templates
-RUN cargo install --target x86_64-unknown-linux-musl --path .
+RUN USER=root mkdir /usr/src/lumium
+COPY . /usr/src/lumium/
+WORKDIR /usr/src/lumium/lumium-api
+RUN cargo install --target x86_64-unknown-linux-gnu --path .
 
 FROM scratch
-COPY --from=builder /usr/local/cargo/bin/lumium .
+COPY --from=builder /usr/src/lumium/build/bin/* .
 USER 1000
-CMD ["./lumium", "-a", "0.0.0.0", "-p", "8080"]
+ENTRYPOINT [ "./lumium-api" ]

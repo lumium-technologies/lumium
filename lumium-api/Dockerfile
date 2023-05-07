@@ -8,6 +8,6 @@ WORKDIR /usr/src/lumium/lumium-api
 RUN cargo install --target x86_64-unknown-linux-gnu --path .
 
 FROM scratch
-COPY --from=builder /usr/src/lumium/build/bin/* .
+COPY --from=builder /usr/src/lumium/lumium-api/build/bin/* .
 USER 1000
-ENTRYPOINT [ "./lumium-api" ]
+CMD [ "./lumium-api" ]

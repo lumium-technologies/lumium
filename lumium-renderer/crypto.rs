@@ -85,7 +85,7 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
         return Err(JsValue::from("failed to get workspace"));
     }
 
-    let json = JsFuture::from(resp.json()?).await?;
+    let json = res!(resp);
     let password = window
         .local_storage()?
         .unwrap()

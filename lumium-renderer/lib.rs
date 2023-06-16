@@ -5,10 +5,11 @@ pub mod render;
 pub mod transfer;
 
 use crate::transfer::constants::*;
-use crate::transfer::workspace::{TWorkspaceDTODecrypted, WorkspaceCreateDTO};
+use crate::transfer::workspace::{
+    TWorkspaceDTODecrypted, TWorkspaceDTOEncrypted, WorkspaceCreateDTO,
+};
 use crypto::generate_key_variants;
 use seed::{self, prelude::*, *};
-use transfer::workspace::{TWorkspaceDTOEncrypted, WorkspaceDTODecrypted};
 
 #[wasm_bindgen]
 pub async fn create_workspace(
@@ -28,7 +29,7 @@ pub async fn create_workspace(
         return Err(JsValue::from("failed to create workspace"));
     }
 
-    Ok(JsFuture::from(resp.json()?).await?.into())
+    Ok(res!(resp))
 }
 
 #[wasm_bindgen]
@@ -38,5 +39,5 @@ pub async fn get_workspace(workspace_id: String) -> Result<TWorkspaceDTODecrypte
         return Err(JsValue::from("error"));
     }
 
-    Ok(JsFuture::from(resp.json()?).await?.into())
+    Ok(res!(resp))
 }

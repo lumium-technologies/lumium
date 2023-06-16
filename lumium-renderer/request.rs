@@ -63,3 +63,10 @@ http_method!(connect);
 http_method!(options);
 http_method!(trace);
 http_method!(patch);
+
+#[macro_export]
+macro_rules! res {
+    ($res:ident) => {
+        JsFuture::from($res.json()?).await?.into()
+    };
+}

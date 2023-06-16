@@ -5,7 +5,6 @@ use serde_crypt_macro::serde_crypt_gen;
 use tsify::Tsify;
 use utoipa::ToSchema;
 
-use crate::transfer::constants::gen_ts_mapping;
 use paste::paste;
 use wasm_bindgen::prelude::*;
 

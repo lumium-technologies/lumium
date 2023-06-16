@@ -1,4 +1,3 @@
-use crate::request;
 use crate::transfer::constants::*;
 use crate::transfer::e2ekeys::E2EKeyCreateDTO;
 use crate::transfer::e2ekeys::E2EKeyVariantCreateDTO;
@@ -81,12 +80,7 @@ pub async fn decrypt_key() -> Result<(), JsValue> {
 
     let window = web_sys::window().unwrap();
     let workspace_id = window.location().pathname()?;
-    let resp = request(
-        "GET",
-        format!("{}/{}", API_V1_WORKSPACE, workspace_id).as_str(),
-        None,
-    )
-    .await?;
+    let resp = get!(format!("{}/{}", API_V1_WORKSPACE, workspace_id).as_str());
     if resp.status() != 200 {
         return Err(JsValue::from("failed to get workspace"));
     }

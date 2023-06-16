@@ -96,7 +96,8 @@ CREATE TABLE workspaces
     id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
     owner_id    UUID                NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
 
-    name        TEXT                NOT NULL
+    name        TEXT                NOT NULL,
+    CONSTRAINT unique_workspaces_ownerid_name UNIQUE (owner_id, name)
 );
 
 CREATE TABLE end_to_end_keys

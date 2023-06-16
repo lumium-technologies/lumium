@@ -32,21 +32,16 @@ import {
     MoonIcon,
     SunIcon,
 } from '@chakra-ui/icons';
-import Router from 'next/router';
-// import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
-// import { useApi } from "@hooks/api";
-// import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 import NextLink from 'next/link';
 import { LOGO_DARK, LOGO_LIGHT } from '@definitions/constants';
-import { get_space_auth_signin, get_space_auth_signup, get_space_root } from 'lumium-renderer';
+import { get_space_auth_signin, get_space_auth_signup, get_space_root, get_api_v1_auth_signout } from 'lumium-renderer';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
-    // const [api] = useApi();
 
     const handleLogout = () => {
         // api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());

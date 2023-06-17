@@ -2,9 +2,9 @@ import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-u
 import { PageTitle, WidgetCentered } from "@components/other";
 import { Authenticator } from "@components/security/Authenticator";
 import { BACKGROUND_LIGHT, BACKGROUND_DARK } from "@definitions/constants";
-import { useApi, useUserInfo } from "@hooks/api";
-import { SECURE_USER_DELETE } from "@routes/api/v1";
-import { ROOT } from "@routes/space";
+// import { useApi, useUserInfo } from "@hooks/api";
+// import { SECURE_USER_DELETE } from "@routes/api/v1";
+// import { ROOT } from "@routes/space";
 import { NavBar, SideBar } from "@sections/account";
 import Router from "next/router";
 import { useEffect, useState } from "react";
@@ -12,20 +12,20 @@ import { useEffect, useState } from "react";
 const Account: React.FC = () => {
     const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
 
-    const [api] = useApi();
+    // const [api] = useApi();
     const [email, setEmail] = useState("");
     const [page, setPage] = useState("personalInfo");
-    const { userInfo } = useUserInfo();
+    // const { userInfo } = useUserInfo();
     const handleDelete = () => {
-        api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));
+        // api.delete(SECURE_USER_DELETE).then(() => Router.push(ROOT));
     };
-    useEffect(() => {
-        userInfo?.emails.map((e) => {
-            if (e.primary) {
-                setEmail(e.email);
-            }
-        });
-    }, [userInfo])
+    // useEffect(() => {
+    //     userInfo?.emails.map((e) => {
+    //         if (e.primary) {
+    //             setEmail(e.email);
+    //         }
+    //     });
+    // }, [userInfo])
     return (
         <>
             <PageTitle title={"Lumium | Account"} />
@@ -43,7 +43,7 @@ const Account: React.FC = () => {
                                     <WidgetCentered title="Personal Information" logo={false} width="70%">
                                         <Stack direction={"row"}>
                                             <Text fontSize="sm" width={"10vh"}>Username</Text>
-                                            <Text fontSize="sm" >{userInfo?.nickName}</Text>
+                                            <Text fontSize="sm" >{/*userInfo?.nickName*/}</Text>
                                         </Stack>
                                         <Stack direction={"row"}>
                                             <Text fontSize="sm" width={"10vh"}>E-Mail</Text>

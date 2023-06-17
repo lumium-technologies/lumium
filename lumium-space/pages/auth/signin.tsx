@@ -12,36 +12,25 @@ import {
     InputGroup
 } from '@chakra-ui/react';
 import React, { useState } from 'react'
-import { useApi, useUserInfo } from '@hooks/api';
 import Router from 'next/router';
-import { AUTH_PASSWORD_RESET, AUTH_SIGNIN, AUTH_SIGNUP, ROOT, SPACES_CREATE } from '@routes/space';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
 import NextLink from 'next/link';
-import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
+import { get_api_v1_auth_signin, get_space_spaces_create, SignInDTO } from 'lumium-renderer';
+import { useApi } from '@hooks/useApi';
 
 const SignIn: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<ReasonDTO | null>(null);
+    const [error, setError] = useState<any | null>(null);
     const [api] = useApi();
-    const { refetchUserInfo } = useUserInfo();
 
     const handleSignIn = () => {
         const email = formik.values.email;
         const password = formik.values.password;
-        api.post<ReasonDTO>(AUTH_SIGNIN, {
-            "email": email,
-            "password": password
-        }).then((res) => {
+        api.post<SignInDTO>(get_api_v1_auth_signin(), { email, password }).then((res) => {
             if (res.status == 200) {
-                refetchUserInfo().then((info) => {
-                    if (info?.recentWorkspace) {
-                        Router.push(ROOT + info?.recentWorkspace.id);
-                    } else {
-                        Router.push(SPACES_CREATE);
-                    };
-                });
+                Router.push(get_space_spaces_create());
             }
         }).catch((err) => setError(err.response?.data));
     };
@@ -96,7 +85,7 @@ const SignIn: React.FC = () => {
                             <FormErrorMessage data-cy="credentialError">{error?.reason}</FormErrorMessage>
                         </FormControl>
                         <Flex justifyContent="space-between" mt="0">
-                            <Link color={'blue.400'} data-cy="forgotPasswordButton" as={NextLink} href={AUTH_PASSWORD_RESET}>Forgot password?</Link>
+                            <Link color={'blue.400'} data-cy="forgotPasswordButton" as={NextLink} href={""/*AUTH_PASSWORD_RESET*/}>Forgot password?</Link>
                         </Flex>
                         <Button
                             bg={'blue.400'}
@@ -114,7 +103,7 @@ const SignIn: React.FC = () => {
                             <Text mb={"0"}>
                                 Create a new account?
                             </Text>
-                            <Link color={'blue.400'} data-cy="signUpSwitchButton" as={NextLink} href={AUTH_SIGNUP}>Create Account</Link>
+                            <Link color={'blue.400'} data-cy="signUpSwitchButton" as={NextLink} href={""/*AUTH_SIGNUP*/}>Create Account</Link>
                         </Flex>
                     </Stack>
                 </form>

@@ -1,7 +1,7 @@
 import { BoxProps, Image, useDisclosure, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, Flex, Stack, CloseButton, Menu, MenuButton, Button, MenuList, Divider, IconButton, useColorModeValue } from "@chakra-ui/react";
 import { CreateWorkspace, WorkspaceSideBarButton } from "@components/other";
-import { UserDTO } from "../../../types/api/v1/response/UserDTO";
-import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
+// import { UserDTO } from "../../../types/api/v1/response/UserDTO";
+// import { WorkspaceDTO } from "../../../types/api/v1/response/WorkspaceDTO";
 import { FiChevronDown, FiPlus } from "react-icons/fi";
 import { AiFillPushpin, AiFillStar } from "react-icons/ai";
 import { BsFillPinFill } from "react-icons/bs";
@@ -10,14 +10,14 @@ import Router from "next/router";
 
 interface SidebarProps extends BoxProps {
     onCloseSideBar: () => void;
-    workspace: WorkspaceDTO | undefined;
-    userInfo: UserDTO | undefined;
+    // workspace: WorkspaceDTO | undefined;
+    // userInfo?: UserDTO;
     setPinnedSideBar: (bool: any) => void;
     pinnedSideBar: boolean;
     sidebarWidth?: string;
 }
 
-export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar, pinnedSideBar, sidebarWidth = "100%", ...rest }: SidebarProps) => {
+export const SideBar = ({ onCloseSideBar, /*workspace, userInfo,*/ setPinnedSideBar, pinnedSideBar, sidebarWidth = "100%", ...rest }: SidebarProps) => {
     const backgroundColor = useColorModeValue(BACKGROUND_LIGHT, BACKGROUND_DARK);
     const {
         isOpen: isOpenModal,
@@ -70,39 +70,39 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
                 </Flex>
             </Flex>
             {
-                workspace?.name &&
-                    <Menu matchWidth={true}>
-                        <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
-                            {workspace?.name}
-                        </MenuButton>
-                        <MenuList bg={backgroundColor} overflow={"hidden"}>
-                            {userInfo?.ownedWorkspaces?.length != 0 &&
-                            <>
-                                {userInfo?.ownedWorkspaces.map((w) => {
-                                    return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                })}
-                                <Divider />
-                            </>
-                            }
-                            {userInfo?.administratedWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.administratedWorkspaces.map((w) => {
-                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            {userInfo?.visitorWorkspaces?.length != 0 &&
-                                <>
-                                    {userInfo?.visitorWorkspaces.map((w) => {
-                                        return <WorkspaceSideBarButton w={w} key={w.id} />;
-                                    })}
-                                    <Divider />
-                                </>
-                            }
-                            <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
-                        </MenuList>
-                    </Menu >
+                // workspace?.name &&
+                // <Menu matchWidth={true}>
+                //     <MenuButton bg="none" w="100%" as={Button} leftIcon={<FiChevronDown />} justifyContent={{ base: "center", md: "flex-start" }}>
+                //         {workspace?.name}
+                //     </MenuButton>
+                //     <MenuList bg={backgroundColor} overflow={"hidden"}>
+                //         {userInfo?.ownedWorkspaces?.length != 0 &&
+                //             <>
+                //                 {userInfo?.ownedWorkspaces.map((w) => {
+                //                     return <WorkspaceSideBarButton w={w} key={w.id} />;
+                //                 })}
+                //                 <Divider />
+                //             </>
+                //         }
+                //         {userInfo?.administratedWorkspaces?.length != 0 &&
+                //             <>
+                //                 {userInfo?.administratedWorkspaces.map((w) => {
+                //                     return <WorkspaceSideBarButton w={w} key={w.id} />;
+                //                 })}
+                //                 <Divider />
+                //             </>
+                //         }
+                //         {userInfo?.visitorWorkspaces?.length != 0 &&
+                //             <>
+                //                 {userInfo?.visitorWorkspaces.map((w) => {
+                //                     return <WorkspaceSideBarButton w={w} key={w.id} />;
+                //                 })}
+                //                 <Divider />
+                //             </>
+                //         }
+                //         <Button width={"100%"} leftIcon={<FiPlus />} bg="none" onClick={onOpenModal}>New workspace</Button>
+                //     </MenuList>
+                // </Menu >
             }
             <Divider />
             <Button leftIcon={<FiPlus />} bg="none" as={Button} justifyContent={{ base: "center", md: "flex-start" }}>
@@ -110,11 +110,11 @@ export const SideBar = ({ onCloseSideBar, workspace, userInfo, setPinnedSideBar,
             </Button>
             <Divider />
             {
-                workspace?.pages.map((page) => (
-                    <Button leftIcon={<AiFillStar />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} key={page.name} as={Button} onClick={() => Router.push(`${workspace?.id}/${page.id}`)}>
-                        {page.name}
-                    </Button>
-                ))
+                // workspace?.pages.map((page) => (
+                //     <Button leftIcon={<AiFillStar />} bg="none" justifyContent={{ base: "center", md: "flex-start" }} key={page.name} as={Button} onClick={() => Router.push(`${workspace?.id}/${page.id}`)}>
+                //         {page.name}
+                //     </Button>
+                // ))
             }
         </Flex >
     );

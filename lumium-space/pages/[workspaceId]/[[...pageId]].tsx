@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Heading, Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputRightElement, Stack, IconButton } from "@chakra-ui/react";
-import { useWorkspace, useUserInfo } from "@hooks/api";
 import { useRouter } from "next/router";
 import {
     Textarea,
@@ -17,12 +16,14 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { WidgetCentered, PageTitle } from '@components/other';
 import NextLink from 'next/link';
 import { RxDoubleArrowDown } from "react-icons/rx";
+import { get_local_storage_password_key as pass, WorkspaceDTODecrypted, get_workspace } from 'lumium-renderer';
 
 const Workspace: React.FC = () => {
     const router = useRouter();
     const { workspaceId, pageId } = router.query;
-    const { workspace, refetchWorkspace }= useWorkspace(workspaceId);
-    const { userInfo } = useUserInfo();
+    // const { workspace, refetchWorkspace } = useWorkspace(workspaceId);
+    // const { userInfo } = useUserInfo();
+    const [workspace, setWorkspace] = useState<WorkspaceDTODecrypted | null>();
     const [passwordEntered, setPasswordEntered] = useState(false);
     const [pinnedSideBar, setPinnedSideBar] = useState(false);
     const [pinnedNavBar, setPinnedNavBar] = useState(true);
@@ -35,14 +36,15 @@ const Workspace: React.FC = () => {
     } = useDisclosure();
 
     const handlePasswordEntered = () => {
-        localStorage.setItem('workspacePassword', formik.values.password);
+        localStorage.setItem(pass(), formik.values.password);
         setPasswordEntered(true);
-        refetchWorkspace();
+        get_workspace(workspaceId as string).then(wrk => setWorkspace(wrk));
     }
 
     useEffect(() => {
-        const workspacePassword = localStorage.getItem('workspacePassword');
+        const workspacePassword = localStorage.getItem(pass());
         setPasswordEntered(workspacePassword != null);
+        get_workspace(workspaceId as string).then(wrk => setWorkspace(wrk));
         const localPinnedSideBar = localStorage.getItem('pinnedSideBar');
         const localPinnedNavBar = localStorage.getItem('pinnedNavBar');
         if (localPinnedSideBar !== null && localPinnedNavBar !== null && !mount) {
@@ -80,8 +82,8 @@ const Workspace: React.FC = () => {
                             <DrawerContent>
                                 <SideBar
                                     onCloseSideBar={onCloseSideBar}
-                                    workspace={workspace}
-                                    userInfo={userInfo}
+                                    // workspace={workspace}
+                                    // userInfo={userInfo}
                                     setPinnedSideBar={setPinnedSideBar}
                                     pinnedSideBar={pinnedSideBar}
                                 />
@@ -91,21 +93,21 @@ const Workspace: React.FC = () => {
                         (
                             <SideBar
                                 onCloseSideBar={onCloseSideBar}
-                                workspace={workspace}
-                                userInfo={userInfo}
+                                // workspace={workspace}
+                                // userInfo={userInfo}
                                 setPinnedSideBar={setPinnedSideBar}
                                 pinnedSideBar={pinnedSideBar}
                                 sidebarWidth={"320px"}
                             />
-                    )
+                        )
                     }
                     <Flex flexDirection={"column"} width={"100%"} height={"100%"}>
                         {
                             pinnedNavBar && (
                                 <NavBar
                                     onOpenSideBar={onOpenSideBar}
-                                    userInfo={userInfo}
-                                    workspace={workspace}
+                                    // userInfo={userInfo}
+                                    // workspace={workspace}
                                     pinnedSidebar={pinnedSideBar}
                                     setPinnedNavBar={setPinnedNavBar}
                                 />
@@ -136,65 +138,65 @@ const Workspace: React.FC = () => {
                                 )
                             }
                             {
-                                (workspace?.name && userInfo?.nickName && !pageId) &&
-                                    <Heading>
-                                        Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
-                                    </Heading>
+                                // (workspace?.name && userInfo?.nickName && !pageId) &&
+                                // <Heading>
+                                //     Welcome to the <em>{workspace?.name}</em> workspace, {userInfo?.nickName}!
+                                // </Heading>
                             }
                             {
                                 !passwordEntered &&
-                                    <>
-                                        <WidgetCentered title={"Enter the workspace password"} logo={false}>
-                                            <form onSubmit={formik.handleSubmit} data-cy={"form"}>
-                                                <FormControl id="password" isRequired>
-                                                    <FormLabel>Password</FormLabel>
-                                                    <InputGroup>
-                                                        <Input
-                                                            name={"password"}
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            onChange={formik.handleChange}
-                                                            value={formik.values.password}
-                                                            data-cy="passwordInput"
-                                                        />
-                                                        <InputRightElement h={'full'}>
-                                                            <Button
-                                                                variant={'ghost'}
-                                                                onClick={() =>
-                                                                    setShowPassword((showPassword) => !showPassword)
-                                                                }>
-                                                                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                                            </Button>
-                                                        </InputRightElement>
-                                                    </InputGroup>
-                                                    <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
-                                                </FormControl>
-                                                <Stack spacing={6} mt={"2%"}>
-                                                    <Button
-                                                        bg={'blue.400'}
-                                                        color={'white'}
-                                                        _hover={{
-                                                            bg: 'blue.500',
-                                                        }}
-                                                        type="submit"
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                                </Stack>
-                                            </form>
-                                        </WidgetCentered>
-                                    </>
-                                        || pageId &&
-                                        <Flex flexDir="row">
-                                            <Textarea />
-                                            <LumiumRenderer />
-                                        </Flex>
+                                <>
+                                    <WidgetCentered title={"Enter the workspace password"} logo={false}>
+                                        <form onSubmit={formik.handleSubmit} data-cy={"form"}>
+                                            <FormControl id="password" isRequired>
+                                                <FormLabel>Password</FormLabel>
+                                                <InputGroup>
+                                                    <Input
+                                                        name={"password"}
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        onChange={formik.handleChange}
+                                                        value={formik.values.password}
+                                                        data-cy="passwordInput"
+                                                    />
+                                                    <InputRightElement h={'full'}>
+                                                        <Button
+                                                            variant={'ghost'}
+                                                            onClick={() =>
+                                                                setShowPassword((showPassword) => !showPassword)
+                                                            }>
+                                                            {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                                        </Button>
+                                                    </InputRightElement>
+                                                </InputGroup>
+                                                <FormErrorMessage data-cy="credentialError"></FormErrorMessage>
+                                            </FormControl>
+                                            <Stack spacing={6} mt={"2%"}>
+                                                <Button
+                                                    bg={'blue.400'}
+                                                    color={'white'}
+                                                    _hover={{
+                                                        bg: 'blue.500',
+                                                    }}
+                                                    type="submit"
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Stack>
+                                        </form>
+                                    </WidgetCentered>
+                                </>
+                                || pageId &&
+                                <Flex flexDir="row">
+                                    <Textarea />
+                                    <LumiumRenderer />
+                                </Flex>
                             }
                             {
-                                workspace?.pages.map((p) => {
-                                    return (
-                                        <Button key={p.id} as={NextLink} href={p.id}></Button>
-                                    );
-                                })
+                                // workspace?.pages?.map((p) => {
+                                //     return (
+                                //         <Button key={p.id} as={NextLink} href={p.id}></Button>
+                                //     );
+                                // })
                             }
                         </Flex>
                     </Flex>

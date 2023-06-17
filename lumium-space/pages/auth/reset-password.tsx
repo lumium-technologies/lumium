@@ -1,8 +1,8 @@
 import { InfoIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Fade, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, InputRightElement, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { WidgetCentered, PageTitle } from "@components/other";
-import { useApi } from "@hooks/api";
-import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
+// import { useApi } from "@hooks/api";
+// import { AUTH_SIGNIN, EMAIL_EXISTS, PASSWORD_RESET, PASSWORD_RESET_TOKEN } from "@routes/space";
 import Router, { useRouter } from 'next/router';
 import { useState } from "react";
 import { useFormik } from 'formik';
@@ -14,45 +14,45 @@ const ResetPassword: React.FC = () => {
     const [emailSent, setEmailSent] = useState(false);
     const [emailResent, setEmailResent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [api] = useApi();
+    // const [api] = useApi();
     const router = useRouter();
     const { token } = router.query;
 
     const handleResetPassword = () => {
         const email = formik.values.email;
-        const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
-        emailExists.then(value => {
-            if (value) {
-                api.post(PASSWORD_RESET_TOKEN, {
-                    "formFields": [
-                        {
-                            "id": "email",
-                            "value": email
-                        }
-                    ]
-                });
-                setEmailSent(true);
-            } else {
-                setEmailExistsError(true);
-                formik.errors.email = "Email doesn't exist";
-            };
-        });
+        // const emailExists = api.get(EMAIL_EXISTS, { params: { email } }).then((response) => response.data).then(email => email.exists);
+        // emailExists.then(value => {
+        //     if (value) {
+        //         api.post(PASSWORD_RESET_TOKEN, {
+        //             "formFields": [
+        //                 {
+        //                     "id": "email",
+        //                     "value": email
+        //                 }
+        //             ]
+        //         });
+        //         setEmailSent(true);
+        //     } else {
+        //         setEmailExistsError(true);
+        //         formik.errors.email = "Email doesn't exist";
+        //     };
+        // });
     };
 
     const handleChangePassword = () => {
         const password = formik.values.password;
         const passwordVerify = formik.values.passwordConfirm;
         if (password == passwordVerify) {
-            api.post(PASSWORD_RESET, {
-                "method": "token",
-                "formFields": [
-                    {
-                        "id": "password",
-                        "value": password
-                    }
-                ],
-                "token": token
-            }).then(() => Router.push(AUTH_SIGNIN));
+            // api.post(PASSWORD_RESET, {
+            //     "method": "token",
+            //     "formFields": [
+            //         {
+            //             "id": "password",
+            //             "value": password
+            //         }
+            //     ],
+            //     "token": token
+            // }).then(() => Router.push(AUTH_SIGNIN));
         } else {
             setPasswordMatchError(true);
             formik.errors.passwordConfirm = "Passwords don't match."
@@ -61,14 +61,14 @@ const ResetPassword: React.FC = () => {
 
     const handleResendEmail = () => {
         const email = formik.values.email;
-        api.post(PASSWORD_RESET_TOKEN, {
-            "formFields": [
-                {
-                    "id": "email",
-                    "value": email
-                }
-            ]
-        });
+        // api.post(PASSWORD_RESET_TOKEN, {
+        //     "formFields": [
+        //         {
+        //             "id": "email",
+        //             "value": email
+        //         }
+        //     ]
+        // });
         setEmailResent(true);
     };
 

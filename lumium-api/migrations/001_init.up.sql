@@ -7,34 +7,20 @@ CREATE TABLE profiles
 	username   TEXT                     NOT NULL UNIQUE,
 	pwd_hash   TEXT                     NOT NULL,
 
-	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-	updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-	deleted_at TIMESTAMP WITH TIME ZONE          DEFAULT NULL,
-	CONSTRAINT updated_after_created CHECK ( updated_at >= created_at ),
-	CONSTRAINT deleted_after_created CHECK ( deleted_at IS NULL OR deleted_at >= created_at ),
-	CONSTRAINT deleted_after_updated CHECK ( deleted_at IS NULL OR deleted_at >= updated_at )
+	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE emails
 (
 	id          BIGSERIAL PRIMARY KEY,
-	profile_id  UUID REFERENCES profiles (id),
+	profile_id  UUID                     NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
 
 	address     TEXT                     NOT NULL,
 	is_primary  BOOLEAN                  NOT NULL DEFAULT FALSE,
 	is_verified BOOLEAN                  NOT NULL DEFAULT FALSE,
 
-	created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-	updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-	deleted_at  TIMESTAMP WITH TIME ZONE          DEFAULT NULL,
-	CONSTRAINT updated_after_created CHECK ( updated_at >= created_at ),
-	CONSTRAINT deleted_after_created CHECK ( deleted_at IS NULL OR deleted_at >= created_at ),
-	CONSTRAINT deleted_after_updated CHECK ( deleted_at IS NULL OR deleted_at >= updated_at )
+	created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
-
-CREATE UNIQUE INDEX emails_address_unique
-	ON emails (address)
-	WHERE deleted_at IS NULL;
 
 CREATE UNIQUE INDEX emails_one_primary_per_profile
     ON emails (profile_id, is_primary)
@@ -45,9 +31,9 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE sessions
 (
 	id            BIGSERIAL PRIMARY KEY,
-	profile_id    UUID REFERENCES profiles (id),
+	profile_id    UUID                     NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
 
-	session_token TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+	session_token BYTEA                    NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
     session_id    TEXT                     NOT NULL UNIQUE,
 	ip_address    INET                     NOT NULL,
 	user_agent    TEXT                     NOT NULL,
@@ -95,7 +81,7 @@ CREATE TABLE session_secrets
 (
     id         BIGSERIAL PRIMARY KEY,
 
-    value      TEXT                     NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
+    value      BYTEA                    NOT NULL UNIQUE DEFAULT digest(gen_random_bytes(1024), 'sha512'),
     status     session_secret_status    NOT NULL        DEFAULT 'active',
 
     issued_at  TIMESTAMP WITH TIME ZONE NOT NULL        DEFAULT now()
@@ -104,5 +90,81 @@ CREATE TABLE session_secrets
 CREATE UNIQUE INDEX session_secrets_active_unique
     ON session_secrets (status)
     WHERE status = 'active';
+
+CREATE TABLE workspaces
+(
+    id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
+    owner_id    UUID                NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
+
+    name        TEXT                NOT NULL,
+    CONSTRAINT unique_workspaces_ownerid_name UNIQUE (owner_id, name)
+);
+
+CREATE TABLE end_to_end_keys
+(
+    workspace_id    UUID PRIMARY KEY    REFERENCES workspaces (id) ON DELETE CASCADE,
+
+    activator       TEXT                NOT NULL UNIQUE
+);
+
+CREATE TABLE end_to_end_key_variants
+(
+    id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
+    key_id      UUID                NOT NULL        REFERENCES end_to_end_keys (workspace_id) ON DELETE CASCADE,
+
+    activator   TEXT                NOT NULL UNIQUE,
+    value       TEXT                NOT NULL UNIQUE
+);
+
+CREATE TABLE workspace_admins
+(
+    workspace_id UUID NOT NULL REFERENCES workspaces (id)   ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id)     ON DELETE CASCADE,
+    CONSTRAINT pk_workspace_admins PRIMARY KEY (workspace_id, profile_id)
+);
+
+CREATE TABLE workspace_members
+(
+    workspace_id UUID NOT NULL REFERENCES workspaces (id)   ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id)     ON DELETE CASCADE,
+    CONSTRAINT pk_workspace_members PRIMARY KEY (workspace_id, profile_id)
+);
+
+CREATE TABLE workspace_visitors
+(
+    workspace_id UUID NOT NULL REFERENCES workspaces (id)   ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id)     ON DELETE CASCADE,
+    CONSTRAINT pk_workspace_visitors PRIMARY KEY (workspace_id, profile_id)
+);
+
+CREATE TABLE pages
+(
+    id          UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
+    owner_id    UUID                NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
+
+    content     TEXT,
+    name        TEXT NOT NULL
+);
+
+CREATE TABLE page_admins
+(
+    page_id      UUID NOT NULL REFERENCES pages (id)    ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
+    CONSTRAINT pk_page_admins PRIMARY KEY (page_id, profile_id)
+);
+
+CREATE TABLE page_members
+(
+    page_id      UUID NOT NULL REFERENCES pages (id)    ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
+    CONSTRAINT pk_page_members PRIMARY KEY (page_id, profile_id)
+);
+
+CREATE TABLE page_visitors
+(
+    page_id      UUID NOT NULL REFERENCES pages (id)    ON DELETE CASCADE,
+    profile_id   UUID NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
+    CONSTRAINT pk_page_visitors PRIMARY KEY (page_id, profile_id)
+);
 
 END;

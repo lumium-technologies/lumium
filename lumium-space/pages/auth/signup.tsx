@@ -12,31 +12,31 @@ import {
     FormErrorMessage
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useApi } from "@hooks/api";
 import Router from 'next/router';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { AUTH_SIGNIN, AUTH_SIGNUP, SPACES_CREATE } from '@routes/space';
 import { WidgetCentered, PageTitle } from '@components/other';
 import { useFormik } from 'formik';
-import { ReasonDTO } from '../../types/api/v1/response/ReasonDTO';
 import NextLink from 'next/link';
+import { SignUpDTO, get_api_v1_auth_signup as signup, get_space_spaces_create } from 'lumium-renderer';
+import { useApi } from '@hooks/useApi';
 
 const SignUp: React.FC = () => {
-    const [api] = useApi();
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<ReasonDTO | null>(null);
+    const [error, setError] = useState<any | null>(null);
+
+    const [api] = useApi();
 
     const handleSignUp = () => {
         const email = formik.values.email;
         const password = formik.values.password;
         const username = formik.values.nickName;
-        api.post(AUTH_SIGNUP, {
+        api.post<SignUpDTO>(signup(), {
             email: email,
             password: password,
             username: username
         }).then((res) => {
             if (res.status == 200) {
-                Router.push(SPACES_CREATE);
+                Router.push(get_space_spaces_create());
             }
         }, (err) => setError(err.response?.data));
     };
@@ -137,7 +137,7 @@ const SignUp: React.FC = () => {
                             <Text mb={"0"}>
                                 Already have an account?
                             </Text>
-                            <Link color={'blue.400'} data-cy="signInSwitchButton" as={NextLink} href={AUTH_SIGNIN}>Login</Link>
+                            <Link color={'blue.400'} data-cy="signInSwitchButton" as={NextLink} href={""/*AUTH_SIGNIN*/}>Login</Link>
                         </Flex>
                     </Stack>
                 </form>

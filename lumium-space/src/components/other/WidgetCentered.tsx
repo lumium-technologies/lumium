@@ -1,6 +1,6 @@
 import { Flex, Stack, Heading, Box, Image, Link, Center, useColorModeValue } from "@chakra-ui/react"
 import { LOGO_DARK, LOGO_LIGHT } from "@definitions/constants";
-import { ROOT } from "@routes/space";
+// import { ROOT } from "@routes/space";
 import NextLink from 'next/link';
 
 interface WidgetCenteredProps {
@@ -29,7 +29,7 @@ export const WidgetCentered = ({ title, children, logo = true, width = "xl", hei
                 {
                     logo &&
                     <Stack align={'center'}>
-                        <Link as={NextLink} href={ROOT}>
+                        <Link as={NextLink} href={""/*ROOT*/}>
                             <Center>
                                 <Image src={logoImg} minWidth={"70%"} maxWidth={"80%"} alt="lumium logo" />
                             </Center>

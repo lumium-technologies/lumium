@@ -83,18 +83,6 @@
             ],
             "@test": [
                 "test"
-            ],
-            "@types/*": [
-                "types/*"
-            ],
-            "@types": [
-                "types"
-            ],
-            "@routes/*": [
-                "routes/*"
-            ],
-            "@routes": [
-                "routes"
             ]
         },
         "incremental": true

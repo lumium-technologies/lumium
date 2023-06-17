@@ -1,12 +1,14 @@
 SHELL := /bin/bash
 
+all: clean build test dockerize
+
 build: build-lumium-space build-lumium-api
 
-build-lumium-renderer:
+build-lumium-renderer: build-lumium-api
 	(which git >/dev/null && git submodule update --init --recursive) || true;
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
-		wasm-pack build --release
+		./scripts/build.sh
 
 build-lumium-space: build-lumium-renderer
 	(cd lumium-renderer/pkg && (yarn unlink || true) && yarn link)
@@ -16,10 +18,10 @@ build-lumium-space: build-lumium-renderer
 		yarn build
 
 build-lumium-api:
+	(which git >/dev/null && git submodule update --init --recursive) || true;
 	source ./scripts/toolchain.sh && \
 		cd lumium-api; \
 		export SQLX_OFFLINE="true"; \
-		cargo build --release && \
 		cargo install --path . --root build --profile release --force
 
 reduce-slug-size:
@@ -50,7 +52,7 @@ test: test-lumium-renderer test-lumium-space test-lumium-api
 test-lumium-renderer: build-lumium-renderer
 	source ./scripts/toolchain.sh && \
 		cd lumium-renderer; \
-		wasm-pack test --chrome --headless
+		./scripts/test.sh
 
 test-lumium-space: build-lumium-space build-lumium-api
 	cd lumium-space; \
@@ -62,5 +64,12 @@ test-lumium-api: build-lumium-api
 		export SQLX_OFFLINE="true"; \
 		cargo test;
 
+dockerize: dockerize-lumium-api dockerize-lumium-space
 
-.PHONY: clean test reduce-slug-size
+dockerize-lumium-api:
+	docker build -t lumium-api:latest . -f lumium-api/Dockerfile --platform linux/amd64
+
+dockerize-lumium-space:
+	docker build -t lumium-space:latest . -f lumium-space/Dockerfile --platform linux/amd64
+
+.PHONY: build build-lumium-api build-lumium-renderer build-lumium-space test test-lumium-api test-lumium-renderer test-lumium-space clean test reduce-slug-size dockerize dockerize-lumium-api dockerize-lumium-space

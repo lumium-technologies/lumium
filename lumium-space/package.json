@@ -17,9 +17,9 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "cypress:open": "cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && cypress open'",
+        "cypress:open": "cd ../lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo build && cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && cypress open'",
         "cypress:run": "cypress run",
-        "cypress:test": "cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && yarn run cypress:run'"
+        "cypress:test": "cd ../lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo build && cd .. && NEXT_PUBLIC_NODE_TEST=true yarn build && concurrently -k -s first 'cd lumium-api && SQLX_OFFLINE=\"true\" ENVIRONMENT=\"test\" cargo run' 'cd lumium-space && yarn start' 'cd lumium-space && yarn run cypress:run'"
     },
     "dependencies": {
         "@chakra-ui/icons": "^2.0.12",
@@ -51,6 +51,7 @@
         "react-dom": "^18.2.0",
         "react-icons": "^4.7.1",
         "react-mt-svg-lines": "^0.9.1",
+        "react-no-ssr": "^1.1.0",
         "react-query": "^3.39.1",
         "react-redux": "^7.2.8",
         "swr": "^0.4.2",

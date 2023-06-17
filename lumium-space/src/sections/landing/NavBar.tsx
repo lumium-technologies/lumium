@@ -32,34 +32,30 @@ import {
     MoonIcon,
     SunIcon,
 } from '@chakra-ui/icons';
-import Router from 'next/router';
-import { ACCOUNT, AUTH_SIGNIN, AUTH_SIGNUP, ROOT } from '@routes/space';
 import packageInfo from 'package.json';
 import { useEffect, useState } from "react";
-import { useApi } from "@hooks/api";
-import { SECURE_AUTH_SIGNOUT, SECURE_PONG } from '@routes/api/v1';
 import NextLink from 'next/link';
 import { LOGO_DARK, LOGO_LIGHT } from '@definitions/constants';
+import { get_space_auth_signin, get_space_auth_signup, get_space_root, get_api_v1_auth_signout } from 'lumium-renderer';
 
 export const NavBar = () => {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const [loginStatus, setLoginStatus] = useState(false);
-    const [api] = useApi();
 
     const handleLogout = () => {
-        api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());
+        // api.post(SECURE_AUTH_SIGNOUT).then(() => Router.reload());
     };
 
-    useEffect(() => {
-        api.get(SECURE_PONG).then((res) => {
-            if (res.status == 200) {
-                setLoginStatus(true);
-            } else {
-                setLoginStatus(false);
-            }
-        });
-    }, [api]);
+    // useEffect(() => {
+    //     api.get(SECURE_PONG).then((res) => {
+    //         if (res.status == 200) {
+    //             setLoginStatus(true);
+    //         } else {
+    //             setLoginStatus(false);
+    //         }
+    //     });
+    // }, [api]);
 
     return (
         <Box>
@@ -83,7 +79,7 @@ export const NavBar = () => {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <HStack>
-                        <Link display={{ base: 'none', lg: 'flex' }} href={ROOT} width={"10rem"}>
+                        <Link display={{ base: 'none', lg: 'flex' }} href={get_space_root()} width={"10rem"}>
                             <Image src={useColorModeValue(LOGO_DARK, LOGO_LIGHT)} alt="lumium logo" />
                         </Link>
                         <Spacer />
@@ -115,7 +111,7 @@ export const NavBar = () => {
                                     />
                                 </MenuButton>
                                 <MenuList>
-                                    <MenuItem as={NextLink} href={ACCOUNT}>Account</MenuItem>
+                                    <MenuItem as={NextLink} href={""/*ACCOUNT*/}>Account</MenuItem>
                                     <MenuDivider />
                                     <MenuItem data-cy={'signOut'} onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
@@ -131,7 +127,7 @@ export const NavBar = () => {
                                 fontSize={'sm'}
                                 fontWeight={400}
                                 as={NextLink}
-                                href={AUTH_SIGNIN}
+                                href={get_space_auth_signin()}
                                 data-cy="signInButton"
                             >
                                 Sign In
@@ -141,7 +137,7 @@ export const NavBar = () => {
                                 fontWeight={600}
                                 bg={"blue.400"}
                                 as={NextLink}
-                                href={AUTH_SIGNUP}
+                                href={get_space_auth_signup()}
                                 data-cy="signUpButton"
                             >
                                 Sign Up

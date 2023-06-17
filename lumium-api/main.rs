@@ -5,24 +5,26 @@ use std::error::Error;
 use std::net::{Ipv4Addr, SocketAddr};
 
 use axum::http::HeaderValue;
-use axum::routing::{delete, get, patch, post};
+use axum::routing::{delete, get, patch, post, put};
 use axum::{middleware, Router, Server};
-use routes::guard::X_LUMIUM_SESSION_HEADER_STRING;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
-use tower_http::cors::{AllowCredentials, AllowHeaders, AllowOrigin, CorsLayer};
+use tower_http::cors::{AllowOrigin, CorsLayer};
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::routes::guard::auth_guard;
-use crate::routes::{auth, root, user};
+use crate::routes::auth::auth_guard;
+use crate::routes::{auth, profile, workspace};
 
 use crate::state::AppState;
 
 mod routes;
 mod services;
 mod state;
+mod transfer;
+
+use crate::transfer::constants::*;
 
 const PRODUCTION_ENV: &str = "PRODUCTION";
 const ENVIRONMENT_ENV: &str = "ENVIRONMENT";
@@ -38,17 +40,25 @@ const ENV_TEST_VAL: &str = "test";
     paths(
         auth::sign_up,
         auth::sign_in,
-        auth::sign_out
+        auth::sign_out,
+        workspace::create_workspace
     ),
     components(
         schemas(
-            auth::SignUp,
-            auth::SignIn
+            transfer::auth::SignUpDTO,
+            transfer::auth::SignInDTO,
+            transfer::workspace::WorkspaceCreateDTO,
+            transfer::workspace::WorkspaceDTOEncrypted,
+            transfer::e2ekeys::E2EKeyCreateDTO,
+            transfer::e2ekeys::E2EKeyDTO,
+            transfer::e2ekeys::E2EKeyVariantCreateDTO,
+            transfer::e2ekeys::E2EKeyVariantDTO
         )
     ),
     modifiers(&SecurityAddon),
     tags(
-        (name = "auth", description = "Authentication API")
+        (name = "auth", description = "Authentication API"),
+        (name = "workspace", description = "Workspace Management API")
     )
 )]
 struct ApiDoc;
@@ -60,9 +70,7 @@ impl Modify for SecurityAddon {
         if let Some(components) = openapi.components.as_mut() {
             components.add_security_scheme(
                 "Lumium Session",
-                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(
-                    X_LUMIUM_SESSION_HEADER_STRING,
-                ))),
+                SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new(X_LUMIUM_SESSION_HEADER))),
             )
         }
     }
@@ -78,25 +86,28 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
 
     let guard = middleware::from_fn_with_state(state.clone(), auth_guard);
 
-    let root = Router::new().route("/v1/", get(root::check));
-
     let auth = Router::new()
-        .route("/v1/auth/signout", post(auth::sign_out))
+        .route(API_V1_AUTH_SIGNOUT, post(auth::sign_out))
         .route_layer(guard.clone())
-        .route("/v1/auth/signup", post(auth::sign_up))
-        .route("/v1/auth/signin", post(auth::sign_in))
+        .route(API_V1_AUTH_SIGNUP, post(auth::sign_up))
+        .route(API_V1_AUTH_SIGNIN, post(auth::sign_in))
         .with_state(state.clone());
 
-    let user = Router::new()
-        .route("/v1/profile", get(user::get_profile))
-        .route("/v1/profile", delete(user::delete_profile))
-        .route("/v1/profile/username", patch(user::update_username))
-        .route("/v1/profile/password", patch(user::update_password))
-        .route("/v1/profile/email", patch(user::update_email))
-        .route("/v1/profile/email", post(user::create_email))
-        .route("/v1/profile/email", delete(user::delete_email))
+    let profile = Router::new()
+        .route(API_V1_PROFILE, get(profile::get_profile))
+        .route(API_V1_PROFILE, delete(profile::delete_profile))
+        .route(API_V1_PROFILE_USERNAME, patch(profile::update_username))
+        .route(API_V1_PROFILE_PASSWORD, patch(profile::update_password))
+        .route(API_V1_PROFILE_EMAIL, patch(profile::update_email))
+        .route(API_V1_PROFILE_EMAIL, post(profile::create_email))
+        .route(API_V1_PROFILE_EMAIL, delete(profile::delete_email))
         .route_layer(guard.clone())
-        .with_state(state);
+        .with_state(state.clone());
+
+    let workspace = Router::new()
+        .route(API_V1_WORKSPACE, put(workspace::create_workspace))
+        .route_layer(guard.clone())
+        .with_state(state.clone());
 
     let origins = config
         .origins
@@ -104,17 +115,19 @@ async fn run(config: AppConfig) -> Result<(), Box<dyn Error>> {
         .map(|t| HeaderValue::from_str(t).unwrap());
 
     let app = Router::new()
-        .merge(SwaggerUi::new("/v1/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
-        .merge(root)
+        .merge(SwaggerUi::new(API_V1_DOCS).url("/api-docs/openapi.json", ApiDoc::openapi()))
         .merge(auth)
-        .merge(user)
+        .merge(profile)
+        .merge(workspace)
         .layer(CorsLayer::permissive().allow_origin(AllowOrigin::list(origins)));
 
     let port = std::env::var("PORT").map_or(5000, |t| t.parse().unwrap());
     let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
     println!("listening on {addr}");
 
-    Server::bind(&addr).serve(app.into_make_service()).await?;
+    Server::bind(&addr)
+        .serve(app.into_make_service_with_connect_info::<SocketAddr>())
+        .await?;
 
     Ok(())
 }

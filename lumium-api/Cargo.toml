@@ -34,7 +34,7 @@ utoipa = { version = "3.2.1", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "3.1.2", features = ["axum"] }
 dotenvy = "0.15.6"
 paste = "1.0.12"
-tsify = "0.4.3"
+tsify = "0.4.5"
 
 [build-dependencies]
 sqlx-cli = { version = "0.6.2", features = [

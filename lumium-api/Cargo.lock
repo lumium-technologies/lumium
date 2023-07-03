@@ -2020,9 +2020,9 @@ dependencies = [
 
 [[package]]
 name = "sqlx-cli"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "71cd284c603e2a13259a10e1bb9494fae877edb2bcbfc7c5d28945e53a0c4f05"
+checksum = "74f4d0281dd550c01b985c0542b26a245111a63523575107f81b3de4098837b9"
 dependencies = [
  "anyhow",
  "async-trait",

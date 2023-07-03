@@ -37,7 +37,7 @@ paste = "1.0.12"
 tsify = "0.4.3"
 
 [build-dependencies]
-sqlx-cli = { version = "0.6.2", features = [
+sqlx-cli = { version = "0.6.3", features = [
     "rustls",
     "postgres",
 ], default-features = false }

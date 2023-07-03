@@ -17,7 +17,7 @@ axum-extra = { version = "0.4.2", features = ["cookie-signed"] }
 tower-http = { version = "0.4.0", features = ["cors"] }
 wasm-bindgen = { version = "0.2.80" }
 serde = { version = "1.0.152" }
-serde-wasm-bindgen = "0.4"
+serde-wasm-bindgen = "0.5"
 serde-crypt = { path = "../vendor/serde-crypt" }
 serde-crypt-macro = { path = "../vendor/serde-crypt-macro" }
 serde_json = { version = "1.0.91" }

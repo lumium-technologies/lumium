@@ -28,7 +28,7 @@
         "@choc-ui/logo": "^1.0.0",
         "@emotion/react": "^11.10.5",
         "@emotion/styled": "^11.10.5",
-        "@next/bundle-analyzer": "^12.1.6",
+        "@next/bundle-analyzer": "^13.4.11",
         "@reduxjs/toolkit": "^1.8.2",
         "@types/jest": "^29.2.5",
         "@types/node": "^18.11.18",

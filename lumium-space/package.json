@@ -43,7 +43,7 @@
         "eslint-config-next": "^13.1.2",
         "formik": "^2.2.9",
         "framer-motion": "^8.0.2",
-        "next": "^13.0.4",
+        "next": "^13.5.4",
         "next-compose-plugins": "^2.2.1",
         "next-i18next": "^7.0.1",
         "nextjs-cors": "^2.1.1",
